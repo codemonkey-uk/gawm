@@ -11,6 +11,7 @@
 <script>
 
 var cards = null;
+var game = null;
 
 function load_cards()
 {
@@ -33,10 +34,26 @@ function add_player(gamestate)
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
             document.getElementById('c3').innerHTML = this.responseText;
+            game = this.responseText;
         }
     };
 
     xmlhttp.open("POST", "api/add_player.php", true);
+    xmlhttp.send(gamestate);
+}
+
+function next(gamestate)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            document.getElementById('c3').innerHTML = this.responseText;
+            game = this.responseText;
+        }
+    };
+
+    xmlhttp.open("POST", "api/next.php", true);
     xmlhttp.send(gamestate);
 }
 
@@ -47,7 +64,7 @@ function new_game()
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
             document.getElementById('c2').innerHTML = this.responseText;
-            add_player(this.responseText);
+            game = this.responseText;
         }
     };
 
@@ -66,8 +83,12 @@ function start()
 
 <body onload="start()">
 <div>
-<div id="c1"> </div>
-<div id="c2"> </div>
-<div id="c3"> </div>
+<div id="c1"> </div><hr>
+<div id="c2"> </div><hr>
+<input type="button" onclick="add_player(game)" value="Add Player"/>
+<input type="button" onclick="next(game)" value="Next"/>
+<div id="c3"> </div><hr>
+
+
 </body>
 </html>
