@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.halfsize {
+    -moz-transform:scale(0.5);
+    -webkit-transform:scale(0.5);
+    transform:scale(0.5);
+}
+</style>
+<script>
+
+function start()
+{
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var cards = JSON.parse(this.responseText);
+        var content = "";
+        
+        cards.alias.forEach( card => {
+            content += "<img class=\"halfsize\" src='assets/"+card+"'>";
+        });
+        cards.motives.forEach( card => {
+            content += "<img class=\"halfsize\" src='assets/"+card+"'>";
+        });
+        
+        document.getElementById('content').innerHTML = content;
+       }
+    };
+
+    xmlhttp.open("GET", "cards.json", true);
+    xmlhttp.send();
+}
+
+</script>
+</head>
+
+<body onload="start()">
+<div>
+<div id="content"> </div>
+</body>
+</html>
