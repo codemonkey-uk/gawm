@@ -3,22 +3,22 @@
 // TODO: add rate-limiting
 
 // Get the contents of the components file 
-$strJsonFileContents = file_get_contents("components.json");
+$json = file_get_contents("components.json");
 
 // convert to array 
-$array = json_decode($strJsonFileContents, true);
+$data = json_decode($json, true);
 
 // shuffle the cards
-foreach ($array["cards"] as &$deck) {
+foreach ($data["cards"] as &$deck) {
     shuffle($deck);
 }
 
 // add players & add state
-$array["players"] = array();
-$array["state"] = "setup";
+$data["players"] = array();
+$data["state"] = "setup";
 
 // convert back to json
-$encoded = json_encode($array);
+$encoded = json_encode($data);
 
 //temp, return to caller
 // todo: write to DB, return UID

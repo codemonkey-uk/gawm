@@ -10,28 +10,55 @@
 </style>
 <script>
 
-function start()
-{
+var cards = null;
 
+function load_cards()
+{
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        var cards = JSON.parse(this.responseText);
-        var content = "";
-        
-        cards.alias.forEach( card => {
-            content += "<img class=\"halfsize\" src='assets/"+card+"'>";
-        });
-        cards.motives.forEach( card => {
-            content += "<img class=\"halfsize\" src='assets/"+card+"'>";
-        });
-        
-        document.getElementById('content').innerHTML = content;
-       }
+        if (this.readyState == 4 && this.status == 200) {
+            var cards = JSON.parse(this.responseText);
+            document.getElementById('c1').innerHTML = "cards loaded"; // this.responseText;
+        }
     };
 
     xmlhttp.open("GET", "cards.json", true);
     xmlhttp.send();
+}
+
+function add_player(gamestate)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            document.getElementById('c3').innerHTML = this.responseText;
+        }
+    };
+
+    xmlhttp.open("POST", "api/add_player.php", true);
+    xmlhttp.send(gamestate);
+}
+
+function new_game()
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            document.getElementById('c2').innerHTML = this.responseText;
+            add_player(this.responseText);
+        }
+    };
+
+    xmlhttp.open("GET", "api/new.php", true);
+    xmlhttp.send();
+}
+
+function start()
+{
+    load_cards();
+    new_game();
 }
 
 </script>
@@ -39,6 +66,8 @@ function start()
 
 <body onload="start()">
 <div>
-<div id="content"> </div>
+<div id="c1"> </div>
+<div id="c2"> </div>
+<div id="c3"> </div>
 </body>
 </html>
