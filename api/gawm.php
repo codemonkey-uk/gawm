@@ -62,27 +62,30 @@ function add_player(&$data)
 
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
-
     if (!array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id');
 
-    $player = $data["players"]["player_id"];
+    $player = &$data["players"][$player_id];
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
 
-    $deck_from = $player["hand"][$detail_type];
+    $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held');
     
     // move card from hand into play
-    $deck_to = $player["play"][$detail_type];
-    array_push($deck_to, $detail_type);
-
-    $key = array_search($detail_type, $deck_from);
+    $deck_to = &$player["play"][$detail_type];
+    array_push($deck_to, $detail_card);
+    
+    $key = array_search($detail_card, $deck_from);
     unset( $deck_from[$key] );
 
-    // TODO, return other details of same type to table deck
-    // TODO, support playing cards into other peoples hands
+    // put unused details back in the deck
+    foreach($deck_from as $key => $id)
+    {
+        unset( $deck_from[$key] );
+        array_unshift($data["cards"][$detail_type],$id);
+    }
 }
 
 ?>

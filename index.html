@@ -37,29 +37,69 @@ function load_cards()
     xmlhttp.send();
 }
 
-function render(player)
+function hand_tostr(hand,player_id,action)
 {
-    var html = "<div class='player'>";
-    html += "<div class='hand'>";
-    for (var deck in player.hand)
+    var html = "<div class='hand'>";
+    for (var deck in hand)
     {
-        console.log(player.hand[deck]);
-        for (var card in player.hand[deck])
+
+        for (var card in hand[deck])
         {
-            var i = player.hand[deck][card];
-            console.log(cards[deck][i]);
+            var i = hand[deck][card];
             var url = "assets/"+deck+"/"+encodeURI(cards[deck][i]);
-            console.log(url);
-            html += "<div class='card'>";
             var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;'>";
-            console.log(img);
+            var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+            html += "<div class='card' onclick='" +click+ "'>";
             html += img;
             html += "</div>";
         }
     }
     html += '</div>';
+    return html;
+}
+
+function render(player,player_id)
+{
+    var html = "<div class='player'>";
+    html += hand_tostr(player.hand,player_id,"playdetail");
+    html += hand_tostr(player.play,player_id,"nop");
     html += '</div>';
     document.getElementById('players').innerHTML += html;
+}
+
+function nop(gamestate,player_id,detail_type,detail_card)
+{
+}
+
+function playdetail(gamestate,player_id,detail_type,detail_card)
+{
+    console.log("playdetail called:",player_id,detail_type,detail_card);
+    
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            document.getElementById('c3').innerHTML = this.responseText;
+            game = this.responseText;
+            
+            document.getElementById('players').innerHTML = "";
+            for (var player in result.players)
+                render(result.players[player],player);
+        }
+    };
+    
+    // TODO get these from GET
+    //$player_id = $data["play_detail"]["player_id"];
+    //$detail_type = $data["play_detail"]["detail_type"];
+    //$detail_card = $data["play_detail"]["detail_card"];
+    var result = JSON.parse(gamestate);
+    result["play_detail"] = {};
+    result["play_detail"].player_id=player_id;
+    result["play_detail"].detail_type=detail_type;
+    result["play_detail"].detail_card=detail_card;
+    
+    xmlhttp.open("POST", "api/play_detail.php", true);
+    xmlhttp.send( JSON.stringify(result) );
 }
 
 function add_player(gamestate)
@@ -73,7 +113,7 @@ function add_player(gamestate)
             
             document.getElementById('players').innerHTML = "";
             for (var player in result.players)
-                render(result.players[player]);
+                render(result.players[player],player);
         }
     };
 
@@ -92,7 +132,7 @@ function next(gamestate)
             
             document.getElementById('players').innerHTML = "";
             for (var player in result.players)
-                render(result.players[player]);
+                render(result.players[player],player);
         }
     };
 
