@@ -20,7 +20,14 @@ function complete_setup()
     // every player has 1 alias
     foreach( $data["players"] as $player )
     {
-        if (count($player["alias"])!=1)
+        // 0 alias in hand
+        if (count($player["hand"]["alias"])!=0)
+        {
+            http_response_code(400);
+            return;
+        }
+        // 1 alias in play
+        if (count($player["play"]["alias"])!=1)
         {
             http_response_code(400);
             return;
@@ -32,7 +39,6 @@ function complete_setup()
     shuffle($data["tokens"]["guilt"]);    
     $data["state"] = "Act1";
     $data["scene"] = 1;
-        
 }
 
 function act1_next_scene()
