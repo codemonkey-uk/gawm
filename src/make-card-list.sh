@@ -5,7 +5,8 @@ function deck
 {
 echo \"$1\": [
 first=true
-for OUTPUT in $(find $1 -type f | sed 's/ /%20/g')
+IFS=$(echo -en "\n\b")
+for OUTPUT in $(find $1 -type f | cut -d/ -f 2)
 do
     if [ "$first" = false ]; then
         echo ,

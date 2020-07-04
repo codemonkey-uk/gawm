@@ -3,17 +3,20 @@
 <head>
 <style>
 .hand {
-    height:75px;
+    width:1456px; height:140px;
     border:1px solid black;
     padding:4px;
-    overflow-x:scroll;
+    overflow-x:visible;
     white-space: nowrap
 }
 .card {
     border:1px solid black;
     margin-right:4px;
-    width:75px; height:75px;
+    width:100px; height:140px;
     display: inline-block;
+}
+.card:hover {
+  transform: scale(2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 </style>
 <script>
@@ -26,8 +29,7 @@ function load_cards()
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var cards = JSON.parse(this.responseText);
-            document.getElementById('c1').innerHTML = "cards loaded"; // this.responseText;
+            cards = JSON.parse(this.responseText);
         }
     };
 
@@ -39,14 +41,20 @@ function render(player)
 {
     var html = "<div class='player'>";
     html += "<div class='hand'>";
-    console.log(player);
-    console.log(player.hand);
     for (var deck in player.hand)
     {
         console.log(player.hand[deck]);
         for (var card in player.hand[deck])
         {
-            html += "<div class='card'>"+deck+"-"+player.hand[deck][card]+"</div>";
+            var i = player.hand[deck][card];
+            console.log(cards[deck][i]);
+            var url = "assets/"+deck+"/"+encodeURI(cards[deck][i]);
+            console.log(url);
+            html += "<div class='card'>";
+            var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;'>";
+            console.log(img);
+            html += img;
+            html += "</div>";
         }
     }
     html += '</div>';
@@ -118,7 +126,6 @@ function start()
 
 <body onload="start()">
 <div>
-<div id="c1"> </div><hr>
 <div id="c2"> </div><hr>
 <input type="button" onclick="add_player(game)" value="Add Player"/>
 <input type="button" onclick="next(game)" value="Next"/>
