@@ -66,7 +66,57 @@ function render(player,player_id)
     html += "<div>Details in play: </div>";
     html += hand_tostr(player.play,player_id,"nop");
     html += '</div>';
-    document.getElementById('players').innerHTML += html;
+    return html;
+}
+
+function game_stage_str()
+{
+    if (game.act == 0)
+        return "Setup - Add Players and Select Alias Details.";
+    
+    var c = Object.keys(game.players).length;
+    
+    if (game.act==1 && game.scene==c)
+        return "Extra Scene: Introduce a new character";
+
+    if (game.act==1 && game.scene==c+1)
+        return "First Break: The Murder";
+
+    if (game.act==2 && game.scene==c)
+        return "Second Break: The Twist";
+    
+    if (game.act==3)
+        c = c*2;
+        
+    if (game.act==3 && game.scene==c)
+        return "Last Break: The Accusation and The Guilty";
+
+    var act = "";
+    if (game.act==1)
+        act = "Act I: Introductions";
+    if (game.act==2)
+        act = "Act II: Investigations";
+    if (game.act==3)
+        act = "Act III: Incriminations";
+        
+    if (game.act==4)
+        act = "Epilogue";
+        
+    return act + " Scene " + (game.scene+1) + " / " + c;
+}
+
+function render_game(result)
+{
+    game = result;
+    var html = "";
+    
+    html += "<div class='game'>";
+    html += "<div>" + game_stage_str() + "</div>";
+    for (var player in result.players)
+        html += render(result.players[player],player);
+    html += "</div>";
+    
+    document.getElementById('players').innerHTML = html;
 }
 
 function nop(gamestate,player_id,detail_type,detail_card)
@@ -82,11 +132,8 @@ function playdetail(gamestate,player_id,detail_type,detail_card)
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
             document.getElementById('debug').innerHTML = this.responseText;
-            game = result;
             
-            document.getElementById('players').innerHTML = "";
-            for (var player in result.players)
-                render(result.players[player],player);
+            render_game(result);
         }
     };
     
@@ -108,13 +155,9 @@ function add_player(gamestate)
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var result = JSON.parse(this.responseText);
             document.getElementById('debug').innerHTML = this.responseText;
-            game = result;
-            
-            document.getElementById('players').innerHTML = "";
-            for (var player in result.players)
-                render(result.players[player],player);
+            var result = JSON.parse(this.responseText);
+            render_game(result);
         }
     };
 
@@ -127,13 +170,9 @@ function next(gamestate)
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var result = JSON.parse(this.responseText);
             document.getElementById('debug').innerHTML = this.responseText;
-            game = result;
-            
-            document.getElementById('players').innerHTML = "";
-            for (var player in result.players)
-                render(result.players[player],player);
+            var result = JSON.parse(this.responseText);
+            render_game(result);
         }
     };
 
@@ -146,9 +185,9 @@ function new_game()
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var result = JSON.parse(this.responseText);
             document.getElementById('debug').innerHTML = this.responseText;
-            game = result;
+            var result = JSON.parse(this.responseText);
+            render_game(result);
         }
     };
 

@@ -69,9 +69,9 @@ function is_detail_active(&$data, $detail_type)
         return $detail_type=="alias";
     }
     // Motives cannot be played until after the murder, starting in Act II
-    if ($data["act"]>1)
+    if ($data["act"]==1)
     {
-        return $detail_type!="motive";
+        return $detail_type!="motives";
     }
     return true;
 }
@@ -107,17 +107,15 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     }
 }
 
-function complete_setup()
+function complete_setup(&$data)
 {
-    global $data;
-    
     // at least 4 players
     if (count($data["players"])<4)
     {
         http_response_code(400);
-        return;
+        throw new Exception('Must have 4 Players to Complete Setup.');
     }
-    
+ 
     // every player has 1 alias
     foreach( $data["players"] as $player )
     {
@@ -125,19 +123,21 @@ function complete_setup()
         if (count($player["hand"]["alias"])!=0)
         {
             http_response_code(400);
-            return;
+            throw new Exception('Alias detail still in hand.');
         }
         // 1 alias in play
         if (count($player["play"]["alias"])!=1)
         {
             http_response_code(400);
-            return;
+            throw new Exception('Alias detail missing from play.');
         }
     }
-    
+
     shuffle($data["tokens"]["innocence"]);
     shuffle($data["tokens"]["guilt"]);    
-    $data["act"] = "1";
-    $data["scene"] = 1;
+
+    $data["act"] = 1;
+    $data["scene"] = 0;
+
 }
 ?>
