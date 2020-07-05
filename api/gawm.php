@@ -15,7 +15,8 @@ function new_game()
 
     // add players & add state
     $data["players"] = array();
-    $data["state"] = "setup";
+    $data["act"] = 0;
+    $data["scene"] = 0;
     
     return $data;
 }
@@ -60,6 +61,21 @@ function add_player(&$data)
     return $player_id;
 }
 
+function is_detail_active(&$data, $detail_type)
+{
+    // Act (setup) players select their alias
+    if ($data["act"]==0)
+    {
+        return $detail_type=="alias";
+    }
+    // Motives cannot be played until after the murder, starting in Act II
+    if ($data["act"]>1)
+    {
+        return $detail_type!="motive";
+    }
+    return true;
+}
+
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
     if (!array_key_exists($player_id,$data["players"]))
@@ -68,7 +84,10 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     $player = &$data["players"][$player_id];
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
-
+    
+    if (!is_detail_active($data, $detail_type))
+        throw new Exception('Invalid Detail for Act');
+    
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held');
@@ -88,4 +107,37 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     }
 }
 
+function complete_setup()
+{
+    global $data;
+    
+    // at least 4 players
+    if (count($data["players"])<4)
+    {
+        http_response_code(400);
+        return;
+    }
+    
+    // every player has 1 alias
+    foreach( $data["players"] as $player )
+    {
+        // 0 alias in hand
+        if (count($player["hand"]["alias"])!=0)
+        {
+            http_response_code(400);
+            return;
+        }
+        // 1 alias in play
+        if (count($player["play"]["alias"])!=1)
+        {
+            http_response_code(400);
+            return;
+        }
+    }
+    
+    shuffle($data["tokens"]["innocence"]);
+    shuffle($data["tokens"]["guilt"]);    
+    $data["act"] = "1";
+    $data["scene"] = 1;
+}
 ?>

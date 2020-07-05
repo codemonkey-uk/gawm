@@ -8,7 +8,8 @@ $encoded = $json;
 // Converts it into a PHP object
 $data = json_decode($json, true);
 
-if ($data["state"] == "setup" && count( $data["players"] )<6)
+// only add players, up to 6, in act 0 (setup)
+if ($data["act"] == 0 && count( $data["players"] )<6)
 {
     add_player($data);
 }
