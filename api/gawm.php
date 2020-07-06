@@ -24,9 +24,9 @@ function new_game()
 function draw_player_details(&$data, &$new_player)
 {
     $draws = array(
-        "alias" => 2,
-        "rels" => 3,
-        "object" => 3,
+        "aliases" => 2,
+        "relationships" => 3,
+        "objects" => 3,
         "motives" => 3,       
         "wildcards" => 3
     );
@@ -77,7 +77,7 @@ function is_detail_active(&$data, $detail_type)
     // players should always be able to play their alias
     // in practice this happens at two points: 
     // - during set up, and during the extra scene
-    if ($detail_type=="alias")
+    if ($detail_type=="aliases")
     {
         return true;
     }
@@ -123,7 +123,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
     
-    if (count($player["hand"]["alias"])>0 && $detail_type!="alias")
+    if (count($player["hand"]["aliases"])>0 && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
         
     if (!is_detail_active($data, $detail_type))
@@ -172,13 +172,13 @@ function complete_setup(&$data)
     foreach( $data["players"] as $player )
     {
         // 0 alias in hand
-        if (count($player["hand"]["alias"])!=0)
+        if (count($player["hand"]["aliases"])!=0)
         {
             http_response_code(400);
             throw new Exception('Alias detail still in hand.');
         }
         // 1 alias in play
-        if (count($player["play"]["alias"])!=1)
+        if (count($player["play"]["aliases"])!=1)
         {
             http_response_code(400);
             throw new Exception('Alias detail missing from play.');
@@ -215,12 +215,27 @@ function setup_extrascene(&$data)
     draw_player_details($data,$player);
     
     // give the player who lost their alias, the whole alias deck to choose from
-    while (count($data["cards"]["alias"])>0)
+    while (count($data["cards"]["aliases"])>0)
     {
-        array_push( $player["hand"]["alias"], array_pop($data["cards"]["alias"]) );
+        array_push( $player["hand"]["aliases"], array_pop($data["cards"]["aliases"]) );
     }
     
     // TODO: return their innocence/guilt tokens to the pile
+}
+
+function is_firstbreak(&$data)
+{
+    return $data["scene"] == count($data["players"])+1;
+}
+
+function setup_firstbreak(&$data)
+{
+    $data["victim"]["hand"]=array();
+    
+    $detail="murder_cause";
+    array_push( $new_player["hand"][$detail], array_pop($data["cards"][$detail]) );
+    $detail="murder_discovery";
+    array_push( $new_player["hand"][$detail], array_pop($data["cards"][$detail]) );    
 }
 
 function end_scene(&$data)
@@ -237,9 +252,9 @@ function end_scene(&$data)
             {
                 setup_extrascene($data);
             }
-            if ($data["scene"] == count($data["players"])+1)
+            if (is_firstbreak($data))
             {
-                // TODO: First Break (Murder)
+                setup_firstbreak($data);
             }
             if ($data["scene"] > count($data["players"])+1)
             {

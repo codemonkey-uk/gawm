@@ -17,15 +17,17 @@ done
 echo ]
 }
 
-deck alias
+deck aliases
 echo -n ,
 deck motives
 echo -n ,
-deck murder
+deck murder_cause
 echo -n ,
-deck object
+deck murder_discovery
 echo -n ,
-deck rels
+deck objects
+echo -n ,
+deck relationships
 echo -n ,
 deck wildcards
 

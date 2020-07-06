@@ -1,5 +1,5 @@
 {
-"alias": [
+"aliases": [
 "Alias_The Commander_Sgt. Stripes.png",
 "Alias_The Wimp_Mrs. Drab.png",
 "Alias_The Capitalist_Mrs. Money.png",
@@ -47,24 +47,25 @@
 "Motive_Revenge_Tit for Tat.png",
 "Motive_Jealousy_Credit Theft.png",
 "Motive_Secrets_Family Skeletons.png"]
-,"murder": [
+,"murder_cause": [
 "Murder_The Cause of Death_Knife Wound.png",
-"Murder_The Discovery_Public Murder.png",
 "Murder_The Cause of Death_Elaborate.png",
-"Murder_The Discovery_Preordained Murder.png",
-"Murder_The Discovery_On The Edge Of Death.png",
-"Murder_The Discovery_Proof Of Murder Only.png",
 "Murder_The Cause of Death_Apparent Suicide.png",
-"Murder_The Discovery_Individual Finds Body.png",
 "Murder_The Cause of Death_None Obvious.png",
 "Murder_The Cause of Death_Shot.png",
 "Murder_The Cause of Death_Dismemberment.png",
-"Murder_The Discovery_Group Finds Body.png",
 "Murder_The Cause of Death_Extreme Trauma.png",
 "Murder_The Cause of Death_Asphyxiation.png",
 "Murder_The Cause of Death_Blunt Force Trauma.png",
 "Murder_The Cause of Death_Assassinated.png"]
-,"object": [
+,"murder_discovery": [
+"Murder_The Discovery_Public Murder.png",
+"Murder_The Discovery_Preordained Murder.png",
+"Murder_The Discovery_On The Edge Of Death.png",
+"Murder_The Discovery_Proof Of Murder Only.png",
+"Murder_The Discovery_Individual Finds Body.png",
+"Murder_The Discovery_Group Finds Body.png"]
+,"objects": [
 "Object_d'Art_Ancient Egyptian Artifact.png",
 "Object_Tool_Microscope.png",
 "Object_Transportation_A Bike.png",
@@ -95,7 +96,7 @@
 "Object_Weapon_Candlestick.png",
 "Object_Document_Land Title Deed.png",
 "Object_Weapon_Revolver.png"]
-,"rels": [
+,"relationships": [
 "Relationship_Family_Cousins.png",
 "Relationship_Unequal_Elected Official & Civil Servant.png",
 "Relationship_Secret_Secret Lovers.png",
