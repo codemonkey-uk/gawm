@@ -61,10 +61,15 @@ function hand_tostr(hand,player_id,action)
 function render(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
-    html += "<div>Player: " + player_idx + ", Hand: </div>";
-    html += hand_tostr(player.hand,player_uid,"playdetail");
+    if (player_idx>0)
+        html += "<div>Player: " + player_idx + ", Hand: </div>";
+    else
+        html += "<div>The Victim.</div>";
+    if (player.hand)
+        html += hand_tostr(player.hand,player_uid,"playdetail");
     html += "<div>Details in play: </div>";
-    html += hand_tostr(player.play,player_uid,"nop");
+    if (player.play)
+        html += hand_tostr(player.play,player_uid,"nop");
     html += '</div>';
     return html;
 }
@@ -112,12 +117,18 @@ function render_game(result)
     
     html += "<div class='game'>";
     html += "<div>" + game_stage_str() + "</div>";
+    if (result.victim)
+    {
+        html += render(result.victim,0,0);
+    }
     var player_idx  = 1;
     for (var player in result.players)
         html += render(result.players[player],player,player_idx++);
     html += "</div>";
     
     document.getElementById('players').innerHTML = html;
+    if (game.act>0)
+        document.getElementById("add_player").style.visibility = "hidden";
 }
 
 function nop(gamestate,player_id,detail_type,detail_card)
@@ -208,7 +219,7 @@ function start()
 <body onload="start()">
 <div>
 <div id="debug"> </div><hr>
-<input type="button" onclick="add_player(game)" value="Add Player"/>
+<input id="add_player" type="button" onclick="add_player(game)" value="Add Player"/>
 <input type="button" onclick="next(game)" value="Next"/>
 <div id="players"> </div><hr>
 

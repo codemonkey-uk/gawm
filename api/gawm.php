@@ -21,10 +21,8 @@ function new_game()
     return $data;
 }
 
-function add_player(&$data)
+function draw_player_details(&$data, &$new_player)
 {
-    $new_player = array();   
-    
     $draws = array(
         "alias" => 2,
         "rels" => 3,
@@ -33,18 +31,31 @@ function add_player(&$data)
         "wildcards" => 3
     );
     
-    $new_player["hand"] = array();
-    $new_player["play"] = array();
-    
     foreach ($draws as $deck => $count) 
     {
-        $new_player["play"][$deck] = array();
-        $new_player["hand"][$deck] = array();
-        for ($i=0;$i!=$count;++$i)
+        if (!array_key_exists($deck,$new_player["play"]))
+        {
+            $new_player["play"][$deck] = array();
+        }
+        if (!array_key_exists($deck,$new_player["hand"]))
+        {
+            $new_player["hand"][$deck] = array();
+        }   
+        while (count($new_player["hand"][$deck])<$count)
         {
             array_push( $new_player["hand"][$deck], array_pop($data["cards"][$deck]) );
         }
     }
+}
+
+function add_player(&$data)
+{
+    $new_player = array();   
+    
+    $new_player["hand"] = array();
+    $new_player["play"] = array();
+    
+    draw_player_details($data, $new_player);
     
     // create unique id for the new player
     $player_id = uniqid();
@@ -63,17 +74,25 @@ function add_player(&$data)
 
 function is_detail_active(&$data, $detail_type)
 {
-    // Act (setup) players select their alias
-    if ($data["act"]==0)
+    // players should always be able to play their alias
+    // in practice this happens at two points: 
+    // - during set up, and during the extra scene
+    if ($detail_type=="alias")
     {
-        return $detail_type=="alias";
+        return true;
     }
+    
     // Motives cannot be played until after the murder, starting in Act II
     if ($data["act"]==1)
     {
         return $detail_type!="motives";
     }
-    return true;
+    else if ($data["act"]>1)
+    {
+        return true;
+    }
+    
+    return false;
 }
 
 function is_player_active(&$data, $player_id)
@@ -84,6 +103,13 @@ function is_player_active(&$data, $player_id)
         return true;
     }
     
+    // during the extra scene, the who was the victim is active
+    if (is_extrascene($data))
+    {
+        return $data["victim"]["player_id"]==$player_id;
+    }
+    
+    // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
     return $data["scene"]==$i;
 }
@@ -97,6 +123,9 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
     
+    if (count($player["hand"]["alias"])>0 && $detail_type!="alias")
+        throw new Exception('An alias must be played first if any are held.');
+        
     if (!is_detail_active($data, $detail_type))
         throw new Exception('Invalid Detail for Act');
         
@@ -112,7 +141,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     foreach($player["hand"] as $from)
         $c += count($from);
     $r = 4-$data["act"];
-    if ( $data["act"]>0 && $c <= 3*$r)
+    if ($data["act"]>0 && $c <= 3*$r)
         throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
     
     // move card from hand into play
@@ -163,6 +192,37 @@ function complete_setup(&$data)
     $data["scene"] = 0;
 }
 
+function is_extrascene(&$data)
+{
+    return $data["scene"] == count($data["players"]);
+}
+
+function setup_extrascene(&$data)
+{
+    // select victim
+    $player_id = array_rand($data["players"]);
+    $player = &$data["players"][$player_id];
+
+    // create victim object, and record which player it was
+    $data["victim"]=array();
+    $data["victim"]["player_id"]=$player_id;
+    
+    // move all played details from the player to the victim container
+    $data["victim"]["play"]=$player["play"];
+    $player["play"]=array();
+
+    // re-draw to replace other details played in Act I
+    draw_player_details($data,$player);
+    
+    // give the player who lost their alias, the whole alias deck to choose from
+    while (count($data["cards"]["alias"])>0)
+    {
+        array_push( $player["hand"]["alias"], array_pop($data["cards"]["alias"]) );
+    }
+    
+    // TODO: return their innocence/guilt tokens to the pile
+}
+
 function end_scene(&$data)
 {
     switch ($data["act"])
@@ -173,9 +233,9 @@ function end_scene(&$data)
         case 1:
             // TODO: check detail selected?
             $data["scene"]+=1;
-            if ($data["scene"] == count($data["players"]))
+            if (is_extrascene($data))
             {
-                // TODO: Extra Scene
+                setup_extrascene($data);
             }
             if ($data["scene"] == count($data["players"])+1)
             {
