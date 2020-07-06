@@ -233,9 +233,11 @@ function setup_firstbreak(&$data)
     $data["victim"]["hand"]=array();
     
     $detail="murder_cause";
-    array_push( $new_player["hand"][$detail], array_pop($data["cards"][$detail]) );
+    $data["victim"]["hand"][$detail]=array();
+    array_push( $data["victim"]["hand"][$detail], array_pop($data["cards"][$detail]) );
     $detail="murder_discovery";
-    array_push( $new_player["hand"][$detail], array_pop($data["cards"][$detail]) );    
+    $data["victim"]["hand"][$detail]=array();
+    array_push( $data["victim"]["hand"][$detail], array_pop($data["cards"][$detail]) );    
 }
 
 function end_scene(&$data)
