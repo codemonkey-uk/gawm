@@ -76,6 +76,18 @@ function is_detail_active(&$data, $detail_type)
     return true;
 }
 
+function is_player_active(&$data, $player_id)
+{
+    // all players are active in set up (act 0)
+    if ($data["act"]==0)
+    {
+        return true;
+    }
+    
+    $i = array_search($player_id, array_keys($data["players"]));
+    return $data["scene"]==$i;
+}
+
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
     if (!array_key_exists($player_id,$data["players"]))
@@ -87,10 +99,21 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     
     if (!is_detail_active($data, $detail_type))
         throw new Exception('Invalid Detail for Act');
+        
+    if (!is_player_active($data, $player_id))
+        throw new Exception('Invalid Player for Scene');
     
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held');
+    
+    // 4 acts, 3 detail cards held
+    $c = 0;
+    foreach($player["hand"] as $from)
+        $c += count($from);
+    $r = 4-$data["act"];
+    if ( $data["act"]>0 && $c <= 3*$r)
+        throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
     
     // move card from hand into play
     $deck_to = &$player["play"][$detail_type];
@@ -148,6 +171,7 @@ function end_scene(&$data)
             complete_setup($data);
             break;
         case 1:
+            // TODO: check detail selected?
             $data["scene"]+=1;
             if ($data["scene"] == count($data["players"]))
             {
