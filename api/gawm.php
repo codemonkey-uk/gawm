@@ -24,13 +24,16 @@ function new_game()
 function draw_player_details(&$data, &$new_player)
 {
     $draws = array(
-        "aliases" => 2,
         "relationships" => 3,
         "objects" => 3,
         "motives" => 3,       
         "wildcards" => 3
     );
-    
+    draw_player_cards($data, $new_player, $draws);
+}
+
+function draw_player_cards(&$data, &$new_player, $draws)
+{
     foreach ($draws as $deck => $count) 
     {
         if (!array_key_exists($deck,$new_player["play"]))
@@ -55,7 +58,11 @@ function add_player(&$data)
     $new_player["hand"] = array();
     $new_player["play"] = array();
     
-    draw_player_details($data, $new_player);
+    // draw aliases
+    draw_player_cards($data, $new_player, array("aliases" => 2) );
+    
+    // TODO: optional rule, draw details with alias during set up
+    // draw_player_details($data, $new_player);
     
     // create unique id for the new player
     $player_id = uniqid();
@@ -184,7 +191,14 @@ function complete_setup(&$data)
             throw new Exception('Alias detail missing from play.');
         }
     }
-
+    
+    // every player has 1 alias
+    foreach( $data["players"] as &$player )
+    {
+        // draw any other details needed for Act I
+        draw_player_details($data, $player);    
+    }
+    
     shuffle($data["tokens"]["innocence"]);
     shuffle($data["tokens"]["guilt"]);    
 
