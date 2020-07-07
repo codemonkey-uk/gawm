@@ -118,7 +118,16 @@ function is_player_active(&$data, $player_id)
     
     // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
-    return $data["scene"]==$i;
+    
+    if ($data["act"]==3)
+    {   
+        // in the 3rd act, 2 scenes per player
+        return ($data["scene"]%count($data["players"]))==$i;
+    }
+    else
+    {
+        return $data["scene"]==$i;
+    }
 }
 
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
@@ -141,7 +150,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
         throw new Exception('Invalid Detail for Act');
         
     if (!is_player_active($data, $player_id))
-        throw new Exception('Invalid Player for Scene');
+        throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
     
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
@@ -150,12 +159,17 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     // skip this for victim, not a real player
     if ($player_id!=0)
     {
+        // acts 1-3, but treat scenes past player count as in the next act
+        $act = $data["act"];
+        if ($data["scene"]>=count($data["players"]))
+            $act += 1;
+            
         // 4 acts, 3 detail cards held
         $c = 0;
         foreach($player["hand"] as $from)
             $c += count($from);
-        $r = 4-$data["act"];
-        if ($data["act"]>0 && $c <= 3*$r)
+        $r = 4-$act;
+        if ($act>0 && $c <= 3*$r)
             throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
     }
     
