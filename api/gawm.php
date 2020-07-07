@@ -36,10 +36,6 @@ function draw_player_cards(&$data, &$new_player, $draws)
 {
     foreach ($draws as $deck => $count) 
     {
-        if (!array_key_exists($deck,$new_player["play"]))
-        {
-            $new_player["play"][$deck] = array();
-        }
         if (!array_key_exists($deck,$new_player["hand"]))
         {
             $new_player["hand"][$deck] = array();
@@ -110,10 +106,14 @@ function is_player_active(&$data, $player_id)
         return true;
     }
     
-    // during the extra scene, the who was the victim is active
+    // during the extra scene, only the victim is active
     if (is_extrascene($data))
     {
         return $data["victim"]["player_id"]==$player_id;
+    }
+    if (is_firstbreak($data))
+    {
+        return $player_id==0;
     }
     
     // normally, players are active during their scene
@@ -123,10 +123,14 @@ function is_player_active(&$data, $player_id)
 
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
-    if (!array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id');
+    if ($player_id !=0 && !array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
 
-    $player = &$data["players"][$player_id];
+    if ($player_id==0)
+        $player = &$data["victim"];
+    else
+        $player = &$data["players"][$player_id];
+        
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
     
@@ -143,14 +147,24 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held');
     
-    // 4 acts, 3 detail cards held
-    $c = 0;
-    foreach($player["hand"] as $from)
-        $c += count($from);
-    $r = 4-$data["act"];
-    if ($data["act"]>0 && $c <= 3*$r)
-        throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
+    // skip this for victim, not a real player
+    if ($player_id!=0)
+    {
+        // 4 acts, 3 detail cards held
+        $c = 0;
+        foreach($player["hand"] as $from)
+            $c += count($from);
+        $r = 4-$data["act"];
+        if ($data["act"]>0 && $c <= 3*$r)
+            throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
+    }
     
+    // make sure deck type exists in play
+    if (!array_key_exists($detail_type,$player["play"]))
+    {
+        $player["play"][$detail_type] = array();
+    }
+        
     // move card from hand into play
     $deck_to = &$player["play"][$detail_type];
     array_push($deck_to, $detail_card);
@@ -163,6 +177,23 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     {
         unset( $deck_from[$key] );
         array_unshift($data["cards"][$detail_type],$id);
+    }
+    // tidy up the json, remove the empty deck type from the hand
+    unset($player["hand"][$detail_type]);
+    
+    // custom victim details step
+    if ($player_id==0)
+    {
+        // draw 2nd of remaining detail
+        $opposite = array(
+            "murder_cause" => "murder_discovery",
+            "murder_discovery" => "murder_cause"
+        );
+        $other = $opposite[$detail_type];
+        if (count($player["hand"][$other])==1)
+        {
+            draw_player_cards($data, $player, array($other => 2) );
+        }
     }
 }
 
@@ -224,11 +255,12 @@ function setup_extrascene(&$data)
     // move all played details from the player to the victim container
     $data["victim"]["play"]=$player["play"];
     $player["play"]=array();
-
+    
     // re-draw to replace other details played in Act I
     draw_player_details($data,$player);
     
     // give the player who lost their alias, the whole alias deck to choose from
+    $player["hand"]["aliases"]=array();
     while (count($data["cards"]["aliases"])>0)
     {
         array_push( $player["hand"]["aliases"], array_pop($data["cards"]["aliases"]) );
