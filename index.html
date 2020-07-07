@@ -129,6 +129,8 @@ function render_game(result)
     document.getElementById('players').innerHTML = html;
     if (game.act>0)
         document.getElementById("add_player").style.visibility = "hidden";
+    else
+        document.getElementById("add_player").style.visibility = "visible";
 }
 
 function nop(gamestate,player_id,detail_type,detail_card)
@@ -143,7 +145,7 @@ function playdetail(gamestate,player_id,detail_type,detail_card)
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
-            document.getElementById('debug').innerHTML = this.responseText;
+            document.getElementById('debug').value = this.responseText;
             
             render_game(result);
         }
@@ -167,7 +169,7 @@ function add_player(gamestate)
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').innerHTML = this.responseText;
+            document.getElementById('debug').value  = this.responseText;
             var result = JSON.parse(this.responseText);
             render_game(result);
         }
@@ -182,7 +184,7 @@ function next(gamestate)
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').innerHTML = this.responseText;
+            document.getElementById('debug').value  = this.responseText;
             var result = JSON.parse(this.responseText);
             render_game(result);
         }
@@ -197,7 +199,7 @@ function new_game()
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').innerHTML = this.responseText;
+            document.getElementById('debug').value = this.responseText;
             var result = JSON.parse(this.responseText);
             render_game(result);
         }
@@ -205,6 +207,12 @@ function new_game()
 
     xmlhttp.open("GET", "api/new.php", true);
     xmlhttp.send();
+}
+
+function reset() 
+{
+    var result = JSON.parse(document.getElementById('debug').value );
+    render_game(result);
 }
 
 function start()
@@ -218,7 +226,7 @@ function start()
 
 <body onload="start()">
 <div>
-<div id="debug"> </div><hr>
+<textarea id="debug" name="text"></textarea><input type="button" onclick="reset()" value="Reset"/>
 <input id="add_player" type="button" onclick="add_player(game)" value="Add Player"/>
 <input type="button" onclick="next(game)" value="Next"/>
 <div id="players"> </div><hr>
