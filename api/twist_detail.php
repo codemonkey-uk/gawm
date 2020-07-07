@@ -9,12 +9,12 @@ $encoded = $json;
 $data = json_decode($json, true);
 
 // TODO get these from GET
-$player_id = $data["play_detail"]["player_id"];
-$detail_type = $data["play_detail"]["detail_type"];
-$detail_card = $data["play_detail"]["detail_card"];
+$player_id = $data["twist_detail"]["player_id"];
+$detail_type = $data["twist_detail"]["detail_type"];
+$detail_card = $data["twist_detail"]["detail_card"];
 
 try {
-    play_detail($data, $player_id, $detail_type, $detail_card);
+    twist_detail($data, $player_id, $detail_type, $detail_card);
 } catch (Exception $e) {
     http_response_code(400);
     echo 'Caught exception: ',  $e->getMessage(), "\n";

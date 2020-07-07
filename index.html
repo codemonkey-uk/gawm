@@ -58,6 +58,12 @@ function hand_tostr(hand,player_id,action)
     return html;
 }
 
+function is_twist()
+{
+    var c = Object.keys(game.players).length;
+    return (game.act==2 && game.scene==c);
+}
+
 function render(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
@@ -65,8 +71,10 @@ function render(player,player_uid,player_idx)
         html += "<div>Player: " + player_idx + ", Hand: </div>";
     else
         html += "<div>The Victim.</div>";
-    if (player.hand)
-        html += hand_tostr(player.hand,player_uid,"playdetail");
+    
+    var detail_action = is_twist() ? "twistdetail" : "playdetail";
+    if (player.hand && Object.keys(player.hand).length>0)
+        html += hand_tostr(player.hand,player_uid,detail_action);
     html += "<div>Details in play: </div>";
     if (player.play)
         html += hand_tostr(player.play,player_uid,"nop");
@@ -87,7 +95,7 @@ function game_stage_str()
     if (game.act==1 && game.scene==c+1)
         return "First Break: The Murder";
 
-    if (game.act==2 && game.scene==c)
+    if (is_twist())
         return "Second Break: The Twist";
     
     if (game.act==3)
@@ -139,6 +147,16 @@ function nop(gamestate,player_id,detail_type,detail_card)
 
 function playdetail(gamestate,player_id,detail_type,detail_card)
 {
+    detailaction(gamestate,player_id,detail_type,detail_card,"play_detail");
+}
+
+function twistdetail(gamestate,player_id,detail_type,detail_card)
+{
+    detailaction(gamestate,player_id,detail_type,detail_card,"twist_detail");
+}
+
+function detailaction(gamestate,player_id,detail_type,detail_card,action)
+{
     console.log("playdetail called:",player_id,detail_type,detail_card);
     
     var xmlhttp = new XMLHttpRequest();
@@ -155,12 +173,12 @@ function playdetail(gamestate,player_id,detail_type,detail_card)
     //$player_id = $data["play_detail"]["player_id"];
     //$detail_type = $data["play_detail"]["detail_type"];
     //$detail_card = $data["play_detail"]["detail_card"];
-    gamestate["play_detail"] = {};
-    gamestate["play_detail"].player_id=player_id;
-    gamestate["play_detail"].detail_type=detail_type;
-    gamestate["play_detail"].detail_card=detail_card;
+    gamestate[action] = {};
+    gamestate[action].player_id=player_id;
+    gamestate[action].detail_type=detail_type;
+    gamestate[action].detail_card=detail_card;
     
-    xmlhttp.open("POST", "api/play_detail.php", true);
+    xmlhttp.open("POST", "api/"+action+".php", true);
     xmlhttp.send( JSON.stringify(gamestate) );
 }
 

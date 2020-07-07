@@ -197,6 +197,37 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     }
 }
 
+function twist_detail(&$data, $player_id, $detail_type, $detail_card)
+{
+    if (!is_twist($data))
+        throw new Exception('Invalid Twist');
+        
+    if (!array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+
+    $player = &$data["players"][$player_id];
+        
+    if (!array_key_exists($detail_type, $player["hand"]))
+        throw new Exception('Invalid Detail Type');
+    
+    $deck_from = &$player["hand"][$detail_type];
+    if (!in_array($detail_card,$deck_from))
+        throw new Exception('Detail Not Held');
+    
+    // make sure deck type exists in twist
+    if (!array_key_exists($detail_type,$player["twist"]))
+    {
+        $player["twist"][$detail_type] = array();
+    }
+        
+    // move card from hand into twist
+    $deck_to = &$player["twist"][$detail_type];
+    array_push($deck_to, $detail_card);
+    
+    $key = array_search($detail_card, $deck_from);
+    unset( $deck_from[$key] );
+}
+
 function complete_setup(&$data)
 {
     // at least 4 players
@@ -239,7 +270,17 @@ function complete_setup(&$data)
 
 function is_extrascene(&$data)
 {
-    return $data["scene"] == count($data["players"]);
+    return $data["act"]==1 && $data["scene"] == count($data["players"]);
+}
+
+function is_firstbreak(&$data)
+{
+    return $data["act"]==1 && $data["scene"] == count($data["players"])+1;
+}
+
+function is_twist(&$data)
+{
+    return $data["act"]==2 && $data["scene"] == count($data["players"]);
 }
 
 function setup_extrascene(&$data)
@@ -269,11 +310,6 @@ function setup_extrascene(&$data)
     // TODO: return their innocence/guilt tokens to the pile
 }
 
-function is_firstbreak(&$data)
-{
-    return $data["scene"] == count($data["players"])+1;
-}
-
 function setup_firstbreak(&$data)
 {
     $data["victim"]["hand"]=array();
@@ -284,6 +320,44 @@ function setup_firstbreak(&$data)
     $detail="murder_discovery";
     $data["victim"]["hand"][$detail]=array();
     array_push( $data["victim"]["hand"][$detail], array_pop($data["cards"][$detail]) );    
+}
+
+function setup_twist(&$data)
+{
+    // give every player has a twist "hand" to discard into
+    foreach( $data["players"] as &$player )
+    {
+        // draw any other details needed for Act I
+        $player["twist"]=array();
+    }
+}
+
+function complete_twist(&$data)
+{
+    // for each player, 
+    foreach( $data["players"] as &$player )
+    {
+        // draw details to replace discards
+        $draws = array();
+        foreach( $player["twist"] as $detail_type => $deck_from )
+        {
+            // count draws needed after discarding
+            $draws[$detail_type] = count($deck_from) + count($player["hand"][$detail_type]);
+            
+            // put unused details back in the pack
+            foreach($deck_from as $key => $id)
+            {
+                unset( $deck_from[$key] );
+                array_unshift($data["cards"][$detail_type],$id);
+            }
+        }
+        
+        // draw backup
+        draw_player_cards($data, $player, $draws);
+        
+        // clear out processed twist json
+        unset($player["twist"]);
+    }
 }
 
 function end_scene(&$data)
@@ -313,12 +387,14 @@ function end_scene(&$data)
             break;
         case 2:
             $data["scene"]+=1;
-            if ($data["scene"] == count($data["players"]))
+            if (is_twist($data))
             {
-                // TODO: Second Break
+                setup_twist($data);
             }
             if ($data["scene"] == count($data["players"])+1)
             {
+                complete_twist($data);
+                
                 // Move to Act III
                 $data["act"]+=1;
                 $data["scene"]=0;
