@@ -143,7 +143,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type');
     
-    if (count($player["hand"]["aliases"])>0 && $detail_type!="aliases")
+    if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
         
     if (!is_detail_active($data, $detail_type))
@@ -204,7 +204,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
             "murder_discovery" => "murder_cause"
         );
         $other = $opposite[$detail_type];
-        if (count($player["hand"][$other])==1)
+        if (isset($player["hand"][$other]))
         {
             draw_player_cards($data, $player, array($other => 2) );
         }
@@ -255,7 +255,7 @@ function complete_setup(&$data)
     foreach( $data["players"] as $player )
     {
         // 0 alias in hand
-        if (count($player["hand"]["aliases"])!=0)
+        if (isset($player["hand"]["aliases"]))
         {
             http_response_code(400);
             throw new Exception('Alias detail still in hand.');
