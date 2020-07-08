@@ -46,8 +46,9 @@ function hand_tostr(hand,player_id,action)
         for (var card in hand[deck])
         {
             var i = hand[deck][card];
-            var url = "assets/"+deck+"/"+encodeURI(cards[deck][i]);
-            var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;'>";
+            var url = 'assets/'+cards[deck][i]['img'];
+            var alt = cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
+            var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
             var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
             html += "<div class='card' onclick='" +click+ "'>";
             html += img;
