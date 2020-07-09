@@ -1,20 +1,24 @@
 <?php
 require 'gawm.php';
+require 'db.php';
 
 // Takes raw data from the request
 $json = file_get_contents('php://input');
-$encoded = $json;
 
 // Converts it into a PHP object
-$data = json_decode($json, true);
+$request = json_decode($json, true);
 
-// TODO get these from GET
-$player_id = $data["play_detail"]["player_id"];
-$detail_type = $data["play_detail"]["detail_type"];
-$detail_card = $data["play_detail"]["detail_card"];
+$game_id = $request["game_id"];
+$player_id = $request["player_id"];
+$detail_type = $request["detail_type"];
+$detail_card = $request["detail_card"];
+
+$data = null;
+$link = load_for_edit($game_id, $data);
 
 try {
     play_detail($data, $player_id, $detail_type, $detail_card);
+    complete_edit($link, $game_id, $data);
 } catch (Exception $e) {
     http_response_code(400);
     echo 'Caught exception: ',  $e->getMessage(), "\n";

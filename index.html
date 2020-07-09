@@ -171,17 +171,15 @@ function detailaction(gamestate,player_id,detail_type,detail_card,action)
         }
     };
     
-    // TODO get these from GET
-    //$player_id = $data["play_detail"]["player_id"];
-    //$detail_type = $data["play_detail"]["detail_type"];
-    //$detail_card = $data["play_detail"]["detail_card"];
-    gamestate[action] = {};
-    gamestate[action].player_id=player_id;
-    gamestate[action].detail_type=detail_type;
-    gamestate[action].detail_card=detail_card;
+    // build request json
+    var request = {};
+    request.game_id = game_id;
+    request.player_id=player_id;
+    request.detail_type=detail_type;
+    request.detail_card=detail_card;
     
     xmlhttp.open("POST", "api/"+action+".php", true);
-    xmlhttp.send( JSON.stringify(gamestate) );
+    xmlhttp.send( JSON.stringify(request) );
 }
 
 function add_player(gamestate)

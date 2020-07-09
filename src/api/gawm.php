@@ -141,7 +141,7 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
         $player = &$data["players"][$player_id];
         
     if (!array_key_exists($detail_type, $player["hand"]))
-        throw new Exception('Invalid Detail Type');
+        throw new Exception('Invalid Detail Type: '.$detail_type);
     
     if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
