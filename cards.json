@@ -830,37 +830,37 @@
             "name": "Public Murder",
             "subtype": "The Discovery",
             "desc": "The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. (The poison was placed in advance, a power-cut takes out the lights etc.)",
-            "img": "murder_descovery/Murder_The%20Discovery_Public%20Murder.png"
+            "img": "murder_discovery/Murder_The%20Discovery_Public%20Murder.png"
         },
         {
             "name": "Group Finds Body",
             "subtype": "The Discovery",
             "desc": "The victim dies between scenes and the body is found by the group (or most of it.) Which individual reactions stand out from the group? Panic? Morbid Curiosity? Is there a doctor in the house?",
-            "img": "murder_descovery/Murder_The%20Discovery_Group%20Finds%20Body.png"
+            "img": "murder_discovery/Murder_The%20Discovery_Group%20Finds%20Body.png"
         },
         {
             "name": "Individual Finds Body",
             "subtype": "The Discovery",
             "desc": "The body is found by one person alone. Decide at random. They may choose to fetch others after they find the body.",
-            "img": "murder_descovery/Murder_The%20Discovery_Individual%20Finds%20Body.png"
+            "img": "murder_discovery/Murder_The%20Discovery_Individual%20Finds%20Body.png"
         },
         {
             "name": "Proof Of Murder Only",
             "subtype": "The Discovery",
             "desc": "News/proof of the murder is delivered without the group seeing the body. (Video evidence, a body part in a box. etc.)",
-            "img": "murder_descovery/Murder_The%20Discovery_Proof%20Of%20Murder%20Only.png"
+            "img": "murder_discovery/Murder_The%20Discovery_Proof%20Of%20Murder%20Only.png"
         },
         {
             "name": "On The Edge Of Death",
             "subtype": "The Discovery",
             "desc": "The victim is found on the edge of death. If only they had the time and strength to implicate their killer...",
-            "img": "murder_descovery/Murder_The%20Discovery_On%20The%20Edge%20Of%20Death.png"
+            "img": "murder_discovery/Murder_The%20Discovery_On%20The%20Edge%20Of%20Death.png"
         },
         {
             "name": "Preordained Murder",
             "subtype": "The Discovery",
             "desc": "The murder is telegraphed in advance of the act. (Victim says that someone is after them. A note reading 'One will die...' etc.)",
-            "img": "murder_descovery/Murder_The%20Discovery_Preordained%20Murder.png"
+            "img": "murder_discovery/Murder_The%20Discovery_Preordained%20Murder.png"
         }
     ],
     "murder_cause": [
