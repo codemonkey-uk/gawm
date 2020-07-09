@@ -2,11 +2,8 @@
 
 function new_game()
 {
-    // Get the contents of the components file 
-    $json = file_get_contents("components.json");
-
-    // convert to array 
-    $data = json_decode($json, true);
+    // get component list
+    $data = build_components();
 
     // shuffle the cards
     foreach ($data["cards"] as &$deck) {
@@ -19,6 +16,27 @@ function new_game()
     $data["scene"] = 0;
     
     return $data;
+}
+
+function build_components()
+{
+    $json = file_get_contents("../cards.json");
+    $cards = json_decode($json)
+
+    // TODO: Set up tokens
+    $components = [
+        "tokens" => [
+            "guilt" => [],
+            "innocence" => []
+        ]
+    ];
+
+    // For each deck we have, create a list of card IDs
+    foreach($cards as $deckname => $deck) {
+        $components['cards'][$deckname] = range(0, count($deck)-1);
+    }
+
+    return $components;
 }
 
 function draw_player_details(&$data, &$new_player)
