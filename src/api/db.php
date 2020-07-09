@@ -25,3 +25,48 @@ function save_new_game($game)
     
     return $game_id;
 }
+
+function load_for_edit($game_id, &$data)
+{
+    $link = db_connect();
+    $query = "SELECT `data` FROM `games` WHERE `uid` = ? FOR UPDATE;";
+
+    $stmt = mysqli_stmt_init($link);
+    if (mysqli_stmt_prepare($stmt, $query))
+    {
+        mysqli_stmt_bind_param($stmt, "s", $game_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_array($result, MYSQLI_NUM);
+        
+        // should only be one  
+        if (isset($row))
+        {
+            foreach ($row as $r)
+            {
+                $data = json_decode($r,true);
+            }
+        }
+    }
+    else
+    {
+        $game_out["error"]=$query;
+    }
+    
+    return $link;
+}
+
+function complete_edit($link, $game_id, $data)
+{
+    $query = "UPDATE `games` SET `data` = ? WHERE `uid` = ? ";
+    $stmt = mysqli_stmt_init($link);
+    if (mysqli_stmt_prepare($stmt, $query))
+    {
+        $data_encoded = json_encode($data);
+        mysqli_stmt_bind_param($stmt, "si", $data_encoded, $game_id);
+        mysqli_stmt_execute($stmt);
+    }
+    mysqli_close($link);
+}
+
+?>

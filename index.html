@@ -23,6 +23,7 @@
 
 var cards = null;
 var game = null;
+var game_id = 0;
 
 function load_cards()
 {
@@ -195,7 +196,10 @@ function add_player(gamestate)
     };
 
     xmlhttp.open("POST", "api/add_player.php", true);
-    xmlhttp.send( JSON.stringify(gamestate) );
+    
+    var request = {};
+    request.game_id = game_id;
+    xmlhttp.send( JSON.stringify(request) );
 }
 
 function next(gamestate)
@@ -222,6 +226,7 @@ function new_game()
             var result = JSON.parse(this.responseText);
             render_game(result.game);
             console.log("Game Id:" + result.game_id);
+            game_id = result.game_id;
         }
     };
 
