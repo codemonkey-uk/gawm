@@ -3,7 +3,7 @@
         {
             "name": "The Visitor",
             "subtype": "Monsieur / Madame Affaire",
-            "desc": "You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get whatâ€™s going on, but itâ€™s all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.",
+            "desc": "You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what’s going on, but it’s all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.",
             "img": "aliases/Alias_The%20Visitor_Monsieur%20%20Madame%20Affaire.png"
         },
         {
@@ -45,13 +45,13 @@
         {
             "name": "The Rebel",
             "subtype": "Mr/s. X",
-            "desc": "You are young and hedonistic. You dress and speak loudly. You make dangerous decisions and want to rock the boat just to see what will happen. You don't care about nobody, because nobody cares about you. You probably play an instrument and donâ€™t have a fixed job.",
+            "desc": "You are young and hedonistic. You dress and speak loudly. You make dangerous decisions and want to rock the boat just to see what will happen. You don't care about nobody, because nobody cares about you. You probably play an instrument and don’t have a fixed job.",
             "img": "aliases/Alias_The%20Rebel_Mrs.%20X.png"
         },
         {
             "name": "The Healer",
             "subtype": "Doctor / Nurse Nightingale",
-            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged, and could be attractive. You may have started out working in the public domain, or your bedside manner means youâ€™ve been offered work looking after wealthy individuals privately.",
+            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged, and could be attractive. You may have started out working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals privately.",
             "img": "aliases/Alias_The%20Healer_Doctor%20%20Nurse%20Nightingale.png"
         },
         {
@@ -825,7 +825,7 @@
             "img": "motives/Motive_Rationalised_To%20Prove%20You%20Could.png"
         }
     ],
-    "murder_descovery": [
+    "murder_discovery": [
         {
             "name": "Public Murder",
             "subtype": "The Discovery",
