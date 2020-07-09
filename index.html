@@ -211,8 +211,12 @@ function next(gamestate)
         }
     };
 
+    // build request json
+    var request = {};
+    request.game_id = game_id;
+    
     xmlhttp.open("POST", "api/next.php", true);
-    xmlhttp.send( JSON.stringify(gamestate) );
+    xmlhttp.send( JSON.stringify(request) );
 }
 
 function new_game()
