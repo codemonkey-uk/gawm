@@ -21,9 +21,8 @@ function new_game()
 function build_components()
 {
     $json = file_get_contents("../cards.json");
-    $cards = json_decode($json)
+    $cards = json_decode($json);
 
-    // TODO: Set up tokens
     $components = [
         "tokens" => [
             "guilt" => [],
