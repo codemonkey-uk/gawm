@@ -1,26 +1,8 @@
 <?php
 
-function new_game()
-{
-    // get component list
-    $data = build_components();
-
-    // shuffle the cards
-    foreach ($data["cards"] as &$deck) {
-        shuffle($deck);
-    }
-
-    // add players & add state
-    $data["players"] = array();
-    $data["act"] = 0;
-    $data["scene"] = 0;
-    
-    return $data;
-}
-
 function build_components()
 {
-    $json = file_get_contents("../cards.json");
+    $json = file_get_contents("cards.json");
     $cards = json_decode($json);
 
     $components = [
@@ -62,59 +44,6 @@ function draw_player_cards(&$data, &$new_player, $draws)
             array_push( $new_player["hand"][$deck], array_pop($data["cards"][$deck]) );
         }
     }
-}
-
-function add_player(&$data, $player_name)
-{
-    $new_player = array();
-    
-    // only add players, up to 6, in act 0 (setup)
-    if ($data["act"] > 0) {
-        throw new Exception('Trying to add players outside setup step.');
-    }
-    if (count($data["players"] ) > 6)
-    {
-        throw new Exception('Trying to add a 7th player.');
-    }
-
-    // Minimal input filtering on player name
-    $player_name = trim($player_name);
-    if ($player_name == '')
-    {
-        throw new Exception('No player name supplied');
-    }
-    $player_name = htmlentities($player_name);
-    $player_name = substr($player_name, 0, 40);
-    
-    $new_player = [
-        'name' => $player_name,
-        'hand' => [],
-        'play' => [],
-        'tokens' => [
-            'guilt' => [],
-            'innocence' => []
-        ]
-    ];
-    
-    // draw aliases
-    draw_player_cards($data, $new_player, array("aliases" => 2) );
-    
-    // TODO: optional rule, draw details with alias during set up
-    // draw_player_details($data, $new_player);
-    
-    // create unique id for the new player
-    $player_id = uniqid();
-    while (array_key_exists($player_id,$data["players"]))
-        $player_id = uniqid();
-        
-    $data["players"][$player_id] = $new_player;
-    
-    // each player put four guilt tokens and four innocence tokens, 
-    // numbered “0” to “3”, in a central pile
-    $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], range(0,3));
-    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));  
-    
-    return $player_id;
 }
 
 function is_detail_active(&$data, $detail_type)
@@ -175,12 +104,12 @@ function is_player_active(&$data, $player_id)
 function player_has_details_left_to_play(&$data, $player_id)
 {
     $player = &$data["players"][$player_id];
-    
+
     // acts 1-3, but treat scenes past player count as in the next act
     $act = $data["act"];
     if ($data["scene"]>=count($data["players"]))
         $act += 1;
-        
+
     // 4 acts, 3 detail cards held
     $c = 0;
     foreach($player["hand"] as $from)
@@ -188,125 +117,8 @@ function player_has_details_left_to_play(&$data, $player_id)
     $r = 4-$act;
     if ($act>0 && $c <= 3*$r)
         return false;
-        
+
     return true;
-}
-
-function play_detail(&$data, $player_id, $detail_type, $detail_card)
-{
-    if ($player_id !=0 && !array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
-    if ($player_id==0)
-        $player = &$data["victim"];
-    else
-        $player = &$data["players"][$player_id];
-        
-    if (!array_key_exists($detail_type, $player["hand"]))
-        throw new Exception('Invalid Detail Type: '.$detail_type);
-    
-    if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
-        throw new Exception('An alias must be played first if any are held.');
-        
-    if (!is_detail_active($data, $detail_type))
-        throw new Exception('Invalid Detail for Act');
-        
-    if (!is_player_active($data, $player_id))
-        throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
-    
-    $deck_from = &$player["hand"][$detail_type];
-    if (!in_array($detail_card,$deck_from))
-        throw new Exception('Detail Not Held');
-    
-    // skip this for victim, not a real player
-    if ($player_id!=0)
-    {
-        if (!player_has_details_left_to_play($data, $player_id))
-            throw new Exception('Insufficent Details for Remaining Acts: ');
-    }
-    
-    // make sure deck type exists in play
-    if (!array_key_exists($detail_type,$player["play"]))
-    {
-        $player["play"][$detail_type] = array();
-    }
-        
-    // move card from hand into play
-    $deck_to = &$player["play"][$detail_type];
-    array_push($deck_to, $detail_card);
-    
-    $key = array_search($detail_card, $deck_from);
-    unset( $deck_from[$key] );
-
-    // put unused details back in the deck
-    foreach($deck_from as $key => $id)
-    {
-        unset( $deck_from[$key] );
-        array_unshift($data["cards"][$detail_type],$id);
-    }
-    // tidy up the json, remove the empty deck type from the hand
-    unset($player["hand"][$detail_type]);
-    
-    // custom victim details step
-    if ($player_id==0)
-    {
-        // draw 2nd of remaining detail
-        $opposite = array(
-            "murder_cause" => "murder_discovery",
-            "murder_discovery" => "murder_cause"
-        );
-        $other = $opposite[$detail_type];
-        if (isset($player["hand"][$other]))
-        {
-            draw_player_cards($data, $player, array($other => 2) );
-        }
-    }
-}
-
-function twist_detail(&$data, $player_id, $detail_type, $detail_card)
-{
-    if (!is_twist($data))
-        throw new Exception('Invalid Twist');
-        
-    if (!array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
-    $player = &$data["players"][$player_id];
-        
-    if (!array_key_exists($detail_type, $player["hand"]))
-        throw new Exception('Invalid Detail Type');
-    
-    $deck_from = &$player["hand"][$detail_type];
-    if (!in_array($detail_card,$deck_from))
-        throw new Exception('Detail Not Held');
-    
-    // make sure deck type exists in twist
-    if (!array_key_exists($detail_type,$player["twist"]))
-    {
-        $player["twist"][$detail_type] = array();
-    }
-        
-    // move card from hand into twist
-    $deck_to = &$player["twist"][$detail_type];
-    array_push($deck_to, $detail_card);
-    
-    $key = array_search($detail_card, $deck_from);
-    unset( $deck_from[$key] );
-}
-
-function record_vote(&$data, $player_id, $vote_value)
-{
-    if (is_twist($data))
-        throw new Exception('Invalid Scene for Votes');
-        
-    if (!array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
-    if ($vote_value!=1 && $vote_value!=2)
-        throw new Exception('Invalid Vote Value: '.$vote_value);
-        
-    $player = &$data["players"][$player_id];
-    $player["vote"]=$vote_value;
 }
 
 function tally_votes(&$data)
@@ -374,7 +186,6 @@ function is_twist(&$data)
 {
     return $data["act"]==2 && $data["scene"] == count($data["players"]);
 }
-
 
 function setup_extrascene(&$data)
 {
@@ -452,81 +263,6 @@ function complete_twist(&$data)
         unset($player["twist"]);
     }
 }
-
-function end_scene(&$data)
-{
-    $player_ids = array_keys($data["players"]);
-    $player_count = count($data["players"]);
-
-    switch ($data["act"])
-    {
-        case 0:
-            complete_setup($data);
-            break;
-        case 1:
-            
-            if ($data["scene"] < $player_count)
-            {
-                $player_id = $player_ids[$data["scene"]];
-                if (player_has_details_left_to_play($data, $player_id))
-                {
-                    throw new Exception('Player '.$player_id.' has Details still to Play.');
-                }
-            }
-            
-            $data["scene"]+=1;
-            if (is_extrascene($data))
-            {
-                setup_extrascene($data);
-            }
-            if (is_firstbreak($data))
-            {
-                setup_firstbreak($data);
-            }
-            if ($data["scene"] > $player_count+1)
-            {
-                // Move to Act II
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;
-        case 2:
-            $data["scene"]+=1;
-            if (is_twist($data))
-            {
-                setup_twist($data);
-            }
-            if ($data["scene"] == count($data["players"])+1)
-            {
-                complete_twist($data);
-                
-                // Move to Act III
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;    
-        case 3:
-            $data["scene"]+=1;
-            if ($data["scene"] == 2*count($data["players"]))
-            {
-                // TODO: Last Break
-            }
-            if ($data["scene"] == 2*count($data["players"])+1)
-            {
-                // Move to Epilogue
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break; 
-        case 4:
-            if ($data["scene"]+1<count($data["players"]))
-            {
-                $data["scene"]+=1;
-            }
-            break;
-    }
-}
-
 
 function find_most_innocent_player(&$data)
 {
