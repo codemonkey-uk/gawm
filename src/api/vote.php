@@ -11,7 +11,7 @@ $request = json_decode($json, true);
 $game_id = $request["game_id"];
 $player_id = $request["player_id"];
 // $detail_type = $request["detail_type"];
-$vote_value = $request["detail_card"];
+$vote_value = intval($request["detail_card"]);
 
 $data = null;
 $link = load_for_edit($game_id, $data);

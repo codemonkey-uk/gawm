@@ -75,7 +75,7 @@ function is_twist()
 
 function votediv_html(player_id,value,action)
 {
-    var value_str = value ? "guilt" : "innocence";
+    var value_str = (value == 1) ? "guilt" : "innocence";
     var html ="";
     var url = 'assets/'+value_str+'.png';
     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+value_str+"\">";
@@ -129,8 +129,8 @@ function render_player(player,player_uid,player_idx)
                 {
                     var str = "";
                     if (typeof player.vote == "undefined" || player.vote == 1)
-                        str += votebutton_html(player_uid,0);
-                    if (typeof player.vote == "undefined" || player.vote == 0)
+                        str += votebutton_html(player_uid,2);
+                    if (typeof player.vote == "undefined" || player.vote == 2)
                         str += votebutton_html(player_uid,1);
                     return str;
                 }
@@ -202,7 +202,7 @@ function render_game(result)
     html += "<div>" + game_stage_str() + "</div>";
     if (result.victim)
     {
-        html += render(result.victim,0,0);
+        html += render_player(result.victim,0,0);
     }
     var player_idx  = 1;
     for (var player in result.players)

@@ -172,6 +172,26 @@ function is_player_active(&$data, $player_id)
     }
 }
 
+function player_has_details_left_to_play(&$data, $player_id)
+{
+    $player = &$data["players"][$player_id];
+    
+    // acts 1-3, but treat scenes past player count as in the next act
+    $act = $data["act"];
+    if ($data["scene"]>=count($data["players"]))
+        $act += 1;
+        
+    // 4 acts, 3 detail cards held
+    $c = 0;
+    foreach($player["hand"] as $from)
+        $c += count($from);
+    $r = 4-$act;
+    if ($act>0 && $c <= 3*$r)
+        return false;
+        
+    return true;
+}
+
 function play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
     if ($player_id !=0 && !array_key_exists($player_id,$data["players"]))
@@ -201,18 +221,8 @@ function play_detail(&$data, $player_id, $detail_type, $detail_card)
     // skip this for victim, not a real player
     if ($player_id!=0)
     {
-        // acts 1-3, but treat scenes past player count as in the next act
-        $act = $data["act"];
-        if ($data["scene"]>=count($data["players"]))
-            $act += 1;
-            
-        // 4 acts, 3 detail cards held
-        $c = 0;
-        foreach($player["hand"] as $from)
-            $c += count($from);
-        $r = 4-$act;
-        if ($act>0 && $c <= 3*$r)
-            throw new Exception('Insufficent Details ('.$c.') for Remaining Acts: '.$r);
+        if (!player_has_details_left_to_play($data, $player_id))
+            throw new Exception('Insufficent Details for Remaining Acts: ');
     }
     
     // make sure deck type exists in play
@@ -292,8 +302,22 @@ function record_vote(&$data, $player_id, $vote_value)
     if (!array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
 
+    if ($vote_value!=1 && $vote_value!=2)
+        throw new Exception('Invalid Vote Value: '.$vote_value);
+        
     $player = &$data["players"][$player_id];
     $player["vote"]=$vote_value;
+}
+
+function tally_votes(&$data)
+{
+    $result = [];
+    foreach( $data["players"] as $player )
+    {
+        if (array_key_exists("vote",$player))
+            $result[$player["vote"]]++;
+    }
+    return result;
 }
 
 function complete_setup(&$data)
@@ -350,6 +374,7 @@ function is_twist(&$data)
 {
     return $data["act"]==2 && $data["scene"] == count($data["players"]);
 }
+
 
 function setup_extrascene(&$data)
 {
@@ -430,13 +455,25 @@ function complete_twist(&$data)
 
 function end_scene(&$data)
 {
+    $player_ids = array_keys($data["players"]);
+    $player_count = count($data["players"]);
+
     switch ($data["act"])
     {
         case 0:
             complete_setup($data);
             break;
         case 1:
-            // TODO: check detail selected?
+            
+            if ($data["scene"] < $player_count)
+            {
+                $player_id = $player_ids[$data["scene"]];
+                if (player_has_details_left_to_play($data, $player_id))
+                {
+                    throw new Exception('Player '.$player_id.' has Details still to Play.');
+                }
+            }
+            
             $data["scene"]+=1;
             if (is_extrascene($data))
             {
@@ -446,7 +483,7 @@ function end_scene(&$data)
             {
                 setup_firstbreak($data);
             }
-            if ($data["scene"] > count($data["players"])+1)
+            if ($data["scene"] > $player_count+1)
             {
                 // Move to Act II
                 $data["act"]+=1;
