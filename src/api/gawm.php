@@ -64,12 +64,37 @@ function draw_player_cards(&$data, &$new_player, $draws)
     }
 }
 
-function add_player(&$data)
+function add_player(&$data, $player_name)
 {
-    $new_player = array();   
+    $new_player = array();
     
-    $new_player["hand"] = array();
-    $new_player["play"] = array();
+    // only add players, up to 6, in act 0 (setup)
+    if ($data["act"] > 0) {
+        throw new Exception('Trying to add players outside setup step.');
+    }
+    if (count($data["players"] ) > 6)
+    {
+        throw new Exception('Trying to add a 7th player.');
+    }
+
+    // Minimal input filtering on player name
+    $player_name = trim($player_name);
+    if ($player_name == '')
+    {
+        throw new Exception('No player name supplied');
+    }
+    $player_name = htmlentities($player_name);
+    $player_name = substr($player_name, 0, 40);
+    
+    $new_player = [
+        'name' => $player_name,
+        'hand' => [],
+        'play' => [],
+        'tokens' => [
+            'guilt' => [],
+            'innocence' => []
+        ]
+    ];
     
     // draw aliases
     draw_player_cards($data, $new_player, array("aliases" => 2) );

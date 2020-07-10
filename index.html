@@ -70,7 +70,7 @@ function render(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
     if (player_idx>0)
-        html += "<div>Player: " + player_idx + ", Hand: </div>";
+        html += "<div>Player: " + player.name + ", Hand: </div>";
     else
         html += "<div>The Victim.</div>";
     
@@ -184,6 +184,8 @@ function detailaction(gamestate,player_id,detail_type,detail_card,action)
 
 function add_player(gamestate)
 {
+    var player_name = prompt("Please enter your name", "Player "+(Object.keys(game.players).length+1));
+    
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -194,9 +196,10 @@ function add_player(gamestate)
     };
 
     xmlhttp.open("POST", "api/add_player.php", true);
-    
+
     var request = {};
     request.game_id = game_id;
+    request.player_name = player_name;
     xmlhttp.send( JSON.stringify(request) );
 }
 
