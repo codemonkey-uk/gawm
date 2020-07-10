@@ -490,4 +490,78 @@ function end_scene(&$data)
     }
 }
 
+
+function find_most_innocent_player(&$data)
+{
+    $top_score = -1;
+    $top_count = -1;
+    $top_player_id = null;
+
+    foreach($data['players'] as $player_id => $player) {
+        $score = array_sum($player['tokens']['innocence']);
+        $count = count($player['tokens']['innocence']);
+        $is_top = false;
+        // Better than top score
+        $is_top = $score > $top_score;
+        // Same as top score
+        if ($score == $top_score) {
+            // ...and more tokens
+            $is_top = $count > $top_count;
+            // ...and same number of tokens AND wins a coin flip
+            // Not actually fair in the case of 3+ players drawing...
+            if (!$is_top) {
+                $is_top = ($count == $top_count && rand(0,1));
+            }
+        }
+
+        if ($is_top) {
+            $top_score = $score;
+            $top_count = $count;
+            $top_player_id = $player_id;
+        }
+    }
+
+    return $top_player_id;
+}
+
+function find_guilty_player(&$data)
+{
+    $top_score = -100;
+    $top_innocence_count = -1;
+    $top_guilt_count = 100;
+    $top_player_id = null;
+
+    foreach($data['players'] as $player_id => $player) {
+        $score = array_sum($player['tokens']['innocence'])-array_sum($player['tokens']['guilt']);
+        $innocence_count = count($player['tokens']['innocence']);
+        $guilt_count = count($player['tokens']['guilt']);
+        $is_top = false;
+        // Better than top score
+        $is_top = $score > $top_score;
+        // Same as top score
+        if ($score == $top_score) {
+            // ...and more innocence tokens
+            $is_top = $innocence_count > $top_innocence_count;
+            // ...and the same number of innocence tokens
+            if ($innocence_count == $top_innocence_count) {
+                $is_top = $guilt_count < $top_guilt_count;
+                // ...and the same number of guilt tokens AND wins a coin flip
+                // Not actually fair in the case of 3+ players drawing...
+                if (!$is_top) {
+                    $is_top = ($guilt_count == $top_guilt_count && rand(0,1));
+                }
+            }
+        }
+
+        if ($is_top) {
+            $top_score = $score;
+            $top_innocence_count = $innocence_count;
+            $top_guilt_count = $guilt_count;
+            $top_player_id = $player_id;
+        }
+    }
+
+    return $top_player_id;
+}
+
 ?>
