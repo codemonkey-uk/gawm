@@ -284,6 +284,18 @@ function twist_detail(&$data, $player_id, $detail_type, $detail_card)
     unset( $deck_from[$key] );
 }
 
+function record_vote(&$data, $player_id, $vote_value)
+{
+    if (is_twist($data))
+        throw new Exception('Invalid Scene for Votes');
+        
+    if (!array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+
+    $player = &$data["players"][$player_id];
+    $player["vote"]=$vote_value;
+}
+
 function complete_setup(&$data)
 {
     // at least 4 players

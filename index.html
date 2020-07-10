@@ -18,6 +18,12 @@
 .card:hover {
   transform: scale(2);
 }
+.token {
+    border:1px solid black;
+    margin-right:4px;
+    width:100px; height:100px;
+    display: inline-block;
+}
 </style>
 <script>
 
@@ -38,12 +44,11 @@ function load_cards()
     xmlhttp.send();
 }
 
-function hand_tostr(hand,player_id,action)
+function hand_tostr(hand,player_id,action,postfix)
 {
     var html = "<div class='hand'>";
     for (var deck in hand)
     {
-
         for (var card in hand[deck])
         {
             var i = hand[deck][card];
@@ -56,6 +61,8 @@ function hand_tostr(hand,player_id,action)
             html += "</div>";
         }
     }
+    if (postfix)
+        html += postfix();
     html += '</div>';
     return html;
 }
@@ -66,7 +73,45 @@ function is_twist()
     return (game.act==2 && game.scene==c);
 }
 
-function render(player,player_uid,player_idx)
+function votediv_html(player_id,value,action)
+{
+    var value_str = value ? "guilt" : "innocence";
+    var html ="";
+    var url = 'assets/'+value_str+'.png';
+    var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+value_str+"\">";
+    html += "<div class='token' onclick='" +action+ "'>";
+    html += img;    
+    html += "</div>"
+    return html;    
+}
+
+function votebutton_html(player_id,value)
+{
+    var click = "vote(game, \""+player_id+"\", "+value+")";
+    return votediv_html(player_id,value,click);    
+}
+
+function game_stage_voting()
+{
+    var c = Object.keys(game.players).length;
+    if (game.act==3)
+        c = c*2;
+        
+    if (game.act == 0) return false;
+    if (game.act==1 && game.scene==c) return true;
+    if (game.act==1 && game.scene>c) return false;
+    if (is_twist()) return false;
+    if (game.act==3 && game.scene==c) return false;
+    
+    return true;    
+}
+
+function active_player_idx()
+{
+    return (game.scene%Object.keys(game.players).length)+1;
+}
+
+function render_player(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
     if (player_idx>0)
@@ -76,10 +121,38 @@ function render(player,player_uid,player_idx)
     
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (player.hand && Object.keys(player.hand).length>0)
-        html += hand_tostr(player.hand,player_uid,detail_action);
+    {
+        html += hand_tostr(player.hand,player_uid,detail_action,
+            function(){
+                // inject voting buttons for the non-active player
+                if (game_stage_voting() && player_idx!=active_player_idx())
+                {
+                    var str = "";
+                    if (typeof player.vote == "undefined" || player.vote == 1)
+                        str += votebutton_html(player_uid,0);
+                    if (typeof player.vote == "undefined" || player.vote == 0)
+                        str += votebutton_html(player_uid,1);
+                    return str;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        );
+    }
     html += "<div>Details in play: </div>";
     if (player.play)
-        html += hand_tostr(player.play,player_uid,"nop");
+    {
+        html += hand_tostr(player.play,player_uid,"nop",
+            function(){
+                var str = "";
+                if (typeof player.vote != "undefined")
+                    str += votediv_html(player_uid,player.vote,"");
+                return str;
+            }
+        );
+    }   
     html += '</div>';
     return html;
 }
@@ -133,7 +206,7 @@ function render_game(result)
     }
     var player_idx  = 1;
     for (var player in result.players)
-        html += render(result.players[player],player,player_idx++);
+        html += render_player(result.players[player],player,player_idx++);
     html += "</div>";
     
     document.getElementById('players').innerHTML = html;
@@ -141,6 +214,11 @@ function render_game(result)
         document.getElementById("add_player").style.visibility = "hidden";
     else
         document.getElementById("add_player").style.visibility = "visible";
+}
+
+function vote(gamestate,player_id,value)
+{
+    detailaction(gamestate,player_id,"vote",value,"vote");
 }
 
 function nop(gamestate,player_id,detail_type,detail_card)
