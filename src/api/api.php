@@ -2,27 +2,19 @@
 
 require("utils.php");
 
+// TODO: auto-add the first player ... needs $player_name set up
 function _api_new()
 {
     // get component list
-    $data = build_components();
-
-    // shuffle the cards
-    foreach ($data["cards"] as &$deck) {
-        shuffle($deck);
-    }
-
-    // add players & add state
-    $data["players"] = array();
-    $data["notes"] = array();
-    $data["act"] = 0;
-    $data["scene"] = 0;
-    
+    $data = new_gawm_data();
     $game_id = save_new_game($data);
+    $player_id = 0;
     
+    // Todo: I think I want ALL reponses to come back in this format...
     return [
-        'game' => $data,
-        'game_id' => $game_id
+        'game' => redact_for_player($data, $player_id),
+        'game_id' => $game_id,
+        'player_id' => $player_id
     ];
 }
 
@@ -76,6 +68,7 @@ function _api_add_player(&$data, $player_name)
     $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], range(0,3));
     $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));  
     
+    // todo: how are we going to tell clients which player is them?
     return $data;
 }
 

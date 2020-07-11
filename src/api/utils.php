@@ -1,5 +1,24 @@
 <?php
 
+function new_gawm_data()
+{
+    // get component list
+    $data = build_components();
+
+    // shuffle the cards
+    foreach ($data["cards"] as &$deck) {
+        shuffle($deck);
+    }
+
+    // add players & add state
+    $data["players"] = array();
+    $data["notes"] = array();
+    $data["act"] = 0;
+    $data["scene"] = 0;
+        
+    return $data;
+}
+
 function build_components()
 {
     $json = file_get_contents("cards.json");
