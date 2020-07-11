@@ -3,7 +3,11 @@ require 'api/api.php';
 require 'api/db.php';
 
 // Takes raw data from the request
-$json = file_get_contents('php://input');
+if (php_sapi_name() == "cli") {
+    $json = file_get_contents('php://stdin');
+} else {
+    $json = file_get_contents('php://input');
+}
 
 // Converts it into a PHP object
 $request = json_decode($json, true);
