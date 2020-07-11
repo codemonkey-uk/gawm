@@ -21,20 +21,21 @@ function new_gawm_data()
 
 function build_components()
 {
-    $json = file_get_contents("cards.json");
-    $cards = json_decode($json);
-
     $components = [
         "tokens" => [
             "guilt" => [],
             "innocence" => []
+        ],
+        "cards" => [
+            "aliases" => range(0,15),
+            "relationships" => range(0,29),
+            "objects" => range(0,29),
+            "motives" => range(0,29),
+            "wildcards" => range(0,29),
+            "murder_discovery" => range(0,5),
+            "murder_cause" => range(0,9)
         ]
     ];
-
-    // For each deck we have, create a list of card IDs
-    foreach($cards as $deckname => $deck) {
-        $components['cards'][$deckname] = range(0, count($deck)-1);
-    }
 
     return $components;
 }
