@@ -286,75 +286,70 @@ function complete_twist(&$data)
 
 function find_most_innocent_player(&$data)
 {
-    $top_score = -1;
-    $top_count = -1;
-    $top_player_id = null;
+    $players = $data['players'];
 
-    foreach($data['players'] as $player_id => $player) {
-        $score = array_sum($player['tokens']['innocence']);
-        $count = count($player['tokens']['innocence']);
-        $is_top = false;
-        // Better than top score
-        $is_top = $score > $top_score;
-        // Same as top score
-        if ($score == $top_score) {
-            // ...and more tokens
-            $is_top = $count > $top_count;
-            // ...and same number of tokens AND wins a coin flip
-            // Not actually fair in the case of 3+ players drawing...
-            if (!$is_top) {
-                $is_top = ($count == $top_count && rand(0,1));
+    // Sort the array based on innocence scoring
+    uasort($players, function($a, $b) {
+        $a_points = array_sum($a['tokens']['innocence']);
+        $a_count  = count($a['tokens']['innocence']);
+        $b_points = array_sum($b['tokens']['innocence']);
+        $b_count  = count($b['tokens']['innocence']);
+
+        // Sort first by points, then by count
+        if ($a_points > $b_points) {
+            return 1;
+        } elseif ($a_points == $b_points) {
+            if ($a_count > $b_count) {
+                return 1;
+            } elseif ($a_count == $b_count) {
+                // If tied, randomly shuffle positions
+                return [-1,1][rand(0,1)];
             }
         }
+        return -1;
+    });
 
-        if ($is_top) {
-            $top_score = $score;
-            $top_count = $count;
-            $top_player_id = $player_id;
-        }
-    }
+    // Maybe even show the players the whole list?
+    //return array_keys($players);
 
-    return $top_player_id;
+    return array_key_last($players);
 }
 
 function find_guilty_player(&$data)
 {
-    $top_score = -100;
-    $top_innocence_count = -1;
-    $top_guilt_count = 100;
-    $top_player_id = null;
+    $players = $data['players'];
 
-    foreach($data['players'] as $player_id => $player) {
-        $score = array_sum($player['tokens']['innocence'])-array_sum($player['tokens']['guilt']);
-        $innocence_count = count($player['tokens']['innocence']);
-        $guilt_count = count($player['tokens']['guilt']);
-        $is_top = false;
-        // Better than top score
-        $is_top = $score > $top_score;
-        // Same as top score
-        if ($score == $top_score) {
-            // ...and more innocence tokens
-            $is_top = $innocence_count > $top_innocence_count;
-            // ...and the same number of innocence tokens
-            if ($innocence_count == $top_innocence_count) {
-                $is_top = $guilt_count < $top_guilt_count;
-                // ...and the same number of guilt tokens AND wins a coin flip
-                // Not actually fair in the case of 3+ players drawing...
-                if (!$is_top) {
-                    $is_top = ($guilt_count == $top_guilt_count && rand(0,1));
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $a_points = array_sum($a['tokens']['guilt'])-array_sum($a['tokens']['innocence']);
+        $a_innocence_count  = count($a['tokens']['innocence']);
+        $a_guilt_count  = count($a['tokens']['guilt']);
+        $b_points = array_sum($b['tokens']['guilt'])-array_sum($b['tokens']['innocence']);
+        $b_innocence_count  = count($b['tokens']['innocence']);
+        $b_guilt_count  = count($b['tokens']['guilt']);
+
+        // Sort first by points, then by guilt count, then by smallest innocence count
+        if ($a_points > $b_points) {
+            return 1;
+        } elseif ($a_points == $b_points) {
+            if ($a_guilt_count > $b_guilt_count) {
+                return 1;
+            } elseif ($a_guilt_count == $b_guilt_count) {
+                if ($a_innocence_count < $b_innocence_count) {
+                    return 1;
+                } elseif ($a_innocence_count == $b_innocence_count) {
+                    // If tied, randomly shuffle positions
+                    return [-1,1][rand(0,1)];
                 }
             }
         }
+        return -1;
+    });
 
-        if ($is_top) {
-            $top_score = $score;
-            $top_innocence_count = $innocence_count;
-            $top_guilt_count = $guilt_count;
-            $top_player_id = $player_id;
-        }
-    }
+    // Maybe even show the players the whole list?
+    //return array_keys($players);
 
-    return $top_player_id;
+    return array_key_last($players);
 }
 
 // fog of war logic
