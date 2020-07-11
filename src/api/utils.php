@@ -337,4 +337,18 @@ function find_guilty_player(&$data)
     return $top_player_id;
 }
 
+// fog of war logic
+// in which we remove data going back to the client for a given player
+function redact_for_player($data, $player_id)
+{
+    // cards left in the deck? cients dont need to know...
+    unset($data["cards"]);
+    // how the tokens got shuffled? 
+    unset($data["tokens"]);    
+    
+    // todo (later) remove / reduce other players hands 
+    // (keeping for now to make testing easier)
+    return $data;
+}
+
 ?>
