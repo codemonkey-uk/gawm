@@ -1,27 +1,9 @@
 <?php
 
-function new_gawm_data()
+function gawm_new_game()
 {
-    // get component list
-    $data = build_components();
-
-    // shuffle the cards
-    foreach ($data["cards"] as &$deck) {
-        shuffle($deck);
-    }
-
-    // add players & add state
-    $data["players"] = array();
-    $data["notes"] = array();
-    $data["act"] = 0;
-    $data["scene"] = 0;
-        
-    return $data;
-}
-
-function build_components()
-{
-    $components = [
+    // component list
+    $data = [
         "tokens" => [
             "guilt" => [],
             "innocence" => []
@@ -37,10 +19,141 @@ function build_components()
         ]
     ];
 
-    return $components;
+    // shuffle the cards
+    foreach ($data["cards"] as &$deck) {
+        shuffle($deck);
+    }
+
+    // add players & add state
+    $data["players"] = array();
+    $data["notes"] = array();
+    $data["act"] = 0;
+    $data["scene"] = 0;
+        
+    return $data;
 }
 
-function draw_player_details(&$data, &$new_player)
+// modifies data, returns player_id
+// name string sanatising, should be done in API layer
+function gawm_add_player(&$data, $player_name)
+{
+    // only add players, up to 6, in act 0 (setup)
+    if ($data["act"] > 0) 
+    {
+        throw new Exception('Trying to add players outside setup step.');
+    }
+    
+    if (count($data["players"] ) > 6)
+    {
+        throw new Exception('Trying to add a 7th player.');
+    }
+    
+    $new_player = [
+        'name' => $player_name,
+        'hand' => [],
+        'play' => [],
+        'tokens' => [
+            'guilt' => [],
+            'innocence' => []
+        ]
+    ];
+    
+    // draw aliases
+    draw_player_cards($data, $new_player, array("aliases" => 2) );
+    
+    // TODO: optional rule, draw details with alias during set up
+    // draw_player_details($data, $new_player);
+    
+    // create unique id for the new player
+    $player_id = uniqid();
+    while (array_key_exists($player_id,$data["players"]))
+        $player_id = uniqid();
+        
+    $data["players"][$player_id] = $new_player;
+
+    // each player put four guilt tokens and four innocence tokens, 
+    // numbered "0" to "3", in a central pile
+    $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], range(0,3));
+    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));  
+    
+    return $player_id;
+}
+
+// modifies the game data such that the specified player has played the requested card
+// if that is in any way against the rules/structure, an exception is thrown
+function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
+{
+    if ($player_id !=0 && !array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+
+    if ($player_id==0)
+        $player = &$data["victim"];
+    else
+        $player = &$data["players"][$player_id];
+        
+    if (!array_key_exists($detail_type, $player["hand"]))
+        throw new Exception('Invalid Detail Type: '.$detail_type);
+    
+    if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
+        throw new Exception('An alias must be played first if any are held.');
+        
+    if (!gawm_is_detail_active($data, $detail_type))
+        throw new Exception('Invalid Detail for Act');
+        
+    if (!gawm_is_player_active($data, $player_id))
+        throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
+    
+    $deck_from = &$player["hand"][$detail_type];
+    if (!in_array($detail_card,$deck_from))
+        throw new Exception('Detail Not Held');
+    
+    // skip this for victim, not a real player
+    if ($player_id!=0)
+    {
+        if (!gawm_player_has_details_left_to_play($data, $player_id))
+            throw new Exception('Insufficent Details for Remaining Acts: ');
+    }
+    
+    // make sure deck type exists in play
+    if (!array_key_exists($detail_type,$player["play"]))
+    {
+        $player["play"][$detail_type] = array();
+    }
+        
+    // move card from hand into play
+    $deck_to = &$player["play"][$detail_type];
+    array_push($deck_to, $detail_card);
+    
+    $key = array_search($detail_card, $deck_from);
+    unset( $deck_from[$key] );
+
+    // put unused details back in the deck
+    foreach($deck_from as $key => $id)
+    {
+        unset( $deck_from[$key] );
+        array_unshift($data["cards"][$detail_type],$id);
+    }
+    // tidy up the json, remove the empty deck type from the hand
+    unset($player["hand"][$detail_type]);
+    
+    // custom victim details step
+    if ($player_id==0)
+    {
+        // draw 2nd of remaining detail
+        $opposite = array(
+            "murder_cause" => "murder_discovery",
+            "murder_discovery" => "murder_cause"
+        );
+        $other = $opposite[$detail_type];
+        if (isset($player["hand"][$other]))
+        {
+            draw_player_cards($data, $player, array($other => 2) );
+        }
+    }
+}
+
+// draws until a player has 3 of each detail
+function draw_player_details(&$data, &$player)
 {
     $draws = array(
         "relationships" => 3,
@@ -48,25 +161,27 @@ function draw_player_details(&$data, &$new_player)
         "motives" => 3,       
         "wildcards" => 3
     );
-    draw_player_cards($data, $new_player, $draws);
+    draw_player_cards($data, $player, $draws);
 }
 
-function draw_player_cards(&$data, &$new_player, $draws)
+// draws cards into the players hand 
+// until they have the amounts specified by draws argument
+function draw_player_cards(&$data, &$player, $draws)
 {
     foreach ($draws as $deck => $count) 
     {
-        if (!array_key_exists($deck,$new_player["hand"]))
+        if (!array_key_exists($deck,$player["hand"]))
         {
-            $new_player["hand"][$deck] = array();
+            $player["hand"][$deck] = array();
         }   
-        while (count($new_player["hand"][$deck])<$count)
+        while (count($player["hand"][$deck])<$count)
         {
-            array_push( $new_player["hand"][$deck], array_pop($data["cards"][$deck]) );
+            array_push( $player["hand"][$deck], array_pop($data["cards"][$deck]) );
         }
     }
 }
 
-function is_detail_active(&$data, $detail_type)
+function gawm_is_detail_active(&$data, $detail_type)
 {
     // players should always be able to play their alias
     // in practice this happens at two points: 
@@ -89,7 +204,7 @@ function is_detail_active(&$data, $detail_type)
     return false;
 }
 
-function is_player_active(&$data, $player_id)
+function gawm_is_player_active(&$data, $player_id)
 {
     // all players are active in set up (act 0)
     if ($data["act"]==0)
@@ -121,7 +236,7 @@ function is_player_active(&$data, $player_id)
     }
 }
 
-function player_has_details_left_to_play(&$data, $player_id)
+function gawm_player_has_details_left_to_play(&$data, $player_id)
 {
     $player = &$data["players"][$player_id];
 

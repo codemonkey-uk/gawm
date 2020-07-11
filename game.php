@@ -1,6 +1,6 @@
 <?php
-require 'api/api.php';
-require 'api/db.php';
+require_once 'api/api.php';
+require_once 'api/db.php';
 
 // Takes raw data from the request
 if (php_sapi_name() == "cli") {
