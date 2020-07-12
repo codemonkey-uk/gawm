@@ -7,6 +7,7 @@ define( 'gawm_vote_innocent', '2' );
 require_once 'gawm_twist.php';
 require_once 'gawm_setup.php';
 require_once 'gawm_extrascene.php';
+require_once 'gawm_firstbreak.php';
 
 function gawm_new_game()
 {
@@ -353,26 +354,9 @@ function clear_votes(&$data)
     }
 }
 
-function gawm_is_firstbreak(&$data)
-{
-    return $data["act"]==1 && $data["scene"] == count($data["players"])+1;
-}
-
 function gawm_is_lastbreak(&$data)
 {
     return $data["act"]==3 && $data["scene"] == 2*count($data["players"]);
-}
-
-function setup_firstbreak(&$data)
-{
-    $data["victim"]["hand"]=array();
-    
-    $detail="murder_cause";
-    $data["victim"]["hand"][$detail]=array();
-    array_push( $data["victim"]["hand"][$detail], array_pop($data["cards"][$detail]) );
-    $detail="murder_discovery";
-    $data["victim"]["hand"][$detail]=array();
-    array_push( $data["victim"]["hand"][$detail], array_pop($data["cards"][$detail]) );    
 }
 
 function find_most_innocent_player(&$data)
