@@ -176,7 +176,7 @@ function gawm_next_scene(&$data)
             }
             
             $data["scene"]+=1;
-            if (is_extrascene($data))
+            if (gawm_is_extrascene($data))
             {
                 setup_extrascene($data);
             }
@@ -289,7 +289,7 @@ function gawm_is_player_active(&$data, $player_id)
     }
     
     // during the extra scene, only the victim is active
-    if (is_extrascene($data))
+    if (gawm_is_extrascene($data))
     {
         return $data["victim"]["player_id"]==$player_id;
     }
@@ -383,7 +383,7 @@ function complete_setup(&$data)
     $data["scene"] = 0;
 }
 
-function is_extrascene(&$data)
+function gawm_is_extrascene(&$data)
 {
     return $data["act"]==1 && $data["scene"] == count($data["players"]);
 }

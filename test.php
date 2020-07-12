@@ -7,8 +7,10 @@ function test( $result, $expected_result, $error_message )
 {
     global $test_count;
     if ($result!=$expected_result)
+    {
+        echo "Test failure with ".$result." expected ".$expected_result."\n";
         throw Exception($error_message);
-
+    }
     $test_count++;
 }
 
@@ -27,6 +29,7 @@ test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in
 test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
 test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
 test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
+test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
 
 foreach( $player_ids as $player_id )
 {
@@ -42,6 +45,26 @@ foreach( $player_ids as $player_id )
 gawm_next_scene($data);
 test($data["act"], 1, "Act 1 should follow set up.");
 test($data["scene"], 0, "Act 1 starts with Scene 0.");
+
+test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in act I");
+test(gawm_is_detail_active($data, "objects"), true, "objects should be active in act I");
+test(gawm_is_detail_active($data, "relationships"), true, "relationships should be active in act I");
+test(gawm_is_detail_active($data, "wildcards"), true, "wildcards should be active in act I");
+
+// play out act I
+foreach( $player_ids as $player_id )
+{
+    test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
+    test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
+    gawm_play_detail(
+        $data, $player_id, "relationships", 
+        current($data["players"][$player_id]["hand"]["relationships"])
+    );
+    gawm_next_scene($data);
+}
+
+test(gawm_is_extrascene($data), true, "Extra Scene expected.");
+
 
 echo "Passed ".$test_count." tests.\n";
 ?>
