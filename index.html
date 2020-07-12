@@ -108,6 +108,23 @@ function game_stage_voting()
 
 function active_player_idx()
 {
+    var c = Object.keys(game.players).length;
+    if (game.act==1 && game.scene==c)
+    {
+        // extra scene, active player should match victim
+        var idx = 1;
+        for (var player_id in game.players)
+        {
+            console.log(player_id + " => " +game.victim.player_id);
+            if (player_id==game.victim.player_id)
+            {
+                console.log("active_player_idx in extra scene: "+idx);
+                return idx;
+            }
+            idx++;
+        }
+    }
+    
     return (game.scene%Object.keys(game.players).length)+1;
 }
 
@@ -118,7 +135,7 @@ function render_player(player,player_uid,player_idx)
         html += "<div>Player: " + player.name + ", Hand: </div>";
     else
         html += "<div>The Victim.</div>";
-    
+
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (player.hand && Object.keys(player.hand).length>0)
     {
