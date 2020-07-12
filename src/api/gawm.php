@@ -1,5 +1,7 @@
 <?php
 
+define( 'gawm_player_id_victim', '0' );
+
 function gawm_new_game()
 {
     // component list
@@ -66,7 +68,7 @@ function gawm_add_player(&$data, $player_name)
     
     // create unique id for the new player
     $player_id = uniqid();
-    while (array_key_exists($player_id,$data["players"]))
+    while (array_key_exists($player_id,$data["players"]) || $player_id==gawm_player_id_victim)
         $player_id = uniqid();
         
     $data["players"][$player_id] = $new_player;
@@ -83,10 +85,10 @@ function gawm_add_player(&$data, $player_name)
 // if that is in any way against the rules/structure, an exception is thrown
 function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
-    if ($player_id !=0 && !array_key_exists($player_id,$data["players"]))
+    if ($player_id !=gawm_player_id_victim && !array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
 
-    if ($player_id==0)
+    if ($player_id==gawm_player_id_victim)
         $player = &$data["victim"];
     else
         $player = &$data["players"][$player_id];
@@ -108,7 +110,7 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
         throw new Exception('Detail Not Held');
     
     // skip this for victim, not a real player
-    if ($player_id!=0)
+    if ($player_id!=gawm_player_id_victim)
     {
         if (!gawm_player_has_details_left_to_play($data, $player_id))
             throw new Exception('Insufficent Details for Remaining Acts: ');
@@ -137,7 +139,7 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     unset($player["hand"][$detail_type]);
     
     // custom victim details step
-    if ($player_id==0)
+    if ($player_id==gawm_player_id_victim)
     {
         // draw 2nd of remaining detail
         $opposite = array(
@@ -295,7 +297,7 @@ function gawm_is_player_active(&$data, $player_id)
     }
     if (gawm_is_firstbreak($data))
     {
-        return $player_id==0;
+        return $player_id==gawm_player_id_victim;
     }
     
     // normally, players are active during their scene
@@ -348,7 +350,6 @@ function complete_setup(&$data)
     // at least 4 players
     if (count($data["players"])<4)
     {
-        http_response_code(400);
         throw new Exception('Must have 4 Players to Complete Setup.');
     }
  
@@ -358,13 +359,11 @@ function complete_setup(&$data)
         // 0 alias in hand
         if (isset($player["hand"]["aliases"]))
         {
-            http_response_code(400);
             throw new Exception('Alias detail still in hand.');
         }
         // 1 alias in play
         if (count($player["play"]["aliases"])!=1)
         {
-            http_response_code(400);
             throw new Exception('Alias detail missing from play.');
         }
     }

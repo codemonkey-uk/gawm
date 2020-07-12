@@ -2,13 +2,15 @@
 require_once 'api/gawm.php';
 
 $test_count = 0;
+$data = null;
 
 function test( $result, $expected_result, $error_message )
 {
-    global $test_count;
+    global $test_count, $data;
     if ($result!=$expected_result)
     {
         echo "Test failure with ".$result." expected ".$expected_result."\n";
+        echo json_encode($data) ."\n";
         throw Exception($error_message);
     }
     $test_count++;
@@ -88,6 +90,24 @@ gawm_play_detail(
 
 gawm_next_scene($data);
 test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
+
+// make play_detail calls for the muder details
+gawm_play_detail(
+    $data, gawm_player_id_victim, "murder_cause", 
+    current($data["victim"]["hand"]["murder_cause"])
+);
+gawm_play_detail(
+    $data, gawm_player_id_victim, "murder_discovery", 
+    current($data["victim"]["hand"]["murder_discovery"])
+);
+test(count($data["victim"]["play"]),4,"The victim should have 3 detail types in play (alias, 2x murder, +1).");
+
+gawm_next_scene($data);
+
+// advance from first break to act II
+test($data["act"], 2, "Act II should follow first break.");
+test($data["scene"], 0, "Act II starts with Scene 0.");
+
 
 echo "Passed ".$test_count." tests.\n";
 ?>
