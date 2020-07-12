@@ -16,6 +16,21 @@ function test( $result, $expected_result, $error_message )
     $test_count++;
 }
 
+function play_scenes( &$data, $player_ids, $detail)
+{
+    foreach( $player_ids as $player_id )
+    {
+        test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
+        test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
+        gawm_play_detail(
+            $data, $player_id, $detail, 
+            current($data["players"][$player_id]["hand"][$detail])
+        );
+        if ($data["act"]>0)
+            gawm_next_scene($data);
+    }
+}
+
 echo "Testing... ";
 $data = gawm_new_game();
 
@@ -33,15 +48,7 @@ test(gawm_is_detail_active($data, "relationships"), false, "relationships should
 test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
 test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
 
-foreach( $player_ids as $player_id )
-{
-    test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
-    test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
-    gawm_play_detail(
-        $data, $player_id, "aliases", 
-        current($data["players"][$player_id]["hand"]["aliases"])
-    );    
-}
+play_scenes($data, $player_ids,"aliases");
 
 // advance from setup to act I
 gawm_next_scene($data);
@@ -54,16 +61,7 @@ test(gawm_is_detail_active($data, "relationships"), true, "relationships should 
 test(gawm_is_detail_active($data, "wildcards"), true, "wildcards should be active in act I");
 
 // play out act I
-foreach( $player_ids as $player_id )
-{
-    test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
-    test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
-    gawm_play_detail(
-        $data, $player_id, "relationships", 
-        current($data["players"][$player_id]["hand"]["relationships"])
-    );
-    gawm_next_scene($data);
-}
+play_scenes($data, $player_ids,"relationships");
 
 test(gawm_is_extrascene($data), true, "Extra Scene expected.");
 test(isset($data["victim"]), true, "The victim should have been selected");
@@ -107,7 +105,11 @@ gawm_next_scene($data);
 // advance from first break to act II
 test($data["act"], 2, "Act II should follow first break.");
 test($data["scene"], 0, "Act II starts with Scene 0.");
+test(gawm_is_detail_active($data, "motives"), true, "motives should now be active in Act II");
 
+// play out act II
+play_scenes($data, $player_ids,"objects");
+test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
 
 echo "Passed ".$test_count." tests.\n";
 ?>

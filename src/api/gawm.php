@@ -195,7 +195,7 @@ function gawm_next_scene(&$data)
             break;
         case 2:
             $data["scene"]+=1;
-            if (is_twist($data))
+            if (gawm_is_twist($data))
             {
                 setup_twist($data);
             }
@@ -392,7 +392,7 @@ function gawm_is_firstbreak(&$data)
     return $data["act"]==1 && $data["scene"] == count($data["players"])+1;
 }
 
-function is_twist(&$data)
+function gawm_is_twist(&$data)
 {
     return $data["act"]==2 && $data["scene"] == count($data["players"]);
 }
