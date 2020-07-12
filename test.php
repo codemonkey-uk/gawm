@@ -124,7 +124,16 @@ gawm_next_scene($data);
 test($data["act"], 3, "Act III should follow Twist.");
 test($data["scene"], 0, "Act III starts with Scene 0.");
 
+// play out act III
+play_scenes($data, $player_ids,"wildcards");
+play_scenes($data, $player_ids,"motives");
 
+// test is last break
+test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
+gawm_next_scene($data);
+
+test($data["act"], 4, "Epilogue (Act 4) should follow Act III.");
+test($data["scene"], 0, "Epilogue starts with Scene 0.");
 
 echo "Passed ".$test_count." tests.\n";
 ?>

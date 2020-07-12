@@ -428,6 +428,11 @@ function gawm_is_twist(&$data)
     return $data["act"]==2 && $data["scene"] == count($data["players"]);
 }
 
+function gawm_is_lastbreak(&$data)
+{
+    return $data["act"]==3 && $data["scene"] == 2*count($data["players"]);
+}
+
 function setup_extrascene(&$data)
 {
     // select victim
