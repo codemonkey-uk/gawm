@@ -49,7 +49,7 @@ function _api_play_detail(&$data, $player_id, $detail_type, $detail_card)
 
 function _api_twist_detail(&$data, $player_id, $detail_type, $detail_card)
 {
-    gawm_twist_detail(&$data, $player_id, $detail_type, $detail_card);
+    gawm_twist_detail($data, $player_id, $detail_type, $detail_card);
     return $data;
 }
 
