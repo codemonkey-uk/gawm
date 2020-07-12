@@ -35,12 +35,6 @@ function _api_add_player(&$data, $player_name)
     return $data;
 }
 
-function _api_next(&$data)
-{
-    gawm_next_scene($data);
-    return $data;
-}
-
 function _api_play_detail(&$data, $player_id, $detail_type, $detail_card)
 {
     gawm_play_detail($data, $player_id, $detail_type, $detail_card);
@@ -57,18 +51,14 @@ function _api_vote(&$data, $player_id, $vote_value)
 {
     $vote_value = intval($vote_value);
 
-    if (is_twist($data))
-        throw new Exception('Invalid Scene for Votes');
-        
-    if (!array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
-    if ($vote_value!=1 && $vote_value!=2)
-        throw new Exception('Invalid Vote Value: '.$vote_value);
-
-    $player = &$data["players"][$player_id];
-    $player["vote"]=$vote_value;
+    gawm_vote($data, $player_id, $vote_value);
     
+    return $data;
+}
+
+function _api_next(&$data)
+{
+    gawm_next_scene($data);
     return $data;
 }
 

@@ -1,6 +1,20 @@
 <?php
 require_once 'api/gawm.php';
 
+// warnings as errors during tests
+// https://stackoverflow.com/questions/10520390/stop-script-execution-upon-notice-warning
+
+function errHandle($errNo, $errStr, $errFile, $errLine) {
+    $msg = "$errStr in $errFile on line $errLine";
+    if ($errNo == E_NOTICE || $errNo == E_WARNING) {
+        throw new ErrorException($msg, $errNo);
+    } else {
+        echo $msg;
+    }
+}
+
+set_error_handler('errHandle');
+
 $test_count = 0;
 $data = null;
 
@@ -11,7 +25,7 @@ function test( $result, $expected_result, $error_message )
     {
         echo "Test failure with ".$result." expected ".$expected_result."\n";
         echo json_encode($data) ."\n";
-        throw Exception($error_message);
+        throw new Exception($error_message);
     }
     $test_count++;
 }
@@ -26,13 +40,23 @@ function play_scenes( &$data, $player_ids, $detail)
             $data, $player_id, $detail, 
             current($data["players"][$player_id]["hand"][$detail])
         );
+
         if ($data["act"]>0)
+        {
+            $inactive_players = array_filter(
+                array_keys($data["players"]), 
+                function($id){global $data; return !gawm_is_player_active($data,$id);}
+            );
+            test( count($inactive_players), count($player_ids)-1, "All bar 1 players should be active in the scene." );
+            gawm_vote($data, current($inactive_players), gawm_vote_guilty);
             gawm_next_scene($data);
+        }
     }
 }
 
 echo "Testing... ";
 $data = gawm_new_game();
+test(gawm_is_setup($data), true, "New game should start in Setup");
 
 $player_ids = [
     gawm_add_player($data,"player 1"),
@@ -85,7 +109,7 @@ gawm_play_detail(
     $data, $active_player, "relationships", 
     current($data["players"][$active_player]["hand"]["relationships"])
 );
-
+ 
 gawm_next_scene($data);
 test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
 
@@ -132,7 +156,7 @@ play_scenes($data, $player_ids,"motives");
 test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
 gawm_next_scene($data);
 
-test($data["act"], 4, "Epilogue (Act 4) should follow Act III.");
+test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Act III.");
 test($data["scene"], 0, "Epilogue starts with Scene 0.");
 
 echo "Passed ".$test_count." tests.\n";
