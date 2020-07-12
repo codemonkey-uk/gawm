@@ -98,7 +98,7 @@ gawm_play_detail(
     $data, gawm_player_id_victim, "murder_discovery", 
     current($data["victim"]["hand"]["murder_discovery"])
 );
-test(count($data["victim"]["play"]),4,"The victim should have 3 detail types in play (alias, 2x murder, +1).");
+test(count($data["victim"]["play"]), 4,"The victim should have 4 detail types in play (alias, 2x murder, +1).");
 
 gawm_next_scene($data);
 
@@ -110,6 +110,21 @@ test(gawm_is_detail_active($data, "motives"), true, "motives should now be activ
 // play out act II
 play_scenes($data, $player_ids,"objects");
 test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
+
+// every player twists 1 motive
+foreach( $player_ids as $player_id )
+{
+    gawm_twist_detail(
+        $data, $player_id, "motives", 
+        current($data["players"][$player_id]["hand"]["motives"])
+    );
+}
+
+gawm_next_scene($data);
+test($data["act"], 3, "Act III should follow Twist.");
+test($data["scene"], 0, "Act III starts with Scene 0.");
+
+
 
 echo "Passed ".$test_count." tests.\n";
 ?>

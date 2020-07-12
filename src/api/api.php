@@ -49,34 +49,7 @@ function _api_play_detail(&$data, $player_id, $detail_type, $detail_card)
 
 function _api_twist_detail(&$data, $player_id, $detail_type, $detail_card)
 {
-    if (!is_twist($data))
-        throw new Exception('Invalid Twist');
-        
-    if (!array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
-    $player = &$data["players"][$player_id];
-        
-    if (!array_key_exists($detail_type, $player["hand"]))
-        throw new Exception('Invalid Detail Type');
-    
-    $deck_from = &$player["hand"][$detail_type];
-    if (!in_array($detail_card,$deck_from))
-        throw new Exception('Detail Not Held');
-    
-    // make sure deck type exists in twist
-    if (!array_key_exists($detail_type,$player["twist"]))
-    {
-        $player["twist"][$detail_type] = array();
-    }
-        
-    // move card from hand into twist
-    $deck_to = &$player["twist"][$detail_type];
-    array_push($deck_to, $detail_card);
-    
-    $key = array_search($detail_card, $deck_from);
-    unset( $deck_from[$key] );
-    
+    gawm_twist_detail(&$data, $player_id, $detail_type, $detail_card);
     return $data;
 }
 
