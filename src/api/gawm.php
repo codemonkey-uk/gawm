@@ -120,6 +120,7 @@ function is_normal_scene(&$data)
         gawm_is_setup($data) ||
         gawm_is_firstbreak($data) ||
         gawm_is_twist($data) ||
+        gawm_is_lastbreak($data) ||
         gawm_is_epilogue($data));
 }
 
@@ -141,13 +142,23 @@ function gawm_next_scene(&$data)
     $player_ids = array_keys($data["players"]);
     $player_count = count($data["players"]);
 
-    // ensure details have been played
+    // normal scene, "can progress" checks
     if (is_normal_scene($data))
     {
+        // details played
         $player_id = active_player_id($data);
         if (gawm_player_has_details_left_to_play($data, $player_id))
         {
             throw new Exception('Player '.$player_id.' has Details still to Play in act '.$data["act"].' scene '.$data["scene"]);
+        }
+        // outcome agreed
+        $tally = tally_votes($data);
+        if ($tally[gawm_vote_innocent]==$tally[gawm_vote_guilty])
+        {
+            throw new Exception(
+                'Players must agree on innocence/guilt: '.
+                ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
+            );
         }
     }
     
@@ -209,6 +220,8 @@ function gawm_next_scene(&$data)
             }
             break;
     }
+    
+    clear_votes($data);
 }
 
 // draws until a player has 3 of each detail
@@ -326,7 +339,18 @@ function tally_votes(&$data)
             $result[$player["vote"]]++;
         }
     }
-    return result;
+    return $result;
+}
+
+function clear_votes(&$data)
+{
+    foreach( $data["players"] as &$player )
+    {
+        if (array_key_exists("vote",$player))
+        {
+            unset($player["vote"]);
+        }
+    }
 }
 
 function gawm_is_firstbreak(&$data)

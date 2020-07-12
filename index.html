@@ -221,23 +221,23 @@ function vote(gamestate,player_id,value)
     detailaction(gamestate,player_id,"vote",value,"vote");
 }
 
-function nop(gamestate,player_id,detail_type,detail_card)
+function nop(gamestate,player_id,detail_type,detail)
 {
 }
 
-function playdetail(gamestate,player_id,detail_type,detail_card)
+function playdetail(gamestate,player_id,detail_type,detail)
 {
-    detailaction(gamestate,player_id,detail_type,detail_card,"play_detail");
+    detailaction(gamestate,player_id,detail_type,detail,"play_detail");
 }
 
-function twistdetail(gamestate,player_id,detail_type,detail_card)
+function twistdetail(gamestate,player_id,detail_type,detail)
 {
-    detailaction(gamestate,player_id,detail_type,detail_card,"twist_detail");
+    detailaction(gamestate,player_id,detail_type,detail,"twist_detail");
 }
 
-function detailaction(gamestate,player_id,detail_type,detail_card,action)
+function detailaction(gamestate,player_id,detail_type,detail,action)
 {
-    console.log("playdetail called:",player_id,detail_type,detail_card);
+    console.log("playdetail called:",player_id,detail_type,detail);
     
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -255,7 +255,7 @@ function detailaction(gamestate,player_id,detail_type,detail_card,action)
     request.game_id = game_id;
     request.player_id=player_id;
     request.detail_type=detail_type;
-    request.detail_card=detail_card;
+    request.detail=detail;
     
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );

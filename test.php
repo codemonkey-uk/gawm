@@ -30,7 +30,17 @@ function test( $result, $expected_result, $error_message )
     $test_count++;
 }
 
-function play_scenes( &$data, $player_ids, $detail)
+function vote_scene( &$data )
+{
+    $inactive_players = array_filter(
+        array_keys($data["players"]), 
+        function($id){global $data; return !gawm_is_player_active($data,$id);}
+    );
+    test( count($inactive_players), count($data["players"])-1, "All bar 1 players should be active in the scene." );
+    gawm_vote($data, current($inactive_players), gawm_vote_guilty);
+}
+
+function play_scenes( &$data, $player_ids, $detail )
 {
     foreach( $player_ids as $player_id )
     {
@@ -43,12 +53,7 @@ function play_scenes( &$data, $player_ids, $detail)
 
         if ($data["act"]>0)
         {
-            $inactive_players = array_filter(
-                array_keys($data["players"]), 
-                function($id){global $data; return !gawm_is_player_active($data,$id);}
-            );
-            test( count($inactive_players), count($player_ids)-1, "All bar 1 players should be active in the scene." );
-            gawm_vote($data, current($inactive_players), gawm_vote_guilty);
+            vote_scene($data);
             gawm_next_scene($data);
         }
     }
@@ -109,7 +114,7 @@ gawm_play_detail(
     $data, $active_player, "relationships", 
     current($data["players"][$active_player]["hand"]["relationships"])
 );
- 
+vote_scene($data);
 gawm_next_scene($data);
 test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
 

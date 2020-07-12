@@ -35,23 +35,23 @@ function _api_add_player(&$data, $player_name)
     return $data;
 }
 
-function _api_play_detail(&$data, $player_id, $detail_type, $detail_card)
+function _api_play_detail(&$data, $player_id, $detail_type, $detail)
 {
-    gawm_play_detail($data, $player_id, $detail_type, $detail_card);
+    gawm_play_detail($data, $player_id, $detail_type, $detail);
     return $data;
 }
 
-function _api_twist_detail(&$data, $player_id, $detail_type, $detail_card)
+function _api_twist_detail(&$data, $player_id, $detail_type, $detail)
 {
-    gawm_twist_detail($data, $player_id, $detail_type, $detail_card);
+    gawm_twist_detail($data, $player_id, $detail_type, $detail);
     return $data;
 }
 
-function _api_vote(&$data, $player_id, $vote_value)
+function _api_vote(&$data, $player_id, $detail)
 {
-    $vote_value = intval($vote_value);
+    $vote_value = intval($detail);
 
-    gawm_vote($data, $player_id, $vote_value);
+    gawm_vote($data, $player_id, $detail);
     
     return $data;
 }
@@ -62,7 +62,7 @@ function _api_next(&$data)
     return $data;
 }
 
-function _api_edit_note(&$data, $player_id, $detail_type, $detail_card, $note)
+function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
 {
     // TODO: Ensure player has the card in-hand before allowing edit_note
     
@@ -72,7 +72,7 @@ function _api_edit_note(&$data, $player_id, $detail_type, $detail_card, $note)
     // TODO: Since this number will also be used in the UI, move it somewhere
     $note = substr($note, 0, 1024);
 
-    $data['notes'][$detail_type][$detail_card] = $note;
+    $data['notes'][$detail_type][$detail] = $note;
     
     return $data;
 }
