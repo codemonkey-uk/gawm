@@ -37,77 +37,7 @@ function _api_add_player(&$data, $player_name)
 
 function _api_next(&$data)
 {
-    $player_ids = array_keys($data["players"]);
-    $player_count = count($data["players"]);
-
-    switch ($data["act"])
-    {
-        case 0:
-            complete_setup($data);
-            break;
-        case 1:
-
-            if ($data["scene"] < $player_count)
-            {
-                $player_id = $player_ids[$data["scene"]];
-                if (gawm_player_has_details_left_to_play($data, $player_id))
-                {
-                    throw new Exception('Player '.$player_id.' has Details still to Play.');
-                }
-            }
-            
-            $data["scene"]+=1;
-            if (is_extrascene($data))
-            {
-                setup_extrascene($data);
-            }
-            if (is_firstbreak($data))
-            {
-                setup_firstbreak($data);
-            }
-            if ($data["scene"] > $player_count+1)
-            {
-                // Move to Act II
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;
-        case 2:
-            $data["scene"]+=1;
-            if (is_twist($data))
-            {
-                setup_twist($data);
-            }
-            if ($data["scene"] == $player_count+1)
-            {
-                complete_twist($data);
-                
-                // Move to Act III
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;    
-        case 3:
-            $data["scene"]+=1;
-            if ($data["scene"] == 2*$player_count)
-            {
-                // TODO: Last Break
-            }
-            if ($data["scene"] == 2*$player_count+1)
-            {
-                // Move to Epilogue
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break; 
-        case 4:
-            if ($data["scene"]+1<$player_count)
-            {
-                $data["scene"]+=1;
-            }
-            break;
-    }
-    
+    gawm_next_scene($data);
     return $data;
 }
 

@@ -24,6 +24,10 @@ $player_ids = [
 
 test(count($data["players"]), 4, "Expected 4 players.");
 test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in setup");
+test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
+test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
+test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
+
 foreach( $player_ids as $player_id )
 {
     test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
@@ -33,6 +37,11 @@ foreach( $player_ids as $player_id )
         current($data["players"][$player_id]["hand"]["aliases"])
     );    
 }
+
+// advance from setup to act I
+gawm_next_scene($data);
+test($data["act"], 1, "Act 1 should follow set up.");
+test($data["scene"], 0, "Act 1 starts with Scene 0.");
 
 echo "Passed ".$test_count." tests.\n";
 ?>
