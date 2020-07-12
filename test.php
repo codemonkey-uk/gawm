@@ -64,7 +64,30 @@ foreach( $player_ids as $player_id )
 }
 
 test(gawm_is_extrascene($data), true, "Extra Scene expected.");
+test(isset($data["victim"]), true, "The victim should have been selected");
+test(isset($data["victim"]["player_id"]), true, "The victim should have a player_id");
 
+// check which players are active
+$active_players = array_filter(
+    array_keys($data["players"]), 
+    function($id){global $data; return gawm_is_player_active($data,$id);}
+);
+
+test(count($active_players), 1, "Expected 1 active player in extra scene");
+$active_player = current($active_players);
+
+// active player in extra scene should select their new alias and a new detail
+gawm_play_detail(
+    $data, $active_player, "aliases", 
+    current($data["players"][$active_player]["hand"]["aliases"])
+);
+gawm_play_detail(
+    $data, $active_player, "relationships", 
+    current($data["players"][$active_player]["hand"]["relationships"])
+);
+
+gawm_next_scene($data);
+test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
 
 echo "Passed ".$test_count." tests.\n";
 ?>

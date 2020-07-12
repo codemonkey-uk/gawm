@@ -180,7 +180,7 @@ function gawm_next_scene(&$data)
             {
                 setup_extrascene($data);
             }
-            if (is_firstbreak($data))
+            if (gawm_is_firstbreak($data))
             {
                 setup_firstbreak($data);
             }
@@ -293,7 +293,7 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return $data["victim"]["player_id"]==$player_id;
     }
-    if (is_firstbreak($data))
+    if (gawm_is_firstbreak($data))
     {
         return $player_id==0;
     }
@@ -388,7 +388,7 @@ function gawm_is_extrascene(&$data)
     return $data["act"]==1 && $data["scene"] == count($data["players"]);
 }
 
-function is_firstbreak(&$data)
+function gawm_is_firstbreak(&$data)
 {
     return $data["act"]==1 && $data["scene"] == count($data["players"])+1;
 }
