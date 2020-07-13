@@ -153,55 +153,55 @@ function gawm_scene_count($act, $player_count)
     }
 }
 
+function complete_normalscene(&$data)
+{
+    // details played
+    $player_id = active_player_id($data);
+    $player = &$data["players"][$player_id];
+    
+    if (gawm_player_has_details_left_to_play($data, $player_id))
+    {
+        throw new Exception('Player '.$player_id.' has Details still to Play in act '.$data["act"].' scene '.$data["scene"]);
+    }
+    // outcome agreed
+    $tally = tally_votes($data);
+    if ($tally[gawm_vote_innocent]==$tally[gawm_vote_guilty])
+    {
+        throw new Exception(
+            'Players must agree on innocence/guilt: '.
+            ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
+        );
+    }
+    
+    // draw a token of the type according the the vote
+    $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
+        "innocence" : "guilt";
+    array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+    
+    // TODO: support giving of 2nd token?
+    
+    clear_votes($data);
+    
+    $data["scene"]+=1;
+    if ($data["scene"] == gawm_scene_count($data["act"], count($data["players"])))
+    {
+        $data["act"]+=1;
+        $data["scene"]=0;        
+    }
+}
+
 // advances gamestate to the next scene, if appropriate 
 // throws an exception if more steps need to be taken before moving on
 function gawm_next_scene(&$data)
 {
-    $player_ids = array_keys($data["players"]);
-    $player_count = count($data["players"]);
-    
     // normal scene, "can progress" checks
     if (is_normal_scene($data))
     {
-        // details played
-        $player_id = active_player_id($data);
-        $player = &$data["players"][$player_id];
-        
-        if (gawm_player_has_details_left_to_play($data, $player_id))
-        {
-            throw new Exception('Player '.$player_id.' has Details still to Play in act '.$data["act"].' scene '.$data["scene"]);
-        }
-        // outcome agreed
-        $tally = tally_votes($data);
-        if ($tally[gawm_vote_innocent]==$tally[gawm_vote_guilty])
-        {
-            throw new Exception(
-                'Players must agree on innocence/guilt: '.
-                ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
-            );
-        }
-        
-        // draw a token of the type according the the vote
-        $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
-            "innocence" : "guilt";
-        array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
-        
-        // TODO: support giving of 2nd token?
-        
-        clear_votes($data);
-        
-        $data["scene"]+=1;
-        if ($data["scene"] == gawm_scene_count($data["act"], $player_count))
-        {
-            $data["act"]+=1;
-            $data["scene"]=0;        
-        }
-
+        complete_normalscene($data);
     }
     else if (gawm_is_setup($data))
     {
         complete_setup($data);
-        return;
     }
     else if (gawm_is_firstbreak($data))
     {
