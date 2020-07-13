@@ -128,6 +128,16 @@ function active_player_idx()
     return (game.scene%Object.keys(game.players).length)+1;
 }
 
+function show_hand(player,player_uid)
+{
+    // note: 
+    // victim can have details but not vote
+    // players can vote when they have no details
+    return (player.hand && Object.keys(player.hand).length>0) ||
+        (game.act < 4 && player_uid!=0);
+    ;
+}
+
 function render_player(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
@@ -137,26 +147,19 @@ function render_player(player,player_uid,player_idx)
         html += "<div>The Victim.</div>";
 
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
-    if (player.hand && Object.keys(player.hand).length>0)
+    if (show_hand(player,player_uid))
     {
-        html += hand_tostr(player.hand,player_uid,detail_action,
+        // voting buttons?
+        var pfn = (game_stage_voting() && player_idx!=active_player_idx() && player_uid!=0) ?
             function(){
-                // inject voting buttons for the non-active player
-                if (game_stage_voting() && player_idx!=active_player_idx())
-                {
-                    var str = "";
-                    if (typeof player.vote == "undefined" || player.vote == 1)
-                        str += votebutton_html(player_uid,2);
-                    if (typeof player.vote == "undefined" || player.vote == 2)
-                        str += votebutton_html(player_uid,1);
-                    return str;
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        );
+                var str = "";
+                if (typeof player.vote == "undefined" || player.vote == 1)
+                    str += votebutton_html(player_uid,2);
+                if (typeof player.vote == "undefined" || player.vote == 2)
+                    str += votebutton_html(player_uid,1);
+                return str;
+            } : null;
+        html += hand_tostr(player.hand,player_uid,detail_action,pfn);
     }
     html += "<div>Details in play: </div>";
     if (player.play)
