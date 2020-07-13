@@ -39,7 +39,14 @@ function setup_extrascene(&$data)
         array_push( $player["hand"]["aliases"], array_pop($data["cards"]["aliases"]) );
     }
     
-    // TODO: return their innocence/guilt tokens to the pile
+    // return their innocence/guilt tokens to the pile
+    foreach( $player["tokens"] as $token_type => &$token_array )
+    {
+        while (count($token_array)>0)
+        {
+            array_push( $data["tokens"][$token_type], array_pop($token_array) );
+        }
+    }
 }
 
 function complete_extrascene(&$data)

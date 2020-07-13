@@ -105,6 +105,9 @@ $active_players = array_filter(
 test(count($active_players), 1, "Expected 1 active player in extra scene");
 $active_player = current($active_players);
 
+test(count($data["players"][$active_player]["tokens"]["guilt"]), 0, "Victim Player should have 0 Tokens.");
+test(count($data["players"][$active_player]["tokens"]["innocence"]), 0, "Victim Player should have 0 Tokens.");
+
 // active player in extra scene should select their new alias and a new detail
 gawm_play_detail(
     $data, $active_player, "aliases", 
