@@ -83,6 +83,11 @@ function complete_twist(&$data)
         // clear out processed twist json
         unset($player["twist"]);
     }
+    
+    // twist is last scene of act 2, 
+    // advance to next act
+    $data["act"]+=1;
+    $data["scene"]=0;     
 }
 
 ?>

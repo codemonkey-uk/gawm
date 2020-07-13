@@ -136,18 +136,37 @@ function active_player_id(&$data)
     return current($active_players);
 }
 
+function gawm_scene_count($act, $player_count)
+{
+    switch ($act)
+    {
+        case 0:
+            return 1;
+        case 1:
+            return $player_count+2;
+        case 2:
+            return $player_count+1;
+        case 3:
+            return 2*$player_count+1;
+        case 4:
+            return $player_count;
+    }
+}
+
 // advances gamestate to the next scene, if appropriate 
 // throws an exception if more steps need to be taken before moving on
 function gawm_next_scene(&$data)
 {
     $player_ids = array_keys($data["players"]);
     $player_count = count($data["players"]);
-
+    
     // normal scene, "can progress" checks
     if (is_normal_scene($data))
     {
         // details played
         $player_id = active_player_id($data);
+        $player = &$data["players"][$player_id];
+        
         if (gawm_player_has_details_left_to_play($data, $player_id))
         {
             throw new Exception('Player '.$player_id.' has Details still to Play in act '.$data["act"].' scene '.$data["scene"]);
@@ -161,68 +180,70 @@ function gawm_next_scene(&$data)
                 ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
             );
         }
+        
+        // draw a token of the type according the the vote
+        $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
+            "innocence" : "guilt";
+        array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+        
+        // TODO: support giving of 2nd token?
+        
+        clear_votes($data);
+        
+        $data["scene"]+=1;
+        if ($data["scene"] == gawm_scene_count($data["act"], $player_count))
+        {
+            $data["act"]+=1;
+            $data["scene"]=0;        
+        }
+
     }
-    
-    switch ($data["act"])
+    else if (gawm_is_setup($data))
     {
-        case 0:
-            complete_setup($data);
-            break;
-        case 1:
-            
-            $data["scene"]+=1;
-            if (gawm_is_extrascene($data))
-            {
-                setup_extrascene($data);
-            }
-            if (gawm_is_firstbreak($data))
-            {
-                setup_firstbreak($data);
-            }
-            if ($data["scene"] > $player_count+1)
-            {
-                // Move to Act II
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;
-        case 2:
-            $data["scene"]+=1;
-            if (gawm_is_twist($data))
-            {
-                setup_twist($data);
-            }
-            if ($data["scene"] == $player_count+1)
-            {
-                complete_twist($data);
-                
-                // Move to Act III
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break;    
-        case 3:
-            $data["scene"]+=1;
-            if ($data["scene"] == 2*$player_count)
-            {
-                // TODO: Last Break
-            }
-            if ($data["scene"] == 2*$player_count+1)
-            {
-                // Move to Epilogue
-                $data["act"]+=1;
-                $data["scene"]=0;
-            }
-            break; 
-        case 4:
-            if ($data["scene"]+1<$player_count)
-            {
-                $data["scene"]+=1;
-            }
-            break;
+        complete_setup($data);
+        return;
+    }
+    else if (gawm_is_firstbreak($data))
+    {
+        complete_firstbreak($data);
+    }
+    else if (gawm_is_twist($data))
+    {
+        complete_twist($data);
+    }
+    else if (gawm_is_lastbreak($data))
+    {
+        // complete_lastbreak($data);
+        $data["act"]+=1;
+        $data["scene"]=0;           
+    }
+    else if (gawm_is_epilogue($data))
+    {
+        // complete_epilogue($data);
     }
     
-    clear_votes($data);
+    // scene advanced, above, requires set up?
+    
+    if (gawm_is_extrascene($data))
+    {
+        setup_extrascene($data);
+    }
+    else if (gawm_is_firstbreak($data))
+    {
+        setup_firstbreak($data);
+    }
+    else if (gawm_is_twist($data))
+    {
+        setup_twist($data);
+    }
+    else if (gawm_is_lastbreak($data))
+    {
+        // TODO: setup_lastbreak($data);
+    }
+    else if (gawm_is_epilogue($data))
+    {
+        // TODO: setup_epilogue($data);
+    }
 }
 
 // draws until a player has 3 of each detail

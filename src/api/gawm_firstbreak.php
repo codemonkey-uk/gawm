@@ -29,7 +29,10 @@ function setup_firstbreak(&$data)
 
 function complete_firstbreak(&$data)
 {
-    // kept for consistancy, nothing extra to do here
+    // first break is last scene of act 1, 
+    // advance to next act
+    $data["act"]+=1;
+    $data["scene"]=0;   
 }
 
 ?>
