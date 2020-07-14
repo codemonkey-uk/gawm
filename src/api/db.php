@@ -69,4 +69,9 @@ function complete_edit($link, $game_id, $data)
     mysqli_close($link);
 }
 
+function cancel_edit($link)
+{
+    mysqli_close($link);
+}
+
 ?>

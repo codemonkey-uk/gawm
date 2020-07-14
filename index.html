@@ -164,6 +164,22 @@ function render_player(player,player_uid,player_idx)
     else
         html += "<div>The Victim.</div>";
 
+    if (player.unassigned_token)
+    {
+        html += "<div>Give: <b>"+player.unassigned_token+"</b> to: ";
+        for (var p in game.players)
+        {
+            if (p!=player_uid)
+            {
+                var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
+                html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
+            }
+        }
+        
+        var click = "givetoken(game, \""+player_uid+"\", \"0\")";
+        html += "<div onclick='"+click+"'>Discard</div>";
+    }
+    
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (show_hand(player,player_uid))
     {
@@ -257,6 +273,11 @@ function render_game(result)
         document.getElementById("add_player").style.visibility = "hidden";
     else
         document.getElementById("add_player").style.visibility = "visible";
+}
+
+function givetoken(gamestate,player_id,value)
+{
+    detailaction(gamestate,player_id,"token",value,"give_token");
 }
 
 function vote(gamestate,player_id,value)

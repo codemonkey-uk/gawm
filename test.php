@@ -104,6 +104,14 @@ function play_scenes( &$data, $player_ids, $detail )
         {
             vote_scene($data);
             gawm_next_scene($data);
+            
+            // token gifting
+            test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
+            $other_players = array_filter( $player_ids, 
+                function($id)use($player_id){return $id!=$player_id;}
+            );
+            gawm_give_token($data, $player_id, current($other_players));
+            test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
     }
 }

@@ -56,6 +56,18 @@ function _api_vote(&$data, $player_id, $detail)
     return $data;
 }
 
+function _api_give_token(&$data, $player_id, $detail)
+{
+    gawm_give_token($data, $player_id, $detail);
+    
+    return $data;
+}
+
+function _api_get(&$data)
+{
+    return $data;
+}
+
 function _api_next(&$data)
 {
     gawm_next_scene($data);

@@ -9,6 +9,16 @@ require_once 'gawm_setup.php';
 require_once 'gawm_extrascene.php';
 require_once 'gawm_firstbreak.php';
 
+
+$gawm_opposites = array(
+    "murder_cause" => "murder_discovery",
+    "murder_discovery" => "murder_cause",
+    "innocence" => "guilt",
+    "guilt" => "innocence",
+    gawm_vote_guilty => gawm_vote_innocent,
+    gawm_vote_innocent => gawm_vote_guilty,
+);
+        
 function gawm_new_game()
 {
     $data = null;
@@ -77,11 +87,8 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     if ($player_id==gawm_player_id_victim)
     {
         // draw 2nd of remaining detail
-        $opposite = array(
-            "murder_cause" => "murder_discovery",
-            "murder_discovery" => "murder_cause"
-        );
-        $other = $opposite[$detail_type];
+        global $gawm_opposites;
+        $other = $gawm_opposites[$detail_type];
         if (isset($player["hand"][$other]))
         {
             draw_player_cards($data, $player, array($other => 2) );
@@ -107,6 +114,34 @@ function gawm_vote(&$data, $player_id, $vote_value)
 function gawm_is_epilogue(&$data)
 {
     return $data["act"]==4;
+}
+
+function gawm_give_token(&$data, $player_id, $target_id)
+{
+    if (!array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+
+    $player = &$data["players"][$player_id];
+    
+    if (!isset($player["unassigned_token"]))
+        throw new Exception('No unassigned_token found on Player Id: '.$player_id);
+        
+    // passing in the victim id as target is taken to imply discard (give to no one)
+    if ($target_id!=gawm_player_id_victim)
+    {
+        if ($target_id==$player_id)
+            throw new Exception('A player cannot award themself the free token');
+            
+        if (!array_key_exists($target_id,$data["players"]))
+            throw new Exception('Invalid Target Id: '.$target_id);
+
+        $target = &$data["players"][$target_id];
+    
+        $token = $player["unassigned_token"];
+        array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
+    }
+    
+    unset($player["unassigned_token"]);
 }
 
 // a normal scene is one where a detail is played and a token is awarded
@@ -175,7 +210,8 @@ function complete_normalscene(&$data)
         "innocence" : "guilt";
     array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
     
-    // TODO: support giving of 2nd token?
+    global $gawm_opposites;
+    $player["unassigned_token"]=$gawm_opposites[$token];
     
     clear_votes($data);
     

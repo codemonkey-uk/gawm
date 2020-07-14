@@ -64,6 +64,9 @@ try {
         complete_edit($link, $game_id, $data);
     }
 } catch (Exception $e) {
+    if (isset($link)) {
+        cancel_edit($link);
+    }
     http_response_code(400);
     echo 'Caught exception: ',  $e->getMessage(), "\n";
     return;
