@@ -116,21 +116,18 @@ function play_scenes( &$data, $player_ids, $detail )
     }
 }
 
-function test_playthrough()
+function test_playthrough($c)
 {
     global $data;
     
     $data = gawm_new_game();
     test(gawm_is_setup($data), true, "New game should start in Setup");
 
-    $player_ids = [
-        gawm_add_player($data,"player 1"),
-        gawm_add_player($data,"player 2"),
-        gawm_add_player($data,"player 3"),
-        gawm_add_player($data,"player 4"),
-    ];
+    $player_ids = [];
+    for ($i=0;$i!=$c;$i=$i+1)
+        array_push( $player_ids, gawm_add_player($data,"player-".($i+1)));
 
-    test(count($data["players"]), 4, "Expected 4 players.");
+    test(count($data["players"]), $c, "Expected ".$c." players.");
     test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in setup");
     test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
     test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
@@ -238,7 +235,9 @@ function test_playthrough()
 echo "Testing... ";
 
 test_tally_votes();
-test_playthrough();
+test_playthrough(4);
+test_playthrough(5);
+test_playthrough(6);
 
 echo "Passed ".$test_count." tests.\n";
 ?>
