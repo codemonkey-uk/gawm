@@ -49,7 +49,7 @@ function img_url(deck,i)
     // temp workaround, card json doesn't have guilt/innocence tokens
     if (deck=="guilt" || deck=='innocence')
         return 'assets/'+deck+'_'+i+'.png';
-    
+
     return 'assets/'+cards[deck][i]['img'];
 }
 
@@ -58,7 +58,7 @@ function img_alt(deck,i)
     // temp workaround, card json doesn't have guilt/innocence tokens
     if (deck=='guilt' || deck=='innocence')
         return deck;
-        
+
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }
 
@@ -98,15 +98,15 @@ function votediv_html(player_id,value,action)
     var url = 'assets/'+value_str+'.png';
     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+value_str+"\">";
     html += "<div class='token' onclick='" +action+ "'>";
-    html += img;    
+    html += img;
     html += "</div>"
-    return html;    
+    return html;
 }
 
 function votebutton_html(player_id,value)
 {
     var click = "vote(game, \""+player_id+"\", "+value+")";
-    return votediv_html(player_id,value,click);    
+    return votediv_html(player_id,value,click);
 }
 
 function game_stage_voting()
@@ -114,14 +114,14 @@ function game_stage_voting()
     var c = Object.keys(game.players).length;
     if (game.act==3)
         c = c*2;
-        
+
     if (game.act == 0) return false;
     if (game.act==1 && game.scene==c) return true;
     if (game.act==1 && game.scene>c) return false;
     if (is_twist()) return false;
     if (game.act==3 && game.scene==c) return false;
-    
-    return true;    
+
+    return true;
 }
 
 function active_player_idx()
@@ -142,13 +142,13 @@ function active_player_idx()
             idx++;
         }
     }
-    
+
     return (game.scene%Object.keys(game.players).length)+1;
 }
 
 function show_hand(player,player_uid)
 {
-    // note: 
+    // note:
     // victim can have details but not vote
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
@@ -175,11 +175,11 @@ function render_player(player,player_uid,player_idx)
                 html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
             }
         }
-        
+
         var click = "givetoken(game, \""+player_uid+"\", \"0\")";
         html += "<div onclick='"+click+"'>Discard</div>";
     }
-    
+
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (show_hand(player,player_uid))
     {
@@ -211,7 +211,7 @@ function render_player(player,player_uid,player_idx)
     {
         html += "<div>Tokens recieved: </div>";
         html += hand_tostr(player.tokens,player_uid,"nop",null);
-    }  
+    }
     html += '</div>';
     return html;
 }
@@ -220,9 +220,9 @@ function game_stage_str()
 {
     if (game.act == 0)
         return "Setup - Add Players and Select Alias Details.";
-    
+
     var c = Object.keys(game.players).length;
-    
+
     if (game.act==1 && game.scene==c)
         return "Extra Scene: Introduce a new character";
 
@@ -231,10 +231,10 @@ function game_stage_str()
 
     if (is_twist())
         return "Second Break: The Twist";
-    
+
     if (game.act==3)
         c = c*2;
-        
+
     if (game.act==3 && game.scene==c)
         return "Last Break: The Accusation and The Guilty";
 
@@ -245,10 +245,10 @@ function game_stage_str()
         act = "Act II: Investigations";
     if (game.act==3)
         act = "Act III: Incriminations";
-        
+
     if (game.act==4)
         act = "Epilogue";
-        
+
     return act + " - Scene " + (game.scene+1) + " / " + c;
 }
 
@@ -256,7 +256,7 @@ function render_game(result)
 {
     game = result;
     var html = "";
-    
+
     html += "<div class='game'>";
     html += "<div>" + game_stage_str() + "</div>";
     if (result.victim)
@@ -267,7 +267,7 @@ function render_game(result)
     for (var player in result.players)
         html += render_player(result.players[player],player,player_idx++);
     html += "</div>";
-    
+
     document.getElementById('players').innerHTML = html;
     if (game.act>0)
         document.getElementById("add_player").style.visibility = "hidden";
@@ -302,17 +302,17 @@ function twistdetail(gamestate,player_id,detail_type,detail)
 function detailaction(gamestate,player_id,detail_type,detail,action)
 {
     console.log("playdetail called:",player_id,detail_type,detail);
-    
+
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
             document.getElementById('debug').value = this.responseText;
-            
+
             render_game(result);
         }
     };
-    
+
     // build request json
     var request = {};
     request.action = action;
@@ -320,7 +320,7 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
     request.player_id=player_id;
     request.detail_type=detail_type;
     request.detail=detail;
-    
+
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
 }
@@ -328,7 +328,7 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
 function add_player(gamestate)
 {
     var player_name = prompt("Please enter your name", "Player "+(Object.keys(game.players).length+1));
-    
+
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -362,7 +362,7 @@ function next(gamestate)
     var request = {};
     request.action = 'next';
     request.game_id = game_id;
-    
+
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
 }
@@ -388,7 +388,7 @@ function new_game()
     xmlhttp.send( JSON.stringify(request) );
 }
 
-function reset() 
+function reset()
 {
     var result = JSON.parse(document.getElementById('debug').value );
     render_game(result);

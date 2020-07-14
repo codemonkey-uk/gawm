@@ -18,7 +18,7 @@ $gawm_opposites = array(
     gawm_vote_guilty => gawm_vote_innocent,
     gawm_vote_innocent => gawm_vote_guilty,
 );
-        
+
 function gawm_new_game()
 {
     $data = null;
@@ -37,40 +37,40 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
         $player = &$data["victim"];
     else
         $player = &$data["players"][$player_id];
-        
+
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type: '.$detail_type);
-    
+
     if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
-        
+
     if (!gawm_is_detail_active($data, $detail_type))
         throw new Exception('Invalid Detail for Act');
-        
+
     if (!gawm_is_player_active($data, $player_id))
         throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
-    
+
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held');
-    
+
     // skip this for victim, not a real player
     if ($player_id!=gawm_player_id_victim)
     {
         if (!gawm_player_has_details_left_to_play($data, $player_id))
             throw new Exception('Insufficent Details for Remaining Acts: ');
     }
-    
+
     // make sure deck type exists in play
     if (!array_key_exists($detail_type,$player["play"]))
     {
         $player["play"][$detail_type] = array();
     }
-        
+
     // move card from hand into play
     $deck_to = &$player["play"][$detail_type];
     array_push($deck_to, $detail_card);
-    
+
     $key = array_search($detail_card, $deck_from);
     unset( $deck_from[$key] );
 
@@ -82,7 +82,7 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     }
     // tidy up the json, remove the empty deck type from the hand
     unset($player["hand"][$detail_type]);
-    
+
     // custom victim details step
     if ($player_id==gawm_player_id_victim)
     {
@@ -100,10 +100,10 @@ function gawm_vote(&$data, $player_id, $vote_value)
 {
     if ($vote_value!=gawm_vote_guilty && $vote_value!=gawm_vote_innocent)
         throw new Exception('Invalid Vote Value: '.$vote_value);
-        
+
     if (gawm_is_twist($data))
         throw new Exception('Invalid Scene for Votes');
-        
+
     if (!array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
 
@@ -122,25 +122,25 @@ function gawm_give_token(&$data, $player_id, $target_id)
         throw new Exception('Invalid Player Id: '.$player_id);
 
     $player = &$data["players"][$player_id];
-    
+
     if (!isset($player["unassigned_token"]))
         throw new Exception('No unassigned_token found on Player Id: '.$player_id);
-        
+
     // passing in the victim id as target is taken to imply discard (give to no one)
     if ($target_id!=gawm_player_id_victim)
     {
         if ($target_id==$player_id)
             throw new Exception('A player cannot award themself the free token');
-            
+
         if (!array_key_exists($target_id,$data["players"]))
             throw new Exception('Invalid Target Id: '.$target_id);
 
         $target = &$data["players"][$target_id];
-    
+
         $token = $player["unassigned_token"];
         array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
     }
-    
+
     unset($player["unassigned_token"]);
 }
 
@@ -161,7 +161,7 @@ function active_player_id(&$data)
 {
     // check which players are active
     $active_players = array_filter(
-        array_keys($data["players"]), 
+        array_keys($data["players"]),
         function($id){global $data; return gawm_is_player_active($data,$id);}
     );
 
@@ -190,7 +190,7 @@ function complete_normalscene(&$data)
     // details played
     $player_id = active_player_id($data);
     $player = &$data["players"][$player_id];
-    
+
     if (gawm_player_has_details_left_to_play($data, $player_id))
     {
         throw new Exception('Player '.$player_id.' has Details still to Play in act '.$data["act"].' scene '.$data["scene"]);
@@ -204,26 +204,26 @@ function complete_normalscene(&$data)
             ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
         );
     }
-    
+
     // draw a token of the type according the the vote
     $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
         "innocence" : "guilt";
     array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
-    
+
     global $gawm_opposites;
     $player["unassigned_token"]=$gawm_opposites[$token];
-    
+
     clear_votes($data);
-    
+
     $data["scene"]+=1;
     if ($data["scene"] == gawm_scene_count($data["act"], count($data["players"])))
     {
         $data["act"]+=1;
-        $data["scene"]=0;        
+        $data["scene"]=0;
     }
 }
 
-// advances gamestate to the next scene, if appropriate 
+// advances gamestate to the next scene, if appropriate
 // throws an exception if more steps need to be taken before moving on
 function gawm_next_scene(&$data)
 {
@@ -248,15 +248,15 @@ function gawm_next_scene(&$data)
     {
         // complete_lastbreak($data);
         $data["act"]+=1;
-        $data["scene"]=0;           
+        $data["scene"]=0;
     }
     else if (gawm_is_epilogue($data))
     {
         // complete_epilogue($data);
     }
-    
+
     // scene advanced, above, requires set up?
-    
+
     if (gawm_is_extrascene($data))
     {
         setup_extrascene($data);
@@ -286,22 +286,22 @@ function draw_player_details(&$data, &$player)
     $draws = array(
         "relationships" => 3,
         "objects" => 3,
-        "motives" => 3,       
+        "motives" => 3,
         "wildcards" => 3
     );
     draw_player_cards($data, $player, $draws);
 }
 
-// draws cards into the players hand 
+// draws cards into the players hand
 // until they have the amounts specified by draws argument
 function draw_player_cards(&$data, &$player, $draws)
 {
-    foreach ($draws as $deck => $count) 
+    foreach ($draws as $deck => $count)
     {
         if (!array_key_exists($deck,$player["hand"]))
         {
             $player["hand"][$deck] = array();
-        }   
+        }
         while (count($player["hand"][$deck])<$count)
         {
             array_push( $player["hand"][$deck], array_pop($data["cards"][$deck]) );
@@ -312,13 +312,13 @@ function draw_player_cards(&$data, &$player, $draws)
 function gawm_is_detail_active(&$data, $detail_type)
 {
     // players should always be able to play their alias
-    // in practice this happens at two points: 
+    // in practice this happens at two points:
     // - during set up, and during the extra scene
     if ($detail_type=="aliases")
     {
         return true;
     }
-    
+
     // Motives cannot be played until after the murder, starting in Act II
     if ($data["act"]==1)
     {
@@ -328,7 +328,7 @@ function gawm_is_detail_active(&$data, $detail_type)
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -339,7 +339,7 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return true;
     }
-    
+
     // during the extra scene, only the victim is active
     if (gawm_is_extrascene($data))
     {
@@ -349,12 +349,12 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return $player_id==gawm_player_id_victim;
     }
-    
+
     // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
-    
+
     if ($data["act"]==3)
-    {   
+    {
         // in the 3rd act, 2 scenes per player
         return ($data["scene"]%count($data["players"]))==$i;
     }
@@ -368,7 +368,7 @@ function gawm_player_has_details_left_to_play(&$data, $player_id)
 {
     $player = &$data["players"][$player_id];
 
-    // acts 1-3, 
+    // acts 1-3,
     // but in act 3, treat scenes past player count as in the next act
     $act = $data["act"];
     if ($act==3 && $data["scene"]>=count($data["players"]))
@@ -389,7 +389,7 @@ function tally_votes(&$data)
 {
     // active player, ignored except for breaks ties
     $active_player_id = active_player_id($data);
-    
+
     // tally up votes from active players
     $result = [gawm_vote_innocent => 0, gawm_vote_guilty => 0];
     foreach( $data["players"] as $player_id => $player )
@@ -402,7 +402,7 @@ function tally_votes(&$data)
             }
         }
     }
-    
+
     // tie break if necessery
     if ($result[gawm_vote_innocent]==$result[gawm_vote_guilty])
     {
@@ -411,9 +411,9 @@ function tally_votes(&$data)
         {
             $result[$ap["vote"]]++;
         }
-        
+
     }
-    
+
     return $result;
 }
 
@@ -507,10 +507,10 @@ function redact_for_player($data, $player_id)
 {
     // cards left in the deck? cients dont need to know...
     unset($data["cards"]);
-    // how the tokens got shuffled? 
-    unset($data["tokens"]);    
-    
-    // todo (later) remove / reduce other players hands 
+    // how the tokens got shuffled?
+    unset($data["tokens"]);
+
+    // todo (later) remove / reduce other players hands
     // (keeping for now to make testing easier)
     return $data;
 }

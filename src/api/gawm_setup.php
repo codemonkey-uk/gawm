@@ -5,7 +5,7 @@
 // Public, called by API:
 // - gawm_is_setup - returns true if it is Act 0
 // - gawm_add_player - allows players to be added to the game
-// 
+//
 // Implementation, used during Next Scene:
 // - setup_setup - to be called at the start of the scene,
 // - complete_setup - to be called at the start of the scene
@@ -21,16 +21,16 @@ function gawm_is_setup(&$data)
 function gawm_add_player(&$data, $player_name)
 {
     // only add players, up to 6, in act 0 (setup)
-    if (!gawm_is_setup($data)) 
+    if (!gawm_is_setup($data))
     {
         throw new Exception('Trying to add players outside setup step.');
     }
-    
+
     if (count($data["players"] ) > 6)
     {
         throw new Exception('Trying to add a 7th player.');
     }
-    
+
     $new_player = [
         'name' => $player_name,
         'hand' => [],
@@ -40,25 +40,25 @@ function gawm_add_player(&$data, $player_name)
             'innocence' => []
         ]
     ];
-    
+
     // draw aliases
     draw_player_cards($data, $new_player, array("aliases" => 2) );
-    
+
     // TODO: optional rule, draw details with alias during set up
     // draw_player_details($data, $new_player);
-    
+
     // create unique id for the new player
     $player_id = uniqid();
     while (array_key_exists($player_id,$data["players"]) || $player_id==gawm_player_id_victim)
         $player_id = uniqid();
-        
+
     $data["players"][$player_id] = $new_player;
 
-    // each player put four guilt tokens and four innocence tokens, 
+    // each player put four guilt tokens and four innocence tokens,
     // numbered "0" to "3", in a central pile
     $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], range(0,3));
-    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));  
-    
+    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));
+
     return $player_id;
 }
 
@@ -100,7 +100,7 @@ function complete_setup(&$data)
     {
         throw new Exception('Must have 4 Players to Complete Setup.');
     }
- 
+
     // every player has 1 alias
     foreach( $data["players"] as $player )
     {
@@ -115,16 +115,16 @@ function complete_setup(&$data)
             throw new Exception('Alias detail missing from play.');
         }
     }
-    
+
     // every player has 1 alias
     foreach( $data["players"] as &$player )
     {
         // draw any other details needed for Act I
-        draw_player_details($data, $player);    
+        draw_player_details($data, $player);
     }
-    
+
     shuffle($data["tokens"]["innocence"]);
-    shuffle($data["tokens"]["guilt"]);    
+    shuffle($data["tokens"]["guilt"]);
 
     $data["act"] = 1;
     $data["scene"] = 0;

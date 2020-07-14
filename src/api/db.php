@@ -14,7 +14,7 @@ function save_new_game($game)
 {
     $link = db_connect();
     $query = "INSERT INTO `games` (`uid`, `time`, `data`) VALUES (NULL, CURRENT_TIMESTAMP, ?)";
-    if ($stmt = mysqli_prepare($link, $query)) 
+    if ($stmt = mysqli_prepare($link, $query))
     {
         $game_encoded = json_encode($game);
         mysqli_stmt_bind_param($stmt, "s", $game_encoded);
@@ -22,7 +22,7 @@ function save_new_game($game)
         $game_id = mysqli_insert_id($link);
     }
     mysqli_close($link);
-    
+
     return $game_id;
 }
 
@@ -38,8 +38,8 @@ function load_for_edit($game_id, &$data)
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_array($result, MYSQLI_NUM);
-        
-        // should only be one  
+
+        // should only be one
         if (isset($row))
         {
             foreach ($row as $r)
@@ -52,7 +52,7 @@ function load_for_edit($game_id, &$data)
     {
         $game_out["error"]=$query;
     }
-    
+
     return $link;
 }
 

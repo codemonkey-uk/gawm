@@ -9,7 +9,7 @@ function _api_new()
     $data = gawm_new_game();
     $game_id = save_new_game($data);
     $player_id = 0;
-    
+
     // Todo: I think I want ALL reponses to come back in this format...
     return [
         'game' => redact_for_player($data, $player_id),
@@ -28,9 +28,9 @@ function _api_add_player(&$data, $player_name)
     }
     $player_name = htmlentities($player_name);
     $player_name = substr($player_name, 0, 40);
-    
+
     $player_id = gawm_add_player($data, $player_name);
-    
+
     // todo: how are we going to tell clients which player is them?
     return $data;
 }
@@ -52,14 +52,14 @@ function _api_vote(&$data, $player_id, $detail)
     $vote_value = intval($detail);
 
     gawm_vote($data, $player_id, $detail);
-    
+
     return $data;
 }
 
 function _api_give_token(&$data, $player_id, $detail)
 {
     gawm_give_token($data, $player_id, $detail);
-    
+
     return $data;
 }
 
@@ -77,7 +77,7 @@ function _api_next(&$data)
 function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
 {
     // TODO: Ensure player has the card in-hand before allowing edit_note
-    
+
     // Minimal input filtering on the plain text
     $note = htmlentities($note);
     // Strip note to max length of 1024.
@@ -85,7 +85,7 @@ function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
     $note = substr($note, 0, 1024);
 
     $data['notes'][$detail_type][$detail] = $note;
-    
+
     return $data;
 }
 
