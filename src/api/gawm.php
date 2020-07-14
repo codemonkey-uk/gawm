@@ -100,9 +100,6 @@ function gawm_vote(&$data, $player_id, $vote_value)
     if (!array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
 
-    if (gawm_is_player_active($data, $player_id))
-        throw new Exception('Active Player ('.$player_id.') doesnt Vote in Scene: '.$data["scene"]);
-        
     $player = &$data["players"][$player_id];
     $player["vote"]=$vote_value;
 }
@@ -239,6 +236,7 @@ function gawm_next_scene(&$data)
     else if (gawm_is_lastbreak($data))
     {
         // TODO: setup_lastbreak($data);
+        $data["most_innocent"]=find_most_innocent_player($data);
     }
     else if (gawm_is_epilogue($data))
     {
@@ -353,14 +351,33 @@ function gawm_player_has_details_left_to_play(&$data, $player_id)
 
 function tally_votes(&$data)
 {
+    // active player, ignored except for breaks ties
+    $active_player_id = active_player_id($data);
+    
+    // tally up votes from active players
     $result = [gawm_vote_innocent => 0, gawm_vote_guilty => 0];
-    foreach( $data["players"] as $player )
+    foreach( $data["players"] as $player_id => $player )
     {
-        if (array_key_exists("vote",$player))
+        if ($player_id!=$active_player_id)
         {
-            $result[$player["vote"]]++;
+            if (array_key_exists("vote", $player))
+            {
+                $result[$player["vote"]]++;
+            }
         }
     }
+    
+    // tie break if necessery
+    if ($result[gawm_vote_innocent]==$result[gawm_vote_guilty])
+    {
+        $ap = &$data["players"][$active_player_id];
+        if (array_key_exists("vote", $ap))
+        {
+            $result[$ap["vote"]]++;
+        }
+        
+    }
+    
     return $result;
 }
 

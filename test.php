@@ -30,6 +30,55 @@ function test( $result, $expected_result, $error_message )
     $test_count++;
 }
 
+function test_tally_votes()
+{
+    global $data;
+    
+    // 1 eligable vote
+    $data = [
+        "players" => [
+            "1" => [],
+            "2" => ["vote" => gawm_vote_innocent],
+            "3" => [],
+            "4" => [],            
+        ],
+        "scene" => 1,
+        "act" => 0
+    ];
+    $tally = tally_votes($data);
+    test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
+
+    // 1 eligable vote, active player disagrees (should be ignored)    
+    $data = [
+        "players" => [
+            "1" => ["vote" => gawm_vote_guilty],
+            "2" => ["vote" => gawm_vote_innocent],
+            "3" => [],
+            "4" => [],            
+        ],
+        "scene" => 1,
+        "act" => 0
+    ];  
+    $tally = tally_votes($data);
+    test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
+    test($tally[gawm_vote_guilty],0,"Expected to count 0 guilty votes");
+    
+    // 2 eligable votes, active player tie-breaks
+    $data = [
+        "players" => [
+            "1" => ["vote" => gawm_vote_guilty],
+            "2" => ["vote" => gawm_vote_innocent],
+            "3" => ["vote" => gawm_vote_guilty],
+            "4" => [],            
+        ],
+        "scene" => 1,
+        "act" => 0
+    ];  
+    $tally = tally_votes($data);
+    test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
+    test($tally[gawm_vote_guilty],2,"Expected to count 2 guilty votes");    
+}
+
 function vote_scene( &$data )
 {
     $inactive_players = array_filter(
@@ -59,113 +108,127 @@ function play_scenes( &$data, $player_ids, $detail )
     }
 }
 
-echo "Testing... ";
-$data = gawm_new_game();
-test(gawm_is_setup($data), true, "New game should start in Setup");
-
-$player_ids = [
-    gawm_add_player($data,"player 1"),
-    gawm_add_player($data,"player 2"),
-    gawm_add_player($data,"player 3"),
-    gawm_add_player($data,"player 4"),
-];
-
-test(count($data["players"]), 4, "Expected 4 players.");
-test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in setup");
-test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
-test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
-test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
-test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
-
-play_scenes($data, $player_ids,"aliases");
-
-// advance from setup to act I
-gawm_next_scene($data);
-test($data["act"], 1, "Act 1 should follow set up.");
-test($data["scene"], 0, "Act 1 starts with Scene 0.");
-
-test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in act I");
-test(gawm_is_detail_active($data, "objects"), true, "objects should be active in act I");
-test(gawm_is_detail_active($data, "relationships"), true, "relationships should be active in act I");
-test(gawm_is_detail_active($data, "wildcards"), true, "wildcards should be active in act I");
-
-// play out act I
-play_scenes($data, $player_ids,"relationships");
-
-test(gawm_is_extrascene($data), true, "Extra Scene expected.");
-test(isset($data["victim"]), true, "The victim should have been selected");
-test(isset($data["victim"]["player_id"]), true, "The victim should have a player_id");
-
-// check which players are active
-$active_players = array_filter(
-    array_keys($data["players"]), 
-    function($id){global $data; return gawm_is_player_active($data,$id);}
-);
-
-test(count($active_players), 1, "Expected 1 active player in extra scene");
-$active_player = current($active_players);
-
-test(count($data["players"][$active_player]["tokens"]["guilt"]), 0, "Victim Player should have 0 Tokens.");
-test(count($data["players"][$active_player]["tokens"]["innocence"]), 0, "Victim Player should have 0 Tokens.");
-
-// active player in extra scene should select their new alias and a new detail
-gawm_play_detail(
-    $data, $active_player, "aliases", 
-    current($data["players"][$active_player]["hand"]["aliases"])
-);
-gawm_play_detail(
-    $data, $active_player, "relationships", 
-    current($data["players"][$active_player]["hand"]["relationships"])
-);
-vote_scene($data);
-gawm_next_scene($data);
-test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
-
-// make play_detail calls for the muder details
-gawm_play_detail(
-    $data, gawm_player_id_victim, "murder_cause", 
-    current($data["victim"]["hand"]["murder_cause"])
-);
-gawm_play_detail(
-    $data, gawm_player_id_victim, "murder_discovery", 
-    current($data["victim"]["hand"]["murder_discovery"])
-);
-test(count($data["victim"]["play"]), 4,"The victim should have 4 detail types in play (alias, 2x murder, +1).");
-
-gawm_next_scene($data);
-
-// advance from first break to act II
-test($data["act"], 2, "Act II should follow first break.");
-test($data["scene"], 0, "Act II starts with Scene 0.");
-test(gawm_is_detail_active($data, "motives"), true, "motives should now be active in Act II");
-
-// play out act II
-play_scenes($data, $player_ids,"objects");
-test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
-
-// every player twists 1 motive
-foreach( $player_ids as $player_id )
+function test_playthrough()
 {
-    gawm_twist_detail(
-        $data, $player_id, "motives", 
-        current($data["players"][$player_id]["hand"]["motives"])
+    global $data;
+    
+    $data = gawm_new_game();
+    test(gawm_is_setup($data), true, "New game should start in Setup");
+
+    $player_ids = [
+        gawm_add_player($data,"player 1"),
+        gawm_add_player($data,"player 2"),
+        gawm_add_player($data,"player 3"),
+        gawm_add_player($data,"player 4"),
+    ];
+
+    test(count($data["players"]), 4, "Expected 4 players.");
+    test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in setup");
+    test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
+    test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
+    test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
+    test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
+
+    play_scenes($data, $player_ids,"aliases");
+
+    // advance from setup to act I
+    gawm_next_scene($data);
+    test($data["act"], 1, "Act 1 should follow set up.");
+    test($data["scene"], 0, "Act 1 starts with Scene 0.");
+
+    test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in act I");
+    test(gawm_is_detail_active($data, "objects"), true, "objects should be active in act I");
+    test(gawm_is_detail_active($data, "relationships"), true, "relationships should be active in act I");
+    test(gawm_is_detail_active($data, "wildcards"), true, "wildcards should be active in act I");
+
+    // play out act I
+    play_scenes($data, $player_ids,"relationships");
+
+    test(gawm_is_extrascene($data), true, "Extra Scene expected.");
+    test(isset($data["victim"]), true, "The victim should have been selected");
+    test(isset($data["victim"]["player_id"]), true, "The victim should have a player_id");
+
+    // check which players are active
+    $active_players = array_filter(
+        array_keys($data["players"]), 
+        function($id){global $data; return gawm_is_player_active($data,$id);}
     );
+
+    test(count($active_players), 1, "Expected 1 active player in extra scene");
+    $active_player = current($active_players);
+
+    test(count($data["players"][$active_player]["play"]), 0,"Victim Player should now have 0 detail types in play.");
+    test(count($data["players"][$active_player]["tokens"]["guilt"]), 0, "Victim Player should have 0 Tokens.");
+    test(count($data["players"][$active_player]["tokens"]["innocence"]), 0, "Victim Player should have 0 Tokens.");
+    test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
+
+    // active player in extra scene should select their new alias and a new detail
+    gawm_play_detail(
+        $data, $active_player, "aliases", 
+        current($data["players"][$active_player]["hand"]["aliases"])
+    );
+    gawm_play_detail(
+        $data, $active_player, "relationships", 
+        current($data["players"][$active_player]["hand"]["relationships"])
+    );
+    vote_scene($data);
+    gawm_next_scene($data);
+    test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
+    test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
+
+    // make play_detail calls for the muder details
+    gawm_play_detail(
+        $data, gawm_player_id_victim, "murder_cause", 
+        current($data["victim"]["hand"]["murder_cause"])
+    );
+    gawm_play_detail(
+        $data, gawm_player_id_victim, "murder_discovery", 
+        current($data["victim"]["hand"]["murder_discovery"])
+    );
+    test(count($data["victim"]["play"]), 4,"The victim should have 4 detail types in play (alias, 2x murder, +1).");
+
+    gawm_next_scene($data);
+
+    // advance from first break to act II
+    test($data["act"], 2, "Act II should follow first break.");
+    test($data["scene"], 0, "Act II starts with Scene 0.");
+    test(gawm_is_detail_active($data, "motives"), true, "motives should now be active in Act II");
+
+    // play out act II
+    play_scenes($data, $player_ids,"objects");
+    test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
+
+    // every player twists 1 motive
+    foreach( $player_ids as $player_id )
+    {
+        gawm_twist_detail(
+            $data, $player_id, "motives", 
+            current($data["players"][$player_id]["hand"]["motives"])
+        );
+    }
+
+    gawm_next_scene($data);
+    test($data["act"], 3, "Act III should follow Twist.");
+    test($data["scene"], 0, "Act III starts with Scene 0.");
+
+    // play out act III
+    play_scenes($data, $player_ids,"wildcards");
+    play_scenes($data, $player_ids,"motives");
+
+    // test is last break
+    test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
+    test( isset($data["most_innocent"]), true, "The Most Innocent must exist in the Last Break" );
+
+    gawm_next_scene($data);
+
+    test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
+    test($data["scene"], 0, "Epilogue starts with Scene 0.");
 }
 
-gawm_next_scene($data);
-test($data["act"], 3, "Act III should follow Twist.");
-test($data["scene"], 0, "Act III starts with Scene 0.");
+echo "Testing... ";
 
-// play out act III
-play_scenes($data, $player_ids,"wildcards");
-play_scenes($data, $player_ids,"motives");
-
-// test is last break
-test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
-gawm_next_scene($data);
-
-test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
-test($data["scene"], 0, "Epilogue starts with Scene 0.");
+test_tally_votes();
+test_playthrough();
 
 echo "Passed ".$test_count." tests.\n";
 ?>

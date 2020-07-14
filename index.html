@@ -168,7 +168,7 @@ function render_player(player,player_uid,player_idx)
     if (show_hand(player,player_uid))
     {
         // voting buttons?
-        var pfn = (game_stage_voting() && player_idx!=active_player_idx() && player_uid!=0) ?
+        var pfn = (game_stage_voting() && player_uid!=0) ?
             function(){
                 var str = "";
                 if (typeof player.vote == "undefined" || player.vote == 1)
