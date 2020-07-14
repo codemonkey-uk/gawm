@@ -46,7 +46,7 @@ function setup_extrascene(&$data)
         {
             array_push( $data["tokens"][$token_type], array_pop($token_array) );
         }
-    }
+    }  
 }
 
 function complete_extrascene(&$data)

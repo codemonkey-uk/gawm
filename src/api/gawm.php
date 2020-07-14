@@ -33,6 +33,9 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     if ($player_id !=gawm_player_id_victim && !array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
 
+    if (count_unassigned_tokens($data)>0)
+        throw new Exception('Cannot play details with unassigned token left.');
+        
     if ($player_id==gawm_player_id_victim)
         $player = &$data["victim"];
     else
@@ -52,8 +55,8 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
 
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
-        throw new Exception('Detail Not Held');
-
+        throw new Exception('Detail Not Held '.$detail_type.$detail_card);
+    
     // skip this for victim, not a real player
     if ($player_id!=gawm_player_id_victim)
     {
@@ -142,6 +145,19 @@ function gawm_give_token(&$data, $player_id, $target_id)
     }
 
     unset($player["unassigned_token"]);
+    
+    if (count_unassigned_tokens($data)==0)
+    {
+        gawm_begin_scene($data);
+    }        
+}
+
+function count_unassigned_tokens(&$data)
+{
+    return count( array_filter(
+        $data["players"], 
+        function($p){ return isset($p["unassigned_token"]); }
+    ));
 }
 
 // a normal scene is one where a detail is played and a token is awarded
@@ -256,7 +272,14 @@ function gawm_next_scene(&$data)
     }
 
     // scene advanced, above, requires set up?
+    if (count_unassigned_tokens($data)==0)
+    {
+        gawm_begin_scene($data);
+    }
+}
 
+function gawm_begin_scene(&$data)
+{
     if (gawm_is_extrascene($data))
     {
         setup_extrascene($data);
@@ -349,7 +372,11 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return $player_id==gawm_player_id_victim;
     }
-
+    if (gawm_is_lastbreak($data))
+    {
+        return $data["most_innocent"];
+    }
+    
     // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
 

@@ -181,6 +181,7 @@ function test_playthrough()
     );
     vote_scene($data);
     gawm_next_scene($data);
+    gawm_give_token($data,$active_player,0);    
     test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
     test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
 
@@ -226,7 +227,8 @@ function test_playthrough()
     // test is last break
     test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
     test( isset($data["most_innocent"]), true, "The Most Innocent must exist in the Last Break" );
-
+    test( gawm_is_player_active($data, $data["most_innocent"]), true, "The Most Innocent should be the active player in the Last Break" );
+    
     gawm_next_scene($data);
 
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
