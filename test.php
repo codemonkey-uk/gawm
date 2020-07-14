@@ -33,14 +33,14 @@ function test( $result, $expected_result, $error_message )
 function test_tally_votes()
 {
     global $data;
-    
+
     // 1 eligable vote
     $data = [
         "players" => [
             "1" => [],
             "2" => ["vote" => gawm_vote_innocent],
             "3" => [],
-            "4" => [],            
+            "4" => [],
         ],
         "scene" => 1,
         "act" => 0
@@ -48,41 +48,41 @@ function test_tally_votes()
     $tally = tally_votes($data);
     test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
 
-    // 1 eligable vote, active player disagrees (should be ignored)    
+    // 1 eligable vote, active player disagrees (should be ignored)
     $data = [
         "players" => [
             "1" => ["vote" => gawm_vote_guilty],
             "2" => ["vote" => gawm_vote_innocent],
             "3" => [],
-            "4" => [],            
+            "4" => [],
         ],
         "scene" => 1,
         "act" => 0
-    ];  
+    ];
     $tally = tally_votes($data);
     test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
     test($tally[gawm_vote_guilty],0,"Expected to count 0 guilty votes");
-    
+
     // 2 eligable votes, active player tie-breaks
     $data = [
         "players" => [
             "1" => ["vote" => gawm_vote_guilty],
             "2" => ["vote" => gawm_vote_innocent],
             "3" => ["vote" => gawm_vote_guilty],
-            "4" => [],            
+            "4" => [],
         ],
         "scene" => 1,
         "act" => 0
-    ];  
+    ];
     $tally = tally_votes($data);
     test($tally[gawm_vote_innocent],1,"Expected to count 1 innocent vote");
-    test($tally[gawm_vote_guilty],2,"Expected to count 2 guilty votes");    
+    test($tally[gawm_vote_guilty],2,"Expected to count 2 guilty votes");
 }
 
 function vote_scene( &$data )
 {
     $inactive_players = array_filter(
-        array_keys($data["players"]), 
+        array_keys($data["players"]),
         function($id){global $data; return !gawm_is_player_active($data,$id);}
     );
     test( count($inactive_players), count($data["players"])-1, "All bar 1 players should be active in the scene." );
@@ -96,7 +96,7 @@ function play_scenes( &$data, $player_ids, $detail )
         test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
         test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
         gawm_play_detail(
-            $data, $player_id, $detail, 
+            $data, $player_id, $detail,
             current($data["players"][$player_id]["hand"][$detail])
         );
 
@@ -104,10 +104,10 @@ function play_scenes( &$data, $player_ids, $detail )
         {
             vote_scene($data);
             gawm_next_scene($data);
-            
+
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
-            $other_players = array_filter( $player_ids, 
+            $other_players = array_filter( $player_ids,
                 function($id)use($player_id){return $id!=$player_id;}
             );
             gawm_give_token($data, $player_id, current($other_players));
@@ -119,7 +119,7 @@ function play_scenes( &$data, $player_ids, $detail )
 function test_playthrough($c)
 {
     global $data;
-    
+
     $data = gawm_new_game();
     test(gawm_is_setup($data), true, "New game should start in Setup");
 
@@ -155,7 +155,7 @@ function test_playthrough($c)
 
     // check which players are active
     $active_players = array_filter(
-        array_keys($data["players"]), 
+        array_keys($data["players"]),
         function($id){global $data; return gawm_is_player_active($data,$id);}
     );
 
@@ -169,26 +169,26 @@ function test_playthrough($c)
 
     // active player in extra scene should select their new alias and a new detail
     gawm_play_detail(
-        $data, $active_player, "aliases", 
+        $data, $active_player, "aliases",
         current($data["players"][$active_player]["hand"]["aliases"])
     );
     gawm_play_detail(
-        $data, $active_player, "relationships", 
+        $data, $active_player, "relationships",
         current($data["players"][$active_player]["hand"]["relationships"])
     );
     vote_scene($data);
     gawm_next_scene($data);
-    gawm_give_token($data,$active_player,0);    
+    gawm_give_token($data,$active_player,0);
     test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
     test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
 
     // make play_detail calls for the muder details
     gawm_play_detail(
-        $data, gawm_player_id_victim, "murder_cause", 
+        $data, gawm_player_id_victim, "murder_cause",
         current($data["victim"]["hand"]["murder_cause"])
     );
     gawm_play_detail(
-        $data, gawm_player_id_victim, "murder_discovery", 
+        $data, gawm_player_id_victim, "murder_discovery",
         current($data["victim"]["hand"]["murder_discovery"])
     );
     test(count($data["victim"]["play"]), 4,"The victim should have 4 detail types in play (alias, 2x murder, +1).");
@@ -208,7 +208,7 @@ function test_playthrough($c)
     foreach( $player_ids as $player_id )
     {
         gawm_twist_detail(
-            $data, $player_id, "motives", 
+            $data, $player_id, "motives",
             current($data["players"][$player_id]["hand"]["motives"])
         );
     }
@@ -225,7 +225,7 @@ function test_playthrough($c)
     test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
     test( isset($data["most_innocent"]), true, "The Most Innocent must exist in the Last Break" );
     test( gawm_is_player_active($data, $data["most_innocent"]), true, "The Most Innocent should be the active player in the Last Break" );
-    
+
     gawm_next_scene($data);
 
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
