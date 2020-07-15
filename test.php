@@ -271,10 +271,23 @@ function test_playthrough($c)
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
     test($data["scene"], 0, "Epilogue starts with Scene 0.");
 
+    $fates=[
+        "got_caught" => 0,
+        "gawm" => 0,
+        "got_it_right" => 0,
+        "got_it_wrong" => 0,
+        "got_framed" => 0,
+        "got_out_alive" => 0
+    ];
     // one scene per player
     for ($i=0;$i!=$c;$i=$i+1)
+    {
+        test(isset($data["players"][active_player_id($data)]["fate"]),true,"Every player should have a fate for the Epilogue");
+        $fates[$data["players"][active_player_id($data)]["fate"]]++;
         gawm_next_scene($data);
-        
+    }
+    test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate");
+
     test(gawm_is_epilogue($data), false, "Epilogue over...");
 }
 
@@ -286,7 +299,7 @@ try{
     test_playthrough(4);
     test_playthrough(5);
     test_playthrough(6);
-    
+
     echo "Passed ".$test_count." tests.\n";
 }
 catch (Exception $e) {

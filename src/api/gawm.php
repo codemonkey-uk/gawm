@@ -8,6 +8,7 @@ require_once 'gawm_twist.php';
 require_once 'gawm_setup.php';
 require_once 'gawm_extrascene.php';
 require_once 'gawm_firstbreak.php';
+require_once 'gawm_epilogue.php';
 
 $gawm_opposites = array(
     "murder_cause" => "murder_discovery",
@@ -111,11 +112,6 @@ function gawm_vote(&$data, $player_id, $vote_value)
 
     $player = &$data["players"][$player_id];
     $player["vote"]=$vote_value;
-}
-
-function gawm_is_epilogue(&$data)
-{
-    return $data["act"]==4;
 }
 
 function gawm_give_token(&$data, $player_id, $target_id)
@@ -293,13 +289,7 @@ function gawm_next_scene(&$data)
     }
     else if (gawm_is_epilogue($data))
     {
-        // one epilogue scene per player, no details no voting, simple as it comes
-        $data["scene"]+=1;
-        if ($data["scene"] == gawm_scene_count($data["act"], count($data["players"])))
-        {
-            $data["act"]+=1;
-            $data["scene"]=0;
-        }
+        complete_epilogue($data);
     }
 
     // scene advanced, above, requires set up?
@@ -330,7 +320,7 @@ function gawm_begin_scene(&$data)
     }
     else if (gawm_is_epilogue($data))
     {
-        // TODO: setup_epilogue($data);
+        setup_epilogue($data);
     }
 }
 
