@@ -156,29 +156,64 @@ function show_hand(player,player_uid)
     ;
 }
 
+function render_unassigned_token(player,player_uid)
+{
+    var html = "<div>Give: <b>"+player.unassigned_token+"</b> to: ";
+    for (var p in game.players)
+    {
+        if (p!=player_uid)
+        {
+            var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
+            html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
+        }
+    }
+
+    var click = "givetoken(game, \""+player_uid+"\", \"0\")";
+    html += "<div onclick='"+click+"'>Discard</div>";
+    return html; 
+}
+
+function render_record_accused(player,player_uid)
+{
+    var html = "<div>Accuse: ";
+    for (var p in game.players)
+    {
+        if (p!=player_uid)
+        {
+            var click = "record_accused(game, \""+player_uid+"\", \""+p+"\")";
+            html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
+        }
+    }
+
+    return html; 
+}
+
 function render_player(player,player_uid,player_idx)
 {
     var html = "<div class='player'>";
     if (player_idx>0)
+    {
         html += "<div>Player: " + player.name + ", Hand: </div>";
+    }
     else
-        html += "<div>The Victim.</div>";
+    {
+        var c = Object.keys(game.players).length;
+        if (game.act==1 && game.scene==c)
+            html += "<div>The Victim will be... (not yet)</div>";
+        else
+            html += "<div>The Victim.</div>";
+    }
 
     if (player.unassigned_token)
     {
-        html += "<div>Give: <b>"+player.unassigned_token+"</b> to: ";
-        for (var p in game.players)
-        {
-            if (p!=player_uid)
-            {
-                var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
-                html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
-            }
-        }
-
-        var click = "givetoken(game, \""+player_uid+"\", \"0\")";
-        html += "<div onclick='"+click+"'>Discard</div>";
+        html += render_unassigned_token(player,player_uid);
     }
+    else if (game.most_innocent==player_uid && game.act==3)
+    {
+        html += render_record_accused(player,player_uid);
+    }
+    
+    // TODO: in last break, active player (most innocent) should SET accused for epilogue
 
     var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (show_hand(player,player_uid))
@@ -224,19 +259,22 @@ function game_stage_str()
     var c = Object.keys(game.players).length;
 
     if (game.act==1 && game.scene==c)
-        return "Extra Scene: Introduce a new character";
+        return "Extra Scene: Introduce a new character.";
 
     if (game.act==1 && game.scene==c+1)
-        return "First Break: The Murder";
+        return "First Break: The Murder.";
 
     if (is_twist())
-        return "Second Break: The Twist";
+        return "Second Break: The Twist.";
 
     if (game.act==3)
         c = c*2;
 
     if (game.act==3 && game.scene==c)
-        return "Last Break: The Accusation and The Guilty";
+    {
+        var n = game.most_innocent;//game.players[game.most_innocent].name;
+        return "Last Break: The Accusation ("+n+") and The Guilty.";
+    }
 
     var act = "";
     if (game.act==1)
@@ -278,6 +316,11 @@ function render_game(result)
 function givetoken(gamestate,player_id,value)
 {
     detailaction(gamestate,player_id,"token",value,"give_token");
+}
+
+function record_accused(gamestate,player_id,value)
+{
+    detailaction(gamestate,player_id,"token",value,"record_accused");
 }
 
 function vote(gamestate,player_id,value)

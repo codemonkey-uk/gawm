@@ -63,6 +63,13 @@ function _api_give_token(&$data, $player_id, $detail)
     return $data;
 }
 
+function _api_record_accused(&$data, $player_id, $detail)
+{
+    gawm_record_accused($data, $player_id, $detail);
+
+    return $data;
+}
+
 function _api_get(&$data)
 {
     return $data;

@@ -9,7 +9,6 @@ require_once 'gawm_setup.php';
 require_once 'gawm_extrascene.php';
 require_once 'gawm_firstbreak.php';
 
-
 $gawm_opposites = array(
     "murder_cause" => "murder_discovery",
     "murder_discovery" => "murder_cause",
@@ -152,6 +151,26 @@ function gawm_give_token(&$data, $player_id, $target_id)
     }
 }
 
+function gawm_record_accused(&$data, $player_id, $target_id)
+{
+    if (!array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+
+    if ($player_id!=$data["most_innocent"])      
+        throw new Exception('Only the Most Innocent can decide The Accused.');
+
+    if (!gawm_is_lastbreak($data))
+        throw new Exception('The Accused can only be set during the Last Break.');
+    
+    if ($target_id==gawm_player_id_victim)
+        throw new Exception('The Accused can not be the Victim.');
+        
+    if ($target_id==$data["most_innocent"])      
+        throw new Exception('The Most Innocent can not Accuse Themselves.');
+    
+    $data["the_accused"]=$target_id;
+}
+
 function count_unassigned_tokens(&$data)
 {
     return count( array_filter(
@@ -243,6 +262,9 @@ function complete_normalscene(&$data)
 // throws an exception if more steps need to be taken before moving on
 function gawm_next_scene(&$data)
 {
+    if (count_unassigned_tokens($data)>0)
+        throw new Exception('Cannot advance to next scene with unassigned token left.');
+        
     // normal scene, "can progress" checks
     if (is_normal_scene($data))
     {
@@ -263,6 +285,9 @@ function gawm_next_scene(&$data)
     else if (gawm_is_lastbreak($data))
     {
         // complete_lastbreak($data);
+        if (isset($data["the_accused"])==false)
+            throw new Exception('Cannot advance to next scene without an Accusation of Guilt.');
+            
         $data["act"]+=1;
         $data["scene"]=0;
     }
@@ -295,7 +320,7 @@ function gawm_begin_scene(&$data)
     else if (gawm_is_lastbreak($data))
     {
         // TODO: setup_lastbreak($data);
-        $data["most_innocent"]=gawm_list_players_by_most_innocent($data);
+        $data["most_innocent"]=current(gawm_list_players_by_most_innocent($data));
     }
     else if (gawm_is_epilogue($data))
     {

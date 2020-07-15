@@ -24,9 +24,7 @@ function test( $result, $expected_result, $error_message )
     if ($result!=$expected_result)
     {
         // json_encode will nicely format almost anything
-        echo "Test failure with ".json_encode($result)." expected ".json_encode($expected_result)."\n";
-        echo json_encode($data) ."\n";
-        throw new Exception($error_message);
+        throw new Exception("Test failure with ".json_encode($result)." expected ".json_encode($expected_result)."\n");
     }
     $test_count++;
 }
@@ -262,19 +260,31 @@ function test_playthrough($c)
     test( isset($data["most_innocent"]), true, "The Most Innocent must exist in the Last Break" );
     test( gawm_is_player_active($data, $data["most_innocent"]), true, "The Most Innocent should be the active player in the Last Break" );
 
+    $other_players = array_filter( $player_ids, 
+        function($id)use($data){return $id!=$data["most_innocent"];}
+    );
+
+    gawm_record_accused($data, $data["most_innocent"], current($other_players));
+
     gawm_next_scene($data);
 
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
     test($data["scene"], 0, "Epilogue starts with Scene 0.");
+    
+    // TODO epilogue scenes, no details no voting
 }
 
 echo "Testing... ";
 
-test_tally_votes();
-test_innocence_and_guilt_ranking();
-test_playthrough(4);
-test_playthrough(5);
-test_playthrough(6);
-
-echo "Passed ".$test_count." tests.\n";
+try{
+    test_tally_votes();
+    test_playthrough(4);
+    test_playthrough(5);
+    test_playthrough(6);
+    
+    echo "Passed ".$test_count." tests.\n";
+}
+catch (Exception $e) {
+    echo "Caught ".$e."\nWith: ".json_encode($data) ."\n";
+}
 ?>
