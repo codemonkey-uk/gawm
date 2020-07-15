@@ -270,8 +270,12 @@ function test_playthrough($c)
 
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
     test($data["scene"], 0, "Epilogue starts with Scene 0.");
-    
-    // TODO epilogue scenes, no details no voting
+
+    // one scene per player
+    for ($i=0;$i!=$c;$i=$i+1)
+        gawm_next_scene($data);
+        
+    test(gawm_is_epilogue($data), false, "Epilogue over...");
 }
 
 echo "Testing... ";

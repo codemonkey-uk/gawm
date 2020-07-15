@@ -293,7 +293,13 @@ function gawm_next_scene(&$data)
     }
     else if (gawm_is_epilogue($data))
     {
-        // complete_epilogue($data);
+        // one epilogue scene per player, no details no voting, simple as it comes
+        $data["scene"]+=1;
+        if ($data["scene"] == gawm_scene_count($data["act"], count($data["players"])))
+        {
+            $data["act"]+=1;
+            $data["scene"]=0;
+        }
     }
 
     // scene advanced, above, requires set up?
