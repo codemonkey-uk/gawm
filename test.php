@@ -23,7 +23,8 @@ function test( $result, $expected_result, $error_message )
     global $test_count, $data;
     if ($result!=$expected_result)
     {
-        echo "Test failure with ".$result." expected ".$expected_result."\n";
+        // json_encode will nicely format almost anything
+        echo "Test failure with ".json_encode($result)." expected ".json_encode($expected_result)."\n";
         echo json_encode($data) ."\n";
         throw new Exception($error_message);
     }
