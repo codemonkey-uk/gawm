@@ -35,7 +35,7 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
 
     if (count_unassigned_tokens($data)>0)
         throw new Exception('Cannot play details with unassigned token left.');
-        
+
     if ($player_id==gawm_player_id_victim)
         $player = &$data["victim"];
     else
@@ -56,7 +56,7 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held '.$detail_type.$detail_card);
-    
+
     // skip this for victim, not a real player
     if ($player_id!=gawm_player_id_victim)
     {
@@ -145,17 +145,17 @@ function gawm_give_token(&$data, $player_id, $target_id)
     }
 
     unset($player["unassigned_token"]);
-    
+
     if (count_unassigned_tokens($data)==0)
     {
         gawm_begin_scene($data);
-    }        
+    }
 }
 
 function count_unassigned_tokens(&$data)
 {
     return count( array_filter(
-        $data["players"], 
+        $data["players"],
         function($p){ return isset($p["unassigned_token"]); }
     ));
 }
@@ -295,7 +295,7 @@ function gawm_begin_scene(&$data)
     else if (gawm_is_lastbreak($data))
     {
         // TODO: setup_lastbreak($data);
-        $data["most_innocent"]=find_most_innocent_player($data);
+        $data["most_innocent"]=gawm_list_players_by_most_innocent($data);
     }
     else if (gawm_is_epilogue($data))
     {
@@ -376,7 +376,7 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return $data["most_innocent"];
     }
-    
+
     // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
 
@@ -460,7 +460,7 @@ function gawm_is_lastbreak(&$data)
     return $data["act"]==3 && $data["scene"] == 2*count($data["players"]);
 }
 
-function find_most_innocent_player(&$data)
+function gawm_list_players_by_most_innocent(&$data)
 {
     $players = $data['players'];
 
@@ -472,10 +472,10 @@ function find_most_innocent_player(&$data)
         $b_count  = count($b['tokens']['innocence']);
 
         // Sort first by points, then by count
-        if ($a_points > $b_points) {
+        if ($a_points < $b_points) {
             return 1;
         } elseif ($a_points == $b_points) {
-            if ($a_count > $b_count) {
+            if ($a_count < $b_count) {
                 return 1;
             } elseif ($a_count == $b_count) {
                 // If tied, randomly shuffle positions
@@ -485,13 +485,11 @@ function find_most_innocent_player(&$data)
         return -1;
     });
 
-    // Maybe even show the players the whole list?
-    //return array_keys($players);
-
-    return array_key_last($players);
+    // Index 0 is the ID of the most innocent player
+    return array_keys($players);
 }
 
-function find_guilty_player(&$data)
+function gawm_list_players_by_most_guilty(&$data)
 {
     $players = $data['players'];
 
@@ -505,13 +503,13 @@ function find_guilty_player(&$data)
         $b_guilt_count  = count($b['tokens']['guilt']);
 
         // Sort first by points, then by guilt count, then by smallest innocence count
-        if ($a_points > $b_points) {
+        if ($a_points < $b_points) {
             return 1;
         } elseif ($a_points == $b_points) {
-            if ($a_guilt_count > $b_guilt_count) {
+            if ($a_guilt_count < $b_guilt_count) {
                 return 1;
             } elseif ($a_guilt_count == $b_guilt_count) {
-                if ($a_innocence_count < $b_innocence_count) {
+                if ($a_innocence_count > $b_innocence_count) {
                     return 1;
                 } elseif ($a_innocence_count == $b_innocence_count) {
                     // If tied, randomly shuffle positions
@@ -522,10 +520,8 @@ function find_guilty_player(&$data)
         return -1;
     });
 
-    // Maybe even show the players the whole list?
-    //return array_keys($players);
-
-    return array_key_last($players);
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
 }
 
 // fog of war logic

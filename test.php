@@ -80,6 +80,41 @@ function test_tally_votes()
     test($tally[gawm_vote_guilty],2,"Expected to count 2 guilty votes");
 }
 
+function test_innocence_and_guilt_ranking()
+{
+    global $data;
+
+    // The tokens are set so all kinds of tie break are tested, bar flipping a coin
+    // This outcome is also really possible
+    // Unplayed tiles:  I: 1 2 2 3 3 3   G: 0
+    // Fun fact: The most innocent player was the guilty party, so they got away with murder!
+    $data = [
+        "players" => [
+            1 => ["tokens" => [
+                "innocence" => [0,0,1,1], //innoc score: 2, wins most innocence tokens tie break
+                "guilt" => [0,3]          //guilt score: 1,
+            ]],
+            2 => ["tokens" => [
+                "innocence" => [0,0,2],   //innoc score: 2
+                "guilt" => [0,1,3,3]      //guilt score: 5
+            ]],
+            3 => ["tokens" => [
+                "innocence" => [1],      //innoc score: 1
+                "guilt" => [0,1,2,3]     //guilt score: 5, wins least innocence tokens tie break
+            ]],
+            4 => ["tokens" => [
+                "innocence" => [3],      //innoc score: 3
+                "guilt" => [0,1,1,2,2,2] //guilt score: 5, wins most guilt tokens tie break
+            ]]
+        ]
+    ];
+
+    $sequence = gawm_list_players_by_most_innocent($data);
+    test($sequence, [4, 1, 2, 3], "Expected innocence rank sequence to be 4, 1, 2, 3");
+    $sequence = gawm_list_players_by_most_guilty($data);
+    test($sequence, [4, 3, 2, 1], "Expected guilt rank sequence to be 4, 3, 2, 1");
+}
+
 function vote_scene( &$data )
 {
     $inactive_players = array_filter(
@@ -236,6 +271,7 @@ function test_playthrough($c)
 echo "Testing... ";
 
 test_tally_votes();
+test_innocence_and_guilt_ranking();
 test_playthrough(4);
 test_playthrough(5);
 test_playthrough(6);
