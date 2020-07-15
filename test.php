@@ -277,6 +277,7 @@ function test_playthrough($c)
 echo "Testing... ";
 
 try{
+    test_innocence_and_guilt_ranking();
     test_tally_votes();
     test_playthrough(4);
     test_playthrough(5);
