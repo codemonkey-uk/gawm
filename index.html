@@ -175,7 +175,10 @@ function render_unassigned_token(player,player_uid)
 
 function render_record_accused(player,player_uid)
 {
-    var html = "<div>Accuse: ";
+    var html = "";
+    if (game.the_accused)
+        html += "<div>Accused => " + game.players[game.the_accused].name + "</div>";
+    html += "<div>Accuse: ";
     for (var p in game.players)
     {
         if (p!=player_uid)
@@ -193,7 +196,10 @@ function render_player(player,player_uid,player_idx)
     var html = "<div class='player'>";
     if (player_idx>0)
     {
-        html += "<div>Player: " + player.name + ", Hand: </div>";
+        html += "<div>Player: " + player.name;
+        if (player.fate)
+            html += " ("+player.fate+")";
+        html += ", Hand: </div>";
     }
     else
     {
