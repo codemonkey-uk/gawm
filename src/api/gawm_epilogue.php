@@ -17,14 +17,22 @@ function gawm_is_epilogue(&$data)
 
 function setup_epilogue(&$data)
 {
+    // only set up on the 1st scene of this special *act*
+    if ($data["scene"]>0)
+        return;
+        
     // Fates & Fate Types,
     $most_innocent = $data["most_innocent"];
-    $most_guilty = current(gawm_list_players_by_most_guilty($data));
     $the_accused = $data["the_accused"];
+    $most_guilty = current(gawm_list_players_by_most_guilty($data));
+    $data["most_guilty"] = $most_guilty;
     
     // for each player,
     foreach( $data["players"] as $id => &$player )
     {
+        if (isset($player["fate"]))
+            throw new Exception("Internal Error, Unexpected Fate found on ".$id.": ".json_encode($player));
+            
         if ($id==$most_guilty)
         {
             if ($the_accused==$id)

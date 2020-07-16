@@ -28,24 +28,44 @@ function gawm_new_game()
 
 // modifies the game data such that the specified player has played the requested card
 // if that is in any way against the rules/structure, an exception is thrown
-function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
+function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $target_id)
 {
-    if ($player_id !=gawm_player_id_victim && !array_key_exists($player_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$player_id);
-
     if (count_unassigned_tokens($data)>0)
         throw new Exception('Cannot play details with unassigned token left.');
 
+    if ($player_id!=gawm_player_id_victim && !array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+    if ($target_id!=gawm_player_id_victim && !array_key_exists($target_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$target_id);
+        
     if ($player_id==gawm_player_id_victim)
+    {
+        if ($target_id!=gawm_player_id_victim)
+            throw new Exception('Invalid Use of Murder Victim Cards');
+        
         $player = &$data["victim"];
+        $target = &$data["victim"];        
+    }
     else
+    {
+        if ($target_id==gawm_player_id_victim)
+            throw new Exception('Cannot assign the Murder Victim player details');
+
+        if (!gawm_player_has_details_left_to_play($data, $player_id))
+            throw new Exception('Insufficent Details for Remaining Acts: ');    
+            
         $player = &$data["players"][$player_id];
+        $target = &$data["players"][$target_id];
+    }
 
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type: '.$detail_type);
 
     if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
+
+    if (isset($target["play"]["motives"]) && $detail_type=="motives")
+        throw new Exception('Each player can only have 1 motive.');
 
     if (!gawm_is_detail_active($data, $detail_type))
         throw new Exception('Invalid Detail for Act');
@@ -57,21 +77,14 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card)
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held '.$detail_type.$detail_card);
 
-    // skip this for victim, not a real player
-    if ($player_id!=gawm_player_id_victim)
-    {
-        if (!gawm_player_has_details_left_to_play($data, $player_id))
-            throw new Exception('Insufficent Details for Remaining Acts: ');
-    }
-
     // make sure deck type exists in play
-    if (!array_key_exists($detail_type,$player["play"]))
+    if (!array_key_exists($detail_type,$target["play"]))
     {
-        $player["play"][$detail_type] = array();
+        $target["play"][$detail_type] = array();
     }
 
     // move card from hand into play
-    $deck_to = &$player["play"][$detail_type];
+    $deck_to = &$target["play"][$detail_type];
     array_push($deck_to, $detail_card);
 
     $key = array_search($detail_card, $deck_from);

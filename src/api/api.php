@@ -37,7 +37,7 @@ function _api_add_player(&$data, $player_name)
 
 function _api_play_detail(&$data, $player_id, $detail_type, $detail)
 {
-    gawm_play_detail($data, $player_id, $detail_type, $detail);
+    gawm_play_detail($data, $player_id, $detail_type, $detail, $player_id);
     return $data;
 }
 

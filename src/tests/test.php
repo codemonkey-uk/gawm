@@ -24,7 +24,11 @@ function test( $result, $expected_result, $error_message )
     if ($result!=$expected_result)
     {
         // json_encode will nicely format almost anything
-        throw new Exception("Test failure with ".json_encode($result)." expected ".json_encode($expected_result)."\n");
+        throw new Exception(
+            "Test failure with ".json_encode($result).
+            " expected ".json_encode($expected_result)."\n".
+            $error_message."\n"
+        );
     }
     $test_count++;
 }
@@ -127,11 +131,16 @@ function play_scenes( &$data, $player_ids, $detail )
 {
     foreach( $player_ids as $player_id )
     {
+        $other_players = array_filter( $player_ids,
+            function($id)use($player_id){return $id!=$player_id;}
+        );
+        
         test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
         test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
         gawm_play_detail(
             $data, $player_id, $detail,
-            current($data["players"][$player_id]["hand"][$detail])
+            current($data["players"][$player_id]["hand"][$detail]),
+            ($detail == "aliases" || $detail == "motives") ? $player_id : current($other_players)
         );
 
         if ($data["act"]>0)
@@ -141,9 +150,7 @@ function play_scenes( &$data, $player_ids, $detail )
 
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
-            $other_players = array_filter( $player_ids,
-                function($id)use($player_id){return $id!=$player_id;}
-            );
+
             gawm_give_token($data, $player_id, current($other_players));
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
@@ -186,7 +193,8 @@ function test_playthrough($c)
     test(gawm_is_extrascene($data), true, "Extra Scene expected.");
     test(isset($data["victim"]), true, "The victim should have been selected");
     test(isset($data["victim"]["player_id"]), true, "The victim should have a player_id");
-
+    test(count($data["victim"]["play"])>0, true, "The victim should have at leasr 1 detail in play (alias).");
+    
     // check which players are active
     $active_players = array_filter(
         array_keys($data["players"]),
@@ -199,33 +207,36 @@ function test_playthrough($c)
     test(count($data["players"][$active_player]["play"]), 0,"Victim Player should now have 0 detail types in play.");
     test(count($data["players"][$active_player]["tokens"]["guilt"]), 0, "Victim Player should have 0 Tokens.");
     test(count($data["players"][$active_player]["tokens"]["innocence"]), 0, "Victim Player should have 0 Tokens.");
-    test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
 
     // active player in extra scene should select their new alias and a new detail
     gawm_play_detail(
         $data, $active_player, "aliases",
-        current($data["players"][$active_player]["hand"]["aliases"])
+        current($data["players"][$active_player]["hand"]["aliases"]),
+        $active_player
     );
     gawm_play_detail(
         $data, $active_player, "relationships",
-        current($data["players"][$active_player]["hand"]["relationships"])
+        current($data["players"][$active_player]["hand"]["relationships"]),
+        $active_player
     );
     vote_scene($data);
     gawm_next_scene($data);
     gawm_give_token($data,$active_player,0);
     test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
-    test(count($data["victim"]["play"]), 2,"The victim should have 2 detail types in play (alias, +1).");
+    $vdc = count($data["victim"]["play"]);
 
     // make play_detail calls for the muder details
     gawm_play_detail(
         $data, gawm_player_id_victim, "murder_cause",
-        current($data["victim"]["hand"]["murder_cause"])
+        current($data["victim"]["hand"]["murder_cause"]),
+        gawm_player_id_victim
     );
     gawm_play_detail(
         $data, gawm_player_id_victim, "murder_discovery",
-        current($data["victim"]["hand"]["murder_discovery"])
+        current($data["victim"]["hand"]["murder_discovery"]),
+        gawm_player_id_victim
     );
-    test(count($data["victim"]["play"]), 4,"The victim should have 4 detail types in play (alias, 2x murder, +1).");
+    test(count($data["victim"]["play"]), $vdc+2,"The victim should have gained 2 murder details.");
 
     gawm_next_scene($data);
 
@@ -286,7 +297,7 @@ function test_playthrough($c)
         $fates[$data["players"][active_player_id($data)]["fate"]]++;
         gawm_next_scene($data);
     }
-    test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate");
+    test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate ".json_encode($fates));
 
     test(gawm_is_epilogue($data), false, "Epilogue over...");
 }
