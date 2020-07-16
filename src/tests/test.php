@@ -1,5 +1,5 @@
 <?php
-require_once 'api/gawm.php';
+require_once '../api/gawm.php';
 
 // warnings as errors during tests
 // https://stackoverflow.com/questions/10520390/stop-script-execution-upon-notice-warning

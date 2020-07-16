@@ -1,8 +1,9 @@
 
 .PHONY : gawm
 gawm: 
+	(cd src/tests && exec php test*.php)
 	src/cp_api.sh
-	php test.php
+
 
 .PHONY : db
 db: 
