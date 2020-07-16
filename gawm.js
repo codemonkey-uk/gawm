@@ -321,6 +321,11 @@ function twistdetail(gamestate,player_id,detail_type,detail)
 
 function detailaction(gamestate,player_id,detail_type,detail,action)
 {
+    detailaction_ex(gamestate,player_id,detail_type,detail,action,player_id);
+}
+
+function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
+{
     console.log("playdetail called:",player_id,detail_type,detail);
 
     var xmlhttp = new XMLHttpRequest();
@@ -338,6 +343,7 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
     request.action = action;
     request.game_id = game_id;
     request.player_id=player_id;
+    request.target_id=target_id;    
     request.detail_type=detail_type;
     request.detail=detail;
 

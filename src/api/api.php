@@ -35,9 +35,9 @@ function _api_add_player(&$data, $player_name)
     return $data;
 }
 
-function _api_play_detail(&$data, $player_id, $detail_type, $detail)
+function _api_play_detail(&$data, $player_id, $detail_type, $detail, $target_id)
 {
-    gawm_play_detail($data, $player_id, $detail_type, $detail, $player_id);
+    gawm_play_detail($data, $player_id, $detail_type, $detail, $target_id);
     return $data;
 }
 
