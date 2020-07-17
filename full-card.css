@@ -1,0 +1,81 @@
+<style>
+
+.aliases {
+  background-color: blue; 
+  border-color: blue;
+}
+.motives {
+  background-color: brown; 
+  border-color: brown;
+}
+.objects {
+  background-color: green; 
+  border-color: green;
+}
+.relationship {
+  background-color: maroon; 
+  border-color: maroon;
+}
+.wildcards {
+  background-color: purple; 
+  border-color: purple;
+}
+.murder_cause, .murder_discovery {
+  background-color: purple; 
+  border-color: purple;
+}
+
+.card { 
+  text-align: center;
+  border-width: 10px;
+  border-style: solid;
+  padding: 0;
+  margin: 0;
+  
+  width: 250px;
+  height: 350px;
+}
+
+.card div {
+  background-color: white; 
+  display: block;
+  padding: 0px;
+}
+
+.card-header {
+	height: 66px;
+    border: 2px solid grey;
+}
+.card-title {
+	height: 28px;
+    line-height: 28px;
+    font-size: 20px;
+}
+.card-subtitle {
+	height: 34px;
+    line-height: 34px;
+    font-size: 14px;
+}
+
+.card-name {
+    margin-top: 10px;
+    border: 2px solid grey;
+	height: 87px;
+    line-height: 97px;
+    font-size: 22px;
+}
+
+.card-flavour {
+  margin-top: 10px;
+  border: 2px solid grey;
+  height: 164px;
+  line-height: 178px;
+  justify-content: center;
+  text-align: center;
+}
+.card-flavour p {
+  line-height: 1.5;
+  display: inline-block;
+  vertical-align: middle;
+}
+</style>
