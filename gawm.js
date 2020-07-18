@@ -56,10 +56,14 @@ function hand_tostr(hand,player_id,action,postfix)
         for (var card in hand[deck])
         {
             var i = hand[deck][card];
-            var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-            var menu = "<button onclick='"+click+"'>Play</button>";
+            var menu = "";
+            if (action)
+            {
+                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                menu += "<button onclick='"+click+"'>"+action+"</button>";
+            }
             var card_str = card_template
-                .replaceAll('$ID', i)
+                .replaceAll('$ID', deck+"_"+i)
                 .replaceAll('$TYPE', deck)
                 .replaceAll('$SUBTYPE', cards[deck][i]['subtype'])
                 .replaceAll('$NAME', cards[deck][i]['name'])
@@ -229,7 +233,7 @@ function render_player(player,player_uid,player_idx)
     html += "<div>Details in play: </div>";
     if (player.play)
     {
-        html += hand_tostr(player.play,player_uid,"nop",
+        html += hand_tostr(player.play,player_uid,null,
             function(){
                 var str = "";
                 if (typeof player.vote != "undefined")
@@ -241,7 +245,7 @@ function render_player(player,player_uid,player_idx)
     if (player.tokens)
     {
         html += "<div>Tokens recieved: </div>";
-        html += hand_tostr(player.tokens,player_uid,"nop",null);
+        html += hand_tostr(player.tokens,player_uid,null,null);
     }
     html += '</div>';
     return html;
@@ -322,10 +326,6 @@ function record_accused(gamestate,player_id,value)
 function vote(gamestate,player_id,value)
 {
     detailaction(gamestate,player_id,"vote",value,"vote");
-}
-
-function nop(gamestate,player_id,detail_type,detail)
-{
 }
 
 function playdetail(gamestate,player_id,detail_type,detail)

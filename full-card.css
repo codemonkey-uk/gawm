@@ -28,9 +28,9 @@
 .hand {
   display: grid;
   grid: 130px / auto auto auto auto auto auto auto auto auto;
-  grid-gap: 10px;
-  background-color: #2196F3;
-  padding: 10px;
+  grid-gap: 4px;
+  background-color: darkgrey;
+  padding: 4px;
 }
 
 .card, .halfcard  { 
