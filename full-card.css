@@ -12,7 +12,7 @@
   background-color: green; 
   border-color: green;
 }
-.relationship {
+.relationships {
   background-color: maroon; 
   border-color: maroon;
 }
@@ -25,18 +25,27 @@
   border-color: lightgrey;
 }
 
+.hand {
+  display: grid;
+  grid: 130px / auto auto auto auto auto auto auto auto auto;
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
 .card, .halfcard  { 
   font-family: 'Special Elite', serif;
   text-align: center;
   border-style: solid;
   padding: 0;
   margin: 0;
+  display: inline-block;
+  position: relative;
 }
 .card div, .halfcard div {
   background-color: white; 
   display: block;
   padding: 0px;
-  position: relative;
 }
 
 .card { 
@@ -80,6 +89,7 @@
   line-height: 1.5;
   display: inline-block;
   vertical-align: middle;
+  white-space: normal;
 }
 
 .halfcard { 
@@ -114,13 +124,12 @@
   visibility: hidden;
   margin-top: 10px;
   border: 2px solid grey;
-  height: 164px;
   width: 230px;
   line-height: 164px;
   justify-content: center;
   text-align: center;
   cursor: zoom-out;
-  position: relative;
+  position: absolute;
   z-index: 1;
   top: -80px;
   left: 0px;
@@ -151,7 +160,7 @@
 
 .halfcard .actions {
   /* visibility: hidden; */
-  top: -272px;
+  top: 0px;
   left: 125px;
 }
 

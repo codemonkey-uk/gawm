@@ -33,6 +33,21 @@ function img_alt(deck,i)
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }
 
+var card_template = `<div class="halfcard $TYPE"> 
+  <div class="header" onclick="toggle_show('actions-$ID')">
+  <div class="title">$TYPE</div>
+  <div class="subtitle">$SUBTYPE</div>  
+  </div>
+  <div class="name" onclick="toggle_show('flavour-$ID')">$NAME</div>
+  <div class="actions" id="actions-$ID">$ACTIONS</div>  
+  <div class="flavour" id='flavour-$ID' onclick="toggle_show('flavour-$ID')"><p>$DESC</p></div>
+</div>`;
+
+function toggle_show(id) {
+  var popup = document.getElementById(id);
+  popup.classList.toggle("show");
+}
+
 function hand_tostr(hand,player_id,action,postfix)
 {
     var html = "<div class='hand'>";
@@ -41,13 +56,17 @@ function hand_tostr(hand,player_id,action,postfix)
         for (var card in hand[deck])
         {
             var i = hand[deck][card];
-            var url = img_url(deck,i);
-            var alt = img_alt(deck,i);
-            var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
             var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-            html += "<div class='card' onclick='" +click+ "'>";
-            html += img;
-            html += "</div>";
+            var menu = "<button onclick='"+click+"'>Play</button>";
+            var card_str = card_template
+                .replaceAll('$ID', i)
+                .replaceAll('$TYPE', deck)
+                .replaceAll('$SUBTYPE', cards[deck][i]['subtype'])
+                .replaceAll('$NAME', cards[deck][i]['name'])
+                .replaceAll('$DESC', cards[deck][i]['desc'])
+                .replaceAll('$ACTIONS', menu);
+            
+            html += card_str;
         }
     }
     if (postfix)
