@@ -106,6 +106,7 @@
 	height: 43px;
     line-height: 43px;
     font-size: 12px;
+    cursor: zoom-in;
 }
 .halfcard .flavour {
   visibility: hidden;
@@ -116,20 +117,20 @@
   line-height: 164px;
   justify-content: center;
   text-align: center;
-  
+  cursor: zoom-out;
   position: relative;
   z-index: 1;
   top: -80px;
-  left: 5px;
+  left: 0px;
   margin-left: 0px;
 }
-
+/* Toggle this class - hide and show the popup */
 .halfcard .show {
   visibility: visible;
   -webkit-animation: fadeIn 0.25s;
   animation: fadeIn 0.25s;
 }
-
+/* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
   from {opacity: 0;} 
   to {opacity: 1;}
