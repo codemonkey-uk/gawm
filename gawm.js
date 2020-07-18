@@ -38,7 +38,7 @@ var card_template = `<div class="halfcard $TYPE">
   <div class="title">$TYPE</div>
   <div class="subtitle">$SUBTYPE</div>  
   </div>
-  <div class="name" onclick="toggle_show('flavour-$ID')">$NAME</div>
+  <div class="name" onclick="toggle_show('flavour-$ID')"><p>$NAME</p></div>
   <div class="actions" id="actions-$ID">$ACTIONS</div>  
   <div class="flavour" id='flavour-$ID' onclick="toggle_show('flavour-$ID')"><p>$DESC</p></div>
 </div>`;
