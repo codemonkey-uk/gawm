@@ -1,27 +1,27 @@
 @import 'https://fonts.googleapis.com/css?family=Special Elite';
 
 .aliases {
-  background-color: blue; 
-  border-color: blue;
+  background-color: #0a3b88;
+  border-color: #0a3b88;
 }
 .motives {
-  background-color: brown; 
-  border-color: brown;
+  background-color: #493500;
+  border-color: #493500;
 }
 .objects {
-  background-color: green; 
-  border-color: green;
+  background-color: #054921;
+  border-color: #054921;
 }
 .relationships {
-  background-color: maroon; 
-  border-color: maroon;
+  background-color: #820a0a;
+  border-color: #820a0a;
 }
 .wildcards {
-  background-color: purple; 
-  border-color: purple;
+  background-color: #680a85;
+  border-color: #680a85;
 }
 .murder_cause, .murder_discovery {
-  background-color: lightgrey; 
+  background-color: lightgrey;
   border-color: lightgrey;
 }
 
@@ -33,7 +33,7 @@
   padding: 4px;
 }
 
-.card, .halfcard  { 
+.card, .halfcard  {
   font-family: 'Special Elite', serif;
   text-align: center;
   border-style: solid;
@@ -43,12 +43,12 @@
   position: relative;
 }
 .card div, .halfcard div {
-  background-color: white; 
+  background-color: white;
   display: block;
   padding: 0px;
 }
 
-.card { 
+.card {
   border-width: 10px;
   width: 250px;
   height: 350px;
@@ -93,7 +93,7 @@
   margin-block-start:0; margin-block-end:0;
 }
 
-.halfcard { 
+.halfcard {
   border-width: 5px;
   width: 125px;
   height: 90px;
@@ -144,7 +144,7 @@
 }
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
-  from {opacity: 0;} 
+  from {opacity: 0;}
   to {opacity: 1;}
 }
 
