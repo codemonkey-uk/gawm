@@ -36,6 +36,7 @@
   background-color: white; 
   display: block;
   padding: 0px;
+  position: relative;
 }
 
 .card { 
@@ -89,6 +90,7 @@
 .halfcard .header {
 	height: 33px;
     border: 2px solid grey;
+    cursor: context-menu;
 }
 .halfcard .title {
 	height: 14px;
@@ -139,4 +141,44 @@
 @keyframes fadeIn {
   from {opacity: 0;}
   to {opacity:1 ;}
+}
+
+.card .actions {
+  /* visibility: hidden; */
+  top: -359px;
+  left: 230px;
+}
+
+.halfcard .actions {
+  /* visibility: hidden; */
+  top: -272px;
+  left: 125px;
+}
+
+.actions {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  width: 115px;
+}
+
+.actions button {
+  background-color: #4CAF50; /* Green background */
+  border: 1px solid green; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  /* Set a width if needed */
+  display: block; /* Make the buttons appear below each other */
+  margin: 0px;
+  width: 115px;
+}
+
+.actions button:not(:last-child) {
+  border-bottom: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.actions button:hover {
+  background-color: #3e8e41;
 }
