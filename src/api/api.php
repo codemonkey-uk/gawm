@@ -77,12 +77,12 @@ function _api_record_accused(&$data, $player_id, $detail)
     return $data;
 }
 
-function _api_get(&$data)
+function _api_get(&$data, $player_id)
 {
     return $data;
 }
 
-function _api_next(&$data)
+function _api_next(&$data, $player_id)
 {
     gawm_next_scene($data);
     return $data;

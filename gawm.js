@@ -451,6 +451,7 @@ function next(gamestate)
     var request = {};
     request.action = 'next';
     request.game_id = game_id;
+    request.player_id = 0; // TODO: will be required when information hiding is implemented
 
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
