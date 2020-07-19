@@ -34,7 +34,7 @@ function img_alt(deck,i)
 }
 
 var card_template = `<div class="halfcard _TYPE"> 
-  <div class="header" onclick="toggle_show('actions-_ID')">
+  <div class="header" style="_CURSOR" onclick="toggle_show('actions-_ID')">
   <div class="title">_TYPE</div>
   <div class="subtitle">_SUBTYPE</div>  
   </div>
@@ -43,13 +43,15 @@ var card_template = `<div class="halfcard _TYPE">
   <div class="flavour" id='flavour-_ID' onclick="toggle_show('flavour-_ID')"><p>_DESC</p></div>
 </div>`;
 
-function toggle_show(id) {
-  var popup = document.getElementById(id);
-  popup.classList.toggle("show");
+function toggle_show(id)
+{
+    var popup = document.getElementById(id);
+    popup.classList.toggle("show");
 }
 
-function isFunction(functionToCheck) {
- return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+function isFunction(functionToCheck)
+{
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
 function hand_tostr(hand,player_id,action,postfix)
@@ -88,12 +90,14 @@ function hand_tostr(hand,player_id,action,postfix)
                         menu += "<button onclick='"+click+"'>"+action+"</button>";
                     }
                 }
+                cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                 card_str = card_template
                     .replace(/_ID/g, deck+"_"+i)
                     .replace(/_TYPE/g, deck)
                     .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
                     .replace(/_NAME/g, cards[deck][i]['name'])
                     .replace(/_DESC/g, cards[deck][i]['desc'])
+                    .replace(/_CURSOR/g, cursor)
                     .replace(/_ACTIONS/g, menu);
             }
             html += card_str;

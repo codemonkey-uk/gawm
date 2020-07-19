@@ -104,7 +104,6 @@
 .halfcard .header {
 	height: 33px;
     border: 2px solid grey;
-    cursor: context-menu;
 }
 .halfcard .title {
 	height: 14px;
