@@ -48,6 +48,10 @@ function toggle_show(id) {
   popup.classList.toggle("show");
 }
 
+function isFunction(functionToCheck) {
+ return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+
 function hand_tostr(hand,player_id,action,postfix)
 {
     var html = "<div class='hand'>";
@@ -73,8 +77,16 @@ function hand_tostr(hand,player_id,action,postfix)
                 var menu = "";
                 if (action)
                 {
-                    var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                    menu += "<button onclick='"+click+"'>"+action+"</button>";
+                    if (isFunction(action))
+                    {
+                        menu += action(deck, i);
+                    }
+                    else
+                    {
+                        // old single action path, todo: deprecate this
+                        var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                        menu += "<button onclick='"+click+"'>"+action+"</button>";
+                    }
                 }
                 card_str = card_template
                     .replace(/_ID/g, deck+"_"+i)
@@ -228,8 +240,6 @@ function render_player(player,player_uid,player_idx)
     }
     
     // TODO: in last break, active player (most innocent) should SET accused for epilogue
-
-    var detail_action = is_twist() ? "twistdetail" : "playdetail";
     if (show_hand(player,player_uid))
     {
         // voting buttons?
@@ -242,6 +252,22 @@ function render_player(player,player_uid,player_idx)
                     str += votebutton_html(player_uid,1);
                 return str;
             } : null;
+            
+        var detail_action = is_twist() ? "twistdetail" :
+            function(deck, id){
+                var result = "";
+                for (var p in game.players)
+                {
+                    var can_give = player_uid==p || (deck!="aliases");
+                    if (can_give)
+                    {
+                        var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+p+"\")";
+                        // detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
+                        result += "<button onclick='"+click+"'>Give to "+game.players[p].name+"</button>";
+                    }
+                }
+                return result;
+            };
         html += hand_tostr(player.hand,player_uid,detail_action,pfn);
     }
     html += "<div>Details in play: </div>";
