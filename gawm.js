@@ -33,14 +33,14 @@ function img_alt(deck,i)
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }
 
-var card_template = `<div class="halfcard $TYPE"> 
-  <div class="header" onclick="toggle_show('actions-$ID')">
-  <div class="title">$TYPE</div>
-  <div class="subtitle">$SUBTYPE</div>  
+var card_template = `<div class="halfcard _TYPE"> 
+  <div class="header" onclick="toggle_show('actions-_ID')">
+  <div class="title">_TYPE</div>
+  <div class="subtitle">_SUBTYPE</div>  
   </div>
-  <div class="name" onclick="toggle_show('flavour-$ID')"><p>$NAME</p></div>
-  <div class="actions" id="actions-$ID">$ACTIONS</div>  
-  <div class="flavour" id='flavour-$ID' onclick="toggle_show('flavour-$ID')"><p>$DESC</p></div>
+  <div class="name" onclick="toggle_show('flavour-_ID')"><p>_NAME</p></div>
+  <div class="actions" id="actions-_ID">_ACTIONS</div>  
+  <div class="flavour" id='flavour-_ID' onclick="toggle_show('flavour-_ID')"><p>_DESC</p></div>
 </div>`;
 
 function toggle_show(id) {
@@ -55,21 +55,35 @@ function hand_tostr(hand,player_id,action,postfix)
     {
         for (var card in hand[deck])
         {
+            var card_str = "";
             var i = hand[deck][card];
-            var menu = "";
-            if (action)
+            if (deck=="guilt" || deck=='innocence')
             {
+                // TODO: img based token div, css version
+                var url = img_url(deck,i);
+                var alt = img_alt(deck,i);
+                var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
                 var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                menu += "<button onclick='"+click+"'>"+action+"</button>";
+                card_str += "<div class='token' onclick='" +click+ "'>";
+                card_str += img;
+                card_str += "</div>";
             }
-            var card_str = card_template
-                .replaceAll('$ID', deck+"_"+i)
-                .replaceAll('$TYPE', deck)
-                .replaceAll('$SUBTYPE', cards[deck][i]['subtype'])
-                .replaceAll('$NAME', cards[deck][i]['name'])
-                .replaceAll('$DESC', cards[deck][i]['desc'])
-                .replaceAll('$ACTIONS', menu);
-            
+            else 
+            {
+                var menu = "";
+                if (action)
+                {
+                    var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                    menu += "<button onclick='"+click+"'>"+action+"</button>";
+                }
+                card_str = card_template
+                    .replace(/_ID/g, deck+"_"+i)
+                    .replace(/_TYPE/g, deck)
+                    .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
+                    .replace(/_NAME/g, cards[deck][i]['name'])
+                    .replace(/_DESC/g, cards[deck][i]['desc'])
+                    .replace(/_ACTIONS/g, menu);
+            }
             html += card_str;
         }
     }
