@@ -423,7 +423,8 @@ function add_player(gamestate)
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById('debug').value  = this.responseText;
             var result = JSON.parse(this.responseText);
-            render_game(result);
+            render_game(result.game);
+            console.log("New player: "+result.player_id);
         }
     };
 
