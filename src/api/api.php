@@ -2,14 +2,28 @@
 require_once 'gawm.php';
 require_once 'db.php';
 
-// TODO: auto-add the first player ... needs $player_name set up
-function _api_new()
+function sanitise_player_name($player_name)
 {
-    // get component list
-    $data = gawm_new_game();
-    $game_id = save_new_game($data);
-    $player_id = 0;
+    // input filtering on player name
+    $player_name = trim($player_name);
+    if ($player_name == '')
+    {
+        throw new Exception('No player name supplied');
+    }
+    $player_name = htmlentities($player_name);
+    $player_name = substr($player_name, 0, 40);
+    
+    return $player_name;
+}
 
+function _api_new($player_name)
+{
+    $player_name = sanitise_player_name($player_name);
+    
+    $data = gawm_new_game();
+    $player_id = gawm_add_player($data, $player_name);
+    $game_id = save_new_game($data);
+    
     // Todo: I think I want ALL reponses to come back in this format...
     return [
         'game' => redact_for_player($data, $player_id),
@@ -20,14 +34,7 @@ function _api_new()
 
 function _api_add_player(&$data, $player_name)
 {
-    // Minimal input filtering on player name
-    $player_name = trim($player_name);
-    if ($player_name == '')
-    {
-        throw new Exception('No player name supplied');
-    }
-    $player_name = htmlentities($player_name);
-    $player_name = substr($player_name, 0, 40);
+    $player_name = sanitise_player_name($player_name);
 
     $player_id = gawm_add_player($data, $player_name);
 

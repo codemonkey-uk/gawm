@@ -458,6 +458,8 @@ function next(gamestate)
 
 function new_game()
 {
+    var player_name = prompt("Please enter your name", "Player 1");
+    
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -472,6 +474,7 @@ function new_game()
     // build request json
     var request = {};
     request.action = 'new';
+    request.player_name = player_name;
 
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
