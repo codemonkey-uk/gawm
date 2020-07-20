@@ -135,6 +135,12 @@ function is_twist()
     return (game.act==2 && game.scene==c);
 }
 
+function is_firstbreak()
+{
+    var c = Object.keys(game.players).length;
+    return (game.act==1 && game.scene==c+1);
+}
+
 function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
@@ -279,17 +285,34 @@ function render_player(player,player_uid,player_idx)
             
         var detail_action = is_twist() ? "twistdetail" :
             function(deck, id){
-                var result = "";
-                for (var p in game.players)
+                
+                var fn = function(target_id)
                 {
-                    var can_give = player_uid==p || (deck!="aliases");
+                    var result = "";
+                    // motives cant be given until 2nd act,
+                    // aliases can only be given to yourself
+                    // murder details can only be given to the victim
+                    var can_give = 
+                        (game.act >= 2 || deck!="motives") && 
+                        (player_uid==p || deck!="aliases") &&
+                        (target_id==0 || !deck.startsWith("murder_"));
+                        
                     if (can_give)
                     {
-                        var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+p+"\")";
-                        // detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
-                        result += "<button onclick='"+click+"'>Give to "+game.players[p].name+"</button>";
+                        var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
+                        var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
+                        result += "<button onclick='"+click+"'>Give to "+name+"</button>";
                     }
+                    
+                    return result;
                 }
+                
+                var result = "";
+                if (is_firstbreak())
+                    result += fn(0);
+                for (var p in game.players)
+                    result += fn(p);
+                    
                 return result;
             };
         html += hand_tostr(player.hand,player_uid,detail_action,pfn);
