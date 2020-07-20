@@ -445,6 +445,10 @@ function generic_response_handler()
 
         render_game(result.game);
     }
+    else if (this.status == 400)
+    {
+        error_popup(this.responseText);
+    }
 };
     
 function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
@@ -542,6 +546,19 @@ function reload(player_id)
 
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
+}
+
+function error_popup(msg) 
+{
+  // Get the snackbar DIV
+  var x = document.getElementById("snackbar");
+
+  // Add the "show" class to DIV
+  x.className = "show";
+  x.innerHTML = msg
+
+  // After 3 seconds, remove the show class from DIV
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function new_game()
