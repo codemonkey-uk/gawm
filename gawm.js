@@ -20,10 +20,7 @@ function load_cards()
 
 function img_url(deck,i)
 {
-    // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck=="guilt" || deck=='innocence')
-        return 'assets/'+deck+'_'+i+'.png';
-
+    // redacted cards/tokens
     if (i<0)
     {
         switch (deck){
@@ -32,8 +29,14 @@ function img_url(deck,i)
             case "objects": return 'assets/object_back.png';
             case "relationships": return 'assets/rel_back.png';
             case "wildcards": return 'assets/wild_back.png';
+            case "guilt": return 'assets/guilt.png';
+            case "innocence": return 'assets/innocence.png';            
         }
     }
+    
+    // temp workaround, card json doesn't have guilt/innocence tokens
+    if (deck=="guilt" || deck=='innocence')
+        return 'assets/'+deck+'_'+i+'.png';
     
     return 'assets/'+cards[deck][i]['img'];
 }
@@ -41,13 +44,8 @@ function img_url(deck,i)
 function img_alt(deck,i)
 {
     // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck=='guilt' || deck=='innocence')
+    if (deck=='guilt' || deck=='innocence' || i<0)
         return deck;
-    
-    if (i<0)
-    {
-        return deck;
-    }
     
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }

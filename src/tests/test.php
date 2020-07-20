@@ -125,15 +125,23 @@ function test_redact()
         "cards" => [],
         "tokens" => [],
         "players" => [
-            1 => ["hand" => ["aliases" => [1,2]]],
-            2 => ["hand" => ["aliases" => [1,2]]]
+            1 => [
+                "hand" => ["aliases" => [1,2]],
+                "tokens" => ["guilt" => [1,2],"innocence" => [1,2]]
+            ],
+            2 => [
+                "hand" => ["aliases" => [1,2]],
+                "tokens" => ["guilt" => [1,2],"innocence" => [1,2]]
+            ]
         ]
     ];
 
     $redacted = redact_for_player($data, 1);
     test($redacted["players"][1]["hand"], ["aliases" => [ 1, 2]], "Expected p1 hand to be intact.");
     test($redacted["players"][2]["hand"], ["aliases" => [-1,-1]], "Expected p2 hand to be redacted.");
-
+    // tokens are delt face down, redacted for all
+    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p1 tokens to be redacted.");
+    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p2 tokens to be redacted.");
 }
 
 function vote_scene( &$data )

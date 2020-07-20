@@ -570,12 +570,12 @@ function redact_for_player($data, $player_id)
     // hide details of other players hands
     foreach( $data["players"] as $id => &$player )
     {
-        if ($id!=$player_id)
-        {
-            foreach($player["hand"] as &$deck)
+        $redact = ($id==$player_id) ? ["tokens"] : ["tokens","hand"];
+
+        foreach($redact as $t)
+            foreach($player[$t] as &$deck)
                 foreach($deck as $key => $value)
-                $deck[$key] = -1;
-        }
+                    $deck[$key] = -1;
     }
 
     // todo (later) remove / reduce other players hands
