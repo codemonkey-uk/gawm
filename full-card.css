@@ -131,11 +131,11 @@
   line-height: 164px;
   justify-content: center;
   text-align: center;
-  cursor: zoom-out;
+  cursor: text;
   position: absolute;
   z-index: 1;
   top: -80px;
-  left: 0px;
+  left: 125px;
   margin-left: 0px;
 }
 /* Toggle this class - hide and show the popup */

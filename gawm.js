@@ -34,14 +34,25 @@ function img_alt(deck,i)
 }
 
 var card_template = `<div class="halfcard _TYPE"> 
-  <div class="header" style="_CURSOR" onclick="toggle_show('actions-_ID')">
+  <div class="header" style="_CURSOR" onclick="toggle_show('actions-_ID_TYPE')">
   <div class="title">_TYPE</div>
   <div class="subtitle">_SUBTYPE</div>  
   </div>
-  <div class="name" onclick="toggle_show('flavour-_ID')"><p>_NAME</p></div>
-  <div class="actions" id="actions-_ID">_ACTIONS</div>  
-  <div class="flavour" id='flavour-_ID' onclick="toggle_show('flavour-_ID')"><p>_DESC</p></div>
+  <div class="name" onclick="toggle_show('flavour-_ID_TYPE')"><p>_NAME</p></div>
+  <div class="actions" id="actions-_ID_TYPE">_ACTIONS</div>  
+  <div class="flavour" id='flavour-_ID_TYPE'>
+  <p id='flavour-_ID_editp' contenteditable="true" onblur="saveEdit('flavour-_ID_editp','_TYPE','_ID')">_DESC</p>
+  </div>
 </div>`;
+
+function saveEdit(p_id,detail_type,d_id)
+{
+    var t = document.getElementById(p_id).innerHTML;
+    t = t.replace(/<br>$/,'');
+    console.log(t);
+    var player_id = 0;
+    edit_note(game,player_id,detail_type,d_id,t);
+}
 
 function toggle_show(id)
 {
@@ -90,13 +101,22 @@ function hand_tostr(hand,player_id,action,postfix)
                         menu += "<button onclick='"+click+"'>"+action+"</button>";
                     }
                 }
+                
+                // if note is set, use that
+                var note = game['notes'][deck] ? game['notes'][deck][i] : null;
+                var desc = note ? note : cards[deck][i]['desc'];
+                // if note is set, mark card
+                // todo: take first line from note for name, if note is set
+                var name = cards[deck][i]['name'];
+                if (note) name += "*";
+                
                 cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                 card_str = card_template
-                    .replace(/_ID/g, deck+"_"+i)
+                    .replace(/_ID/g, i)
                     .replace(/_TYPE/g, deck)
                     .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
-                    .replace(/_NAME/g, cards[deck][i]['name'])
-                    .replace(/_DESC/g, cards[deck][i]['desc'])
+                    .replace(/_NAME/g, name)
+                    .replace(/_DESC/g, desc)
                     .replace(/_CURSOR/g, cursor)
                     .replace(/_ACTIONS/g, menu);
             }
@@ -387,19 +407,22 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
     detailaction_ex(gamestate,player_id,detail_type,detail,action,player_id);
 }
 
+function generic_response_handler()
+{
+    if (this.readyState == 4 && this.status == 200) {
+        var result = JSON.parse(this.responseText);
+        document.getElementById('debug').value = this.responseText;
+
+        render_game(result.game);
+    }
+};
+    
 function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
 {
-    console.log("playdetail called:",player_id,detail_type,detail);
+    console.log("api action called: ",action,player_id,target_id,detail_type,detail);
 
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var result = JSON.parse(this.responseText);
-            document.getElementById('debug').value = this.responseText;
-
-            render_game(result.game);
-        }
-    };
+    xmlhttp.onreadystatechange = generic_response_handler;
 
     // build request json
     var request = {};
@@ -410,6 +433,25 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
     request.detail_type=detail_type;
     request.detail=detail;
 
+    xmlhttp.open("POST", "game.php", true);
+    xmlhttp.send( JSON.stringify(request) );
+}
+
+// edit_note(&$data, $player_id, $detail_type, $detail, $note)
+function edit_note(gamestate,player_id,detail_type,detail,note)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = generic_response_handler;
+    
+    // build request json
+    var request = {};
+    request.action = "edit_note";
+    request.game_id = game_id;
+    request.player_id=player_id;
+    request.detail_type=detail_type;
+    request.detail=detail;
+    request.note=note;
+    
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
 }
@@ -440,13 +482,7 @@ function add_player(gamestate)
 function next(gamestate)
 {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').value  = this.responseText;
-            var result = JSON.parse(this.responseText);
-            render_game(result.game);
-        }
-    };
+    xmlhttp.onreadystatechange = generic_response_handler;
 
     // build request json
     var request = {};

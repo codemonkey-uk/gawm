@@ -126,7 +126,10 @@ function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
 
     $data['notes'][$detail_type][$detail] = $note;
 
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 ?>
