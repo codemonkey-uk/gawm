@@ -238,10 +238,10 @@ function render_record_accused(player,player_uid)
     return html; 
 }
 
-function render_player(player,player_uid,player_idx)
+function render_player(player,player_uid)
 {
     var html = "<div class='player'>";
-    if (player_idx>0)
+    if (player_uid!=0)
     {
         html += "<div>Player: " + player.name;
         if (player.fate)
@@ -268,7 +268,7 @@ function render_player(player,player_uid,player_idx)
     else if (show_hand(player,player_uid))
     {
         // voting buttons?
-        var pfn = (game_stage_voting() && player_uid!=0) ?
+        var pfn = (game_stage_voting() && player_uid==local_player_id) ?
             function(){
                 var str = "";
                 if (typeof player.vote == "undefined" || player.vote == 1)
@@ -392,9 +392,14 @@ function render_game(result)
     {
         html += render_player(result.victim,0,0);
     }
-    var player_idx  = 1;
+
+    html += render_player(result.players[local_player_id],local_player_id);
+    
     for (var player in result.players)
-        html += render_player(result.players[player],player,player_idx++);
+    {
+        if (player!=local_player_id)
+            html += render_player(result.players[player],player);
+    }
     html += "</div>";
 
     document.getElementById('players').innerHTML = html;
