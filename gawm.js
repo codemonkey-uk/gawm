@@ -18,6 +18,11 @@ function load_cards()
     xmlhttp.send();
 }
 
+function deck_is_token(deck)
+{
+    return deck=="guilt" || deck=='innocence';
+}
+
 function img_url(deck,i)
 {
     // redacted cards/tokens
@@ -35,7 +40,7 @@ function img_url(deck,i)
     }
     
     // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck=="guilt" || deck=='innocence')
+    if (deck_is_token(deck))
         return 'assets/'+deck+'_'+i+'.png';
     
     return 'assets/'+cards[deck][i]['img'];
@@ -44,7 +49,7 @@ function img_url(deck,i)
 function img_alt(deck,i)
 {
     // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck=='guilt' || deck=='innocence' || i<0)
+    if (deck_is_token(deck) || i<0)
         return deck;
     
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
@@ -90,14 +95,15 @@ function hand_tostr(hand,player_id,action,postfix)
         {
             var card_str = "";
             var i = hand[deck][card];
-            if (deck=="guilt" || deck=='innocence' || i<0)
+            if (deck_is_token(deck) || i<0)
             {
                 // TODO: img based token div, css version
+                var divclass = (deck_is_token(deck)) ? "token" : "cardback";
                 var url = img_url(deck,i);
                 var alt = img_alt(deck,i);
                 var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
                 var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
-                card_str += "<div class='token' onclick='" +click+ "'>";
+                card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
                 card_str += img;
                 card_str += "</div>";
             }
@@ -352,7 +358,7 @@ function game_stage_str()
 
     if (game.act==3 && game.scene==c)
     {
-        var n = game.most_innocent;//game.players[game.most_innocent].name;
+        var n = game.players[game.most_innocent].name;
         return "Last Break: The Accusation ("+n+") and The Guilty.";
     }
 
