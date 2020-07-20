@@ -81,13 +81,19 @@ function _api_record_accused(&$data, $player_id, $detail)
 
 function _api_get(&$data, $player_id)
 {
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_next(&$data, $player_id)
 {
     gawm_next_scene($data);
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
