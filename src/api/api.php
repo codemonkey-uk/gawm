@@ -47,13 +47,21 @@ function _api_add_player(&$data, $player_name)
 function _api_play_detail(&$data, $player_id, $detail_type, $detail, $target_id)
 {
     gawm_play_detail($data, $player_id, $detail_type, $detail, $target_id);
-    return $data;
+    
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_twist_detail(&$data, $player_id, $detail_type, $detail)
 {
     gawm_twist_detail($data, $player_id, $detail_type, $detail);
-    return $data;
+
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_vote(&$data, $player_id, $detail)
@@ -62,21 +70,30 @@ function _api_vote(&$data, $player_id, $detail)
 
     gawm_vote($data, $player_id, $detail);
 
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_give_token(&$data, $player_id, $detail)
 {
     gawm_give_token($data, $player_id, $detail);
 
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_record_accused(&$data, $player_id, $detail)
 {
     gawm_record_accused($data, $player_id, $detail);
 
-    return $data;
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
 }
 
 function _api_get(&$data, $player_id)
@@ -90,6 +107,7 @@ function _api_get(&$data, $player_id)
 function _api_next(&$data, $player_id)
 {
     gawm_next_scene($data);
+    
     return [
         'game' => redact_for_player($data, $player_id),
         'player_id' => $player_id

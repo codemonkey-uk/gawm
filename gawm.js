@@ -397,7 +397,7 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
             var result = JSON.parse(this.responseText);
             document.getElementById('debug').value = this.responseText;
 
-            render_game(result);
+            render_game(result.game);
         }
     };
 
