@@ -117,6 +117,25 @@ function test_innocence_and_guilt_ranking()
     test($sequence, [4, 3, 2, 1], "Expected guilt rank sequence to be 4, 3, 2, 1");
 }
 
+function test_redact()
+{
+    global $data;
+
+    $data = [
+        "cards" => [],
+        "tokens" => [],
+        "players" => [
+            1 => ["hand" => ["aliases" => [1,2]]],
+            2 => ["hand" => ["aliases" => [1,2]]]
+        ]
+    ];
+
+    $redacted = redact_for_player($data, 1);
+    test($redacted["players"][1]["hand"], ["aliases" => [ 1, 2]], "Expected p1 hand to be intact.");
+    test($redacted["players"][2]["hand"], ["aliases" => [-1,-1]], "Expected p2 hand to be redacted.");
+
+}
+
 function vote_scene( &$data )
 {
     $inactive_players = array_filter(
@@ -307,6 +326,7 @@ echo "Testing... ";
 try{
     test_innocence_and_guilt_ranking();
     test_tally_votes();
+    test_redact();
     test_playthrough(4);
     test_playthrough(5);
     test_playthrough(6);

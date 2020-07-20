@@ -566,6 +566,17 @@ function redact_for_player($data, $player_id)
     unset($data["cards"]);
     // how the tokens got shuffled?
     unset($data["tokens"]);
+    
+    // hide details of other players hands
+    foreach( $data["players"] as $id => &$player )
+    {
+        if ($id!=$player_id)
+        {
+            foreach($player["hand"] as &$deck)
+                foreach($deck as $key => $value)
+                $deck[$key] = -1;
+        }
+    }
 
     // todo (later) remove / reduce other players hands
     // (keeping for now to make testing easier)

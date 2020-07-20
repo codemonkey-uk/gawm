@@ -24,6 +24,17 @@ function img_url(deck,i)
     if (deck=="guilt" || deck=='innocence')
         return 'assets/'+deck+'_'+i+'.png';
 
+    if (i<0)
+    {
+        switch (deck){
+            case "aliases": return 'assets/alias_back.png';
+            case "motives": return 'assets/motive_back.png';
+            case "objects": return 'assets/object_back.png';
+            case "relationships": return 'assets/rel_back.png';
+            case "wildcards": return 'assets/wild_back.png';
+        }
+    }
+    
     return 'assets/'+cards[deck][i]['img'];
 }
 
@@ -32,7 +43,12 @@ function img_alt(deck,i)
     // temp workaround, card json doesn't have guilt/innocence tokens
     if (deck=='guilt' || deck=='innocence')
         return deck;
-
+    
+    if (i<0)
+    {
+        return deck;
+    }
+    
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }
 
@@ -76,13 +92,13 @@ function hand_tostr(hand,player_id,action,postfix)
         {
             var card_str = "";
             var i = hand[deck][card];
-            if (deck=="guilt" || deck=='innocence')
+            if (deck=="guilt" || deck=='innocence' || i<0)
             {
                 // TODO: img based token div, css version
                 var url = img_url(deck,i);
                 var alt = img_alt(deck,i);
                 var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
-                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
                 card_str += "<div class='token' onclick='" +click+ "'>";
                 card_str += img;
                 card_str += "</div>";
