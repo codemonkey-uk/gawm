@@ -12,11 +12,25 @@
 }
 </style>
 <script src="gawm.js"></script>
+<script>
+function reset()
+{
+    var result = JSON.parse(document.getElementById('debug').value );
+    render_game(result);
+}
+
+function start()
+{
+    load_cards();
+    new_game();
+}
+</script>
 </head>
 
 <body onload="start()">
 <div>
-<textarea id="debug" name="text"></textarea><input type="button" onclick="reset()" value="Reset"/>
+<textarea id="debug" name="text"></textarea>
+<input type="button" onclick="reload()" value="Refresh"/>
 <input id="add_player" type="button" onclick="add_player(game)" value="Add Player"/>
 <input type="button" onclick="next(game)" value="Next"/>
 <div id="players"> </div><hr>

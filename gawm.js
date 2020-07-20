@@ -1,6 +1,9 @@
+
+// put theses in a gawm object maybe? use modules maybe?
 var cards = null;
 var game = null;
 var game_id = 0;
+var local_player_id = 0;
 
 function load_cards()
 {
@@ -50,8 +53,7 @@ function saveEdit(p_id,detail_type,d_id)
     var t = document.getElementById(p_id).innerHTML;
     t = t.replace(/<br>$/,'');
     console.log(t);
-    var player_id = 0;
-    edit_note(game,player_id,detail_type,d_id,t);
+    edit_note(game,local_player_id,detail_type,d_id,t);
 }
 
 function toggle_show(id)
@@ -174,28 +176,6 @@ function game_stage_voting()
     return true;
 }
 
-function active_player_idx()
-{
-    var c = Object.keys(game.players).length;
-    if (game.act==1 && game.scene==c)
-    {
-        // extra scene, active player should match victim
-        var idx = 1;
-        for (var player_id in game.players)
-        {
-            console.log(player_id + " => " +game.victim.player_id);
-            if (player_id==game.victim.player_id)
-            {
-                console.log("active_player_idx in extra scene: "+idx);
-                return idx;
-            }
-            idx++;
-        }
-    }
-
-    return (game.scene%Object.keys(game.players).length)+1;
-}
-
 function show_hand(player,player_uid)
 {
     // note:
@@ -203,9 +183,9 @@ function show_hand(player,player_uid)
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
         (game.act < 4 && player_uid!=0);
-    ;
 }
 
+// TODO see: https://github.com/codemonkey-uk/gawm/issues/21
 function render_unassigned_token(player,player_uid)
 {
     var html = "<div>Give: <b>"+player.unassigned_token+"</b> to: ";
@@ -223,6 +203,7 @@ function render_unassigned_token(player,player_uid)
     return html; 
 }
 
+// TODO see: https://github.com/codemonkey-uk/gawm/issues/23
 function render_record_accused(player,player_uid)
 {
     var html = "";
@@ -268,9 +249,7 @@ function render_player(player,player_uid,player_idx)
     {
         html += render_record_accused(player,player_uid);
     }
-    
-    // TODO: in last break, active player (most innocent) should SET accused for epilogue
-    if (show_hand(player,player_uid))
+    else if (show_hand(player,player_uid))
     {
         // voting buttons?
         var pfn = (game_stage_voting() && player_uid!=0) ?
@@ -382,6 +361,15 @@ function render_game(result)
     game = result;
     var html = "";
 
+    // temp view-switch ui
+     html += "<span>VIEW: </span>";
+    for (var player in game.players)
+    {
+        if (player==local_player_id) html+="<b>";
+        html += "<span onclick='reload(\""+player+"\");'> - "+game.players[player].name+" - </span>";
+        if (player==local_player_id) html+="</b>";
+    }
+        
     html += "<div class='game'>";
     html += "<div>" + game_stage_str() + "</div>";
     if (result.victim)
@@ -488,8 +476,9 @@ function add_player(gamestate)
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById('debug').value  = this.responseText;
             var result = JSON.parse(this.responseText);
-            render_game(result.game);
-            console.log("New player: "+result.player_id);
+            local_player_id = result.player_id
+            console.log("New player: "+local_player_id);
+            render_game(result.game);            
         }
     };
 
@@ -511,7 +500,26 @@ function next(gamestate)
     var request = {};
     request.action = 'next';
     request.game_id = game_id;
-    request.player_id = 0; // TODO: will be required when information hiding is implemented
+    request.player_id = local_player_id; // TODO: will be required when information hiding is implemented
+
+    xmlhttp.open("POST", "game.php", true);
+    xmlhttp.send( JSON.stringify(request) );
+}
+
+function reload(player_id)
+{
+    // player view switching debug hax
+    if (player_id)
+        local_player_id = player_id;
+        
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = generic_response_handler;
+
+    // build request json
+    var request = {};
+    request.action = 'get';
+    request.game_id = game_id;
+    request.player_id = local_player_id;
 
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
@@ -526,9 +534,11 @@ function new_game()
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById('debug').value = this.responseText;
             var result = JSON.parse(this.responseText);
-            render_game(result.game);
             console.log("Game Id:" + result.game_id);
+            console.log("Player Id:" + result.player_id);            
             game_id = result.game_id;
+            local_player_id = result.player_id;
+            render_game(result.game);            
         }
     };
 
@@ -539,16 +549,4 @@ function new_game()
 
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );
-}
-
-function reset()
-{
-    var result = JSON.parse(document.getElementById('debug').value );
-    render_game(result);
-}
-
-function start()
-{
-    load_cards();
-    new_game();
 }
