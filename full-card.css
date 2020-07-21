@@ -138,8 +138,9 @@
   left: 125px;
   margin-left: 0px;
 }
+
 /* Toggle this class - hide and show the popup */
-.halfcard .show {
+.token .show, .halfcard .show {
   visibility: visible;
   -webkit-animation: fadeIn 0.25s;
   animation: fadeIn 0.25s;
@@ -165,6 +166,12 @@
   /* visibility: hidden; */
   top: 0px;
   left: 125px;
+}
+
+.token .actions {
+  /* visibility: hidden; */
+  top: 0px;
+  left: 90px;
 }
 
 .actions {

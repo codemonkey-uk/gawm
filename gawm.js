@@ -205,25 +205,47 @@ function show_hand(player,player_uid)
         (game.act < 4 && player_uid!=0);
 }
 
-// TODO see: https://github.com/codemonkey-uk/gawm/issues/21
+var tokenback_template = `
+<div class='token' style="_CURSOR" onclick="toggle_show('actions_TYPE')">
+<img src="_IMGURL" style='max-width: 100%;max-height: 100%;' alt="_ALT">
+<div class="actions" id="actions_TYPE">_ACTIONS</div>  
+</div>
+`;
+
+function assign_token_html(type, menu)
+{
+    var url = img_url(type,-1);
+    var alt = img_alt(type,-1);
+    var cursor = menu.length > 0 ? "cursor: context-menu;" : "";
+    return tokenback_template
+        .replace(/_TYPE/g, type)
+        .replace(/_CURSOR/g, cursor)
+        .replace(/_ACTIONS/g, menu)
+        .replace(/_IMGURL/g, url)
+        .replace(/_ALT/g, alt);
+}
+
 function render_unassigned_token(player,player_uid)
 {
-    var html = "<div>Give: <b>"+player.unassigned_token+"</b> to: ";
+    var html = "<div class='hand'>";
+    var actions = "";
     for (var p in game.players)
     {
         if (p!=player_uid)
         {
             var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
-            html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
+            actions += "<button onclick='"+click+"'>Give to "+game.players[p].name+"</button>";
         }
     }
 
     var click = "givetoken(game, \""+player_uid+"\", \"0\")";
-    html += "<div onclick='"+click+"'>Discard</div>";
-    return html; 
+    actions += "<button onclick='"+click+"'>Discard</div>";
+    
+    html += assign_token_html(player.unassigned_token, actions);
+    html += '</div>';
+    return html;
 }
 
-// TODO see: https://github.com/codemonkey-uk/gawm/issues/23
 function render_record_accused(player,player_uid)
 {
     var html = "";
@@ -337,11 +359,23 @@ function render_player(player,player_uid)
     return html;
 }
 
+function unassigned_token_msg()
+{
+    for (var player in game.players)
+    {
+        if (game.players[player].unassigned_token)
+            return "Waiting for " +game.players[player].name + " to assign a " + game.players[player].unassigned_token + " token.";
+    }
+ }
+ 
 function game_stage_str()
 {
     if (game.act == 0)
         return "Setup - Add Players and Select Alias Details.";
 
+    var uatm = unassigned_token_msg();
+    if (uatm) return uatm;
+    
     var c = Object.keys(game.players).length;
 
     if (game.act==1 && game.scene==c)
