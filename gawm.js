@@ -97,7 +97,6 @@ function hand_tostr(hand,player_id,action,postfix)
             var i = hand[deck][card];
             if (deck_is_token(deck) || i<0)
             {
-                // TODO: img based token div, css version
                 var divclass = (deck_is_token(deck)) ? "token" : "cardback";
                 var url = img_url(deck,i);
                 var alt = img_alt(deck,i);
@@ -264,6 +263,27 @@ function render_record_accused(player,player_uid)
     return html; 
 }
 
+function player_identity(player_uid)
+{
+    // Victim special case
+    var player_name =  (player_uid==0)
+        ? "The Murder Victim"
+        : game['players'][player_uid].name;
+    
+    if (game.act>0)
+    {
+        // get the alias card for this player/the victim
+        var i = (player_uid==0 ? game['victim'] : game['players'][player_uid])
+            ['play']['aliases'][0];
+        
+        // if note is set, use note instead?
+        var alias_t = cards['aliases'][i]['subtype'];
+        player_name = alias_t + " (" +player_name  +")";
+    }
+    
+    return player_name;
+}
+
 function render_player(player,player_uid)
 {
     var html = "<div class='player'>";
@@ -320,9 +340,10 @@ function render_player(player,player_uid)
                         
                     if (can_give)
                     {
+                        var button_text = deck!="aliases" ? "Give to " + player_identity(target_id) : "Select";
                         var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
                         var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
-                        result += "<button onclick='"+click+"'>Give to "+name+"</button>";
+                        result += "<button onclick='"+click+"'>"+button_text+"</button>";
                     }
                     
                     return result;
@@ -420,7 +441,7 @@ function render_game(result)
     for (var player in game.players)
     {
         if (player==local_player_id) html+="<b>";
-        html += "<span onclick='reload(\""+player+"\");'> - "+game.players[player].name+" - </span>";
+        html += "<span onclick='reload(\""+player+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
         if (player==local_player_id) html+="</b>";
     }
         
