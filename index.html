@@ -16,6 +16,45 @@
     width: 64px; height: 90px;
     display: inline-block;
 }
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Special Elite', serif;
+}
+.action
+{
+  line-height: 30px;
+}
+.action .edit {
+	border: solid 1px;
+    background-color: #f1f1f1;
+    
+    padding: 4px;
+    margin: 4px;
+    height: 30px;
+}
+.action .button {
+    padding: 4px;
+    margin: 4px;
+	height: 30px;
+    width: 90px;
+	
+    background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    cursor: pointer; /* Pointer/hand icon */
+    display: inline-block;
+}
+.about, .action {
+  background-color: #f1f1f1;
+  padding: 5px;
+  text-align: center;
+}
+
 </style>
 <script src="gawm.js"></script>
 <script>
@@ -27,18 +66,54 @@ function reset()
 
 function start()
 {
-    load_cards();
-    new_game();
+    document.getElementById('landing').style.display = "none";
+    new_game(get_contenteditable('user_name'));
 }
+
+function join()
+{
+    document.getElementById('landing').style.display = "none";
+    add_player(
+        get_contenteditable('user_game_code'), 
+        get_contenteditable('user_name')
+    );
+}
+
+// add_player(game_id, player_name)
+
 </script>
 </head>
 
-<body onload="start()">
-<div>
+<body onload="load_cards()">
+
 <textarea id="debug" name="text"></textarea>
 <input type="button" onclick="reload()" value="Refresh"/>
-<input id="add_player" type="button" onclick="add_player(game)" value="Add Player"/>
+<input id="add_player" type="button" onclick="add_player(game_id)" value="Add Player"/>
 <input type="button" onclick="next(game)" value="Next"/>
+
+<div id="landing">
+  <div class="header">
+    <h1>Getting Away With Murder</h1>
+    <h2>A Murder Mystery Role Play Game</h2>
+  </div>
+  <div class="about"><p>
+  GAWM is not a video game. It is a tabletop story telling game played with a deck of cards around a table.</p>
+  <p>This website is not a matchmaking service. GAWM is a 4-6 player game. You will need to organise with your friends.</p><p>
+  This website doesn't provide VOIP or Video chat. You'll need to use some other service. There are lots out there.
+  Use your favourite. </p><p> Got your friends? Read the rules? Let's go:
+  </p></div>
+  <div class="action">
+  <div class="row">
+   <span>Enter</span><span id="user_name" class="edit" contenteditable="true">Your Name</span><span>and:</span>
+   </div>
+   <div>
+   <div id="new_game" class="button" onclick="start()">Create</div> a <span id="player_count" class="edit" contenteditable="true">4</span> player game, or</div>
+   <div>
+   <div id="join_game" class="button" onclick="join()">Join</div> using a game id <span id="user_game_code" class="edit" contenteditable="true">####</span>.
+   </div>
+  </div>
+</div>
+
 <div id="players"></div>
 <div id="snackbar"></div>
 

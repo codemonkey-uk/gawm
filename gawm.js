@@ -67,11 +67,16 @@ var card_template = `<div class="halfcard _TYPE">
   </div>
 </div>`;
 
+function get_contenteditable(p_id)
+{
+    var t = document.getElementById(p_id).innerText;
+    t = t.replace(/<br>$/,'');
+    return t;
+}
+
 function saveEdit(p_id,detail_type,d_id)
 {
-    var t = document.getElementById(p_id).innerHTML;
-    t = t.replace(/<br>$/,'');
-    console.log(t);
+    var t = get_contenteditable(p_id);
     edit_note(game,local_player_id,detail_type,d_id,t);
 }
 
@@ -455,7 +460,7 @@ function render_game(result)
     var html = "";
 
     // temp view-switch ui
-     html += "<span>VIEW: </span>";
+    html += "<span> Game ID: ["+game_id+"]. </span><span>VIEW: </span>";
     for (var player in game.players)
     {
         if (player==local_player_id) html+="<b>";
@@ -569,9 +574,12 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     xmlhttp.send( JSON.stringify(request) );
 }
 
-function add_player(gamestate)
+function add_player(id, player_name)
 {
-    var player_name = prompt("Please enter your name", "Player "+(Object.keys(game.players).length+1));
+    game_id = id;
+    
+    if (!player_name)
+        player_name = prompt("Please enter your name", "Player "+(Object.keys(game.players).length+1));
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -640,10 +648,8 @@ function error_popup(msg)
   setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
 
-function new_game()
+function new_game(player_name)
 {
-    var player_name = prompt("Please enter your name", "Player 1");
-    
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
