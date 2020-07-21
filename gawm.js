@@ -233,7 +233,7 @@ function render_unassigned_token(player,player_uid)
         if (p!=player_uid)
         {
             var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
-            actions += "<button onclick='"+click+"'>Give to "+game.players[p].name+"</button>";
+            actions += "<button onclick='"+click+"'>Give to "+player_identity(p)+"</button>";
         }
     }
 
@@ -247,19 +247,24 @@ function render_unassigned_token(player,player_uid)
 
 function render_record_accused(player,player_uid)
 {
-    var html = "";
-    if (game.the_accused)
-        html += "<div>Accused => " + game.players[game.the_accused].name + "</div>";
-    html += "<div>Accuse: ";
+    var html = "<div class='hand'>";
+    
+    // todo: indicate who will be accused, was:
+    // if (game.the_accused)
+    //    html += "<div>Accused => " + game.players[game.the_accused].name + "</div>";
+    
+    var actions = "";
     for (var p in game.players)
     {
         if (p!=player_uid)
         {
             var click = "record_accused(game, \""+player_uid+"\", \""+p+"\")";
-            html += "<div onclick='"+click+"'>"+game.players[p].name+"</div>";
+            actions += "<button onclick='"+click+"'>Accuse "+player_identity(p)+"</button>";
         }
     }
-
+    
+    html += assign_token_html('guilt', actions);
+    html += '</div>';
     return html; 
 }
 
@@ -270,15 +275,28 @@ function player_identity(player_uid)
         ? "The Murder Victim"
         : game['players'][player_uid].name;
     
-    if (game.act>0)
+    // find if there is an alias card 
+    var i = undefined;
+    
+    // if its the victim, the victim always has an alias
+    if (player_uid==0)
     {
-        // get the alias card for this player/the victim
-        var i = (player_uid==0 ? game['victim'] : game['players'][player_uid])
-            ['play']['aliases'][0];
+        i = game['victim']['play']['aliases'][0];
+    }
+    else
+    {   
+        // players do not always have an alias...
+        if (game['players'][player_uid]['play']['aliases'])
+        {
+            i = game['players'][player_uid]['play']['aliases'][0];
+        }
         
         // if note is set, use note instead?
-        var alias_t = cards['aliases'][i]['subtype'];
-        player_name = alias_t + " (" +player_name  +")";
+        if (i != undefined)
+        {
+            var alias_t = cards['aliases'][i]['subtype'];
+            player_name = alias_t + " (" +player_name  +")";
+        }
     }
     
     return player_name;
