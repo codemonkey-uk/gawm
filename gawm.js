@@ -364,7 +364,14 @@ function render_player(player,player_uid)
                 if (typeof player.vote == "undefined" || player.vote == 2)
                     str += votebutton_html(player_uid,1);
                 return str;
-            } : null;
+            } : function(){
+                if (game.act==0 && player_uid==local_player_id)
+                {
+                    var actions = "<button onclick='next(game)'>Start</button>";
+                    return pointer_html('BEGIN',actions);
+                }
+                return "";
+            };
             
         var detail_action = is_twist() ? "twistdetail" :
             function(deck, id){
