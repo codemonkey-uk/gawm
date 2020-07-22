@@ -464,13 +464,24 @@ function game_stage_str()
     return act + " - Scene " + (game.scene+1) + " / " + c;
 }
 
+function create_joinurl()
+{
+    var url = window.location.protocol + "//"
+        + window.location.hostname
+        + window.location.pathname
+        + "?ugc="+game_id
+        + "&a=join_game";
+        
+    return url;    
+}
+
 function render_game(result)
 {
     game = result;
     var html = "";
 
     // temp view-switch ui
-    html += "<span> Game ID: ["+game_id+"]. </span><span>VIEW: </span>";
+    html += "</span><span>VIEW: </span>";
     for (var player in game.players)
     {
         if (player==local_player_id) html+="<b>";
@@ -492,13 +503,21 @@ function render_game(result)
         if (player!=local_player_id)
             html += render_player(result.players[player],player);
     }
+    
+    if (game.act==0)
+    {
+        var url_text = create_joinurl();
+        var url_encoded = encodeURI(url_text);
+        html += "<div class='action'>";
+        html += "<div>Have other players use this URL to join the game:</div>";
+        html += "<textarea>"+url_encoded+"</textarea>";
+        html += "<div><a href='mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded)+"'><div class='button'>Email It</div></a></div>";
+        html += "</div>";
+    }
+    
     html += "</div>";
 
     document.getElementById('players').innerHTML = html;
-    if (game.act>0)
-        document.getElementById("add_player").style.visibility = "hidden";
-    else
-        document.getElementById("add_player").style.visibility = "visible";
 }
 
 function givetoken(gamestate,player_id,value)
