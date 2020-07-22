@@ -20,7 +20,8 @@ function load_cards()
 
 function deck_is_token(deck)
 {
-    return deck=="guilt" || deck=='innocence';
+    return deck=="guilt" || deck=='innocence' || 
+        deck.startsWith('accuse'); // accuse + accused
 }
 
 function img_url(deck,i)
@@ -36,6 +37,8 @@ function img_url(deck,i)
             case "wildcards": return 'assets/wild_back.png';
             case "guilt": return 'assets/guilt.png';
             case "innocence": return 'assets/innocence.png';            
+            case "accuse": return 'assets/accuse.png';  
+            case "accused": return 'assets/accused.png';              
         }
     }
     
@@ -268,7 +271,7 @@ function render_record_accused(player,player_uid)
         }
     }
     
-    html += assign_token_html('guilt', actions);
+    html += assign_token_html('accuse', actions);
     html += '</div>';
     return html; 
 }
@@ -397,7 +400,14 @@ function render_player(player,player_uid)
     if (player.tokens)
     {
         html += "<div>Tokens recieved: </div>";
-        html += hand_tostr(player.tokens,player_uid,null,null);
+        html += hand_tostr(player.tokens,player_uid,null,
+            function(){
+                var str = "";
+                if (game.the_accused == player_uid)
+                    str += assign_token_html('accused','');
+                return str;
+            }
+        );
     }
     html += '</div>';
     return html;
