@@ -121,7 +121,7 @@ function test_redact()
 {
     global $data;
 
-    $data = [
+    $data_template = [
         "cards" => [],
         "tokens" => [],
         "players" => [
@@ -135,9 +135,11 @@ function test_redact()
                 "tokens" => ["guilt" => [1,2],"innocence" => [1,2]],
                 "vote" => "guilt"
             ]
-        ]
+        ],
+        "act" => 1
     ];
 
+    $data = $data_template;
     $redacted = redact_for_player($data, 1);
     
     // hands for other players are redacted
@@ -151,6 +153,16 @@ function test_redact()
     // other players vote status is redacted
     test(isset($redacted["players"][1]["vote"]),true,"player 1 vote should be intact.");
     test(isset($redacted["players"][2]["vote"]),false,"player 2 vote should be redacted.");
+    
+    // epilogue redactions differ
+    $data = $data_template;
+    $data["act"] = 4;
+    $redacted = redact_for_player($data, 1);
+
+    // tokens are delt face down, redacted for all
+    test($redacted["players"][1]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p1 tokens to be intact.");
+    test($redacted["players"][2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
+    
 }
 
 function vote_scene( &$data )

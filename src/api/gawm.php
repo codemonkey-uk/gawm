@@ -570,7 +570,14 @@ function redact_for_player($data, $player_id)
     // hide details of other players hands
     foreach( $data["players"] as $id => &$player )
     {
-        $redact = ["tokens"];
+        $redact = [];
+        
+        // tokens are redacted, until the epilogue
+        if (!gawm_is_epilogue($data))
+        {
+            array_push($redact, "tokens");
+        }
+        
         if ($id!=$player_id)
         {
             array_push($redact, "hand");
