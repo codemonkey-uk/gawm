@@ -140,7 +140,7 @@
 }
 
 /* Toggle this class - hide and show the popup */
-.token .show, .halfcard .show {
+.token .show, .halfcard .show, .pointer .show {
   visibility: visible;
   -webkit-animation: fadeIn 0.25s;
   animation: fadeIn 0.25s;
@@ -179,6 +179,7 @@
   position: absolute;
   z-index: 1;
   width: 115px;
+  border: 0px;
 }
 
 .actions button {

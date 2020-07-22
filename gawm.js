@@ -212,6 +212,22 @@ function show_hand(player,player_uid)
         (game.act < 4 && player_uid!=0);
 }
 
+var pointer_template = `
+<div class="pointer" style="_CURSOR" onclick="toggle_show('pointer_id')">
+<div class="frame"><img src="assets/pointer.png"/><p>_TEXT</p></div>
+<div class="actions" id="pointer_id">_ACTIONS</div>  
+</div>
+`;
+
+function pointer_html(text, menu)
+{
+    var cursor = menu.length > 0 ? "cursor: context-menu;" : "";
+    return pointer_template
+        .replace(/_CURSOR/g, cursor)
+        .replace(/_ACTIONS/g, menu)
+        .replace(/_TEXT/g, text);
+}
+
 var tokenback_template = `
 <div class='token' style="_CURSOR" onclick="toggle_show('actions_TYPE')">
 <img src="_IMGURL" style='max-width: 100%;max-height: 100%;' alt="_ALT">
@@ -271,7 +287,7 @@ function render_record_accused(player,player_uid)
         }
     }
     
-    html += assign_token_html('accuse', actions);
+    html += pointer_html('ACCUSE',actions);
     html += '</div>';
     return html; 
 }
@@ -470,6 +486,7 @@ function create_joinurl()
         + window.location.hostname
         + window.location.pathname
         + "?ugc="+game_id
+        + "&un=" + "Player_"+(Object.keys(game.players).length+1)
         + "&a=join_game";
         
     return url;    
