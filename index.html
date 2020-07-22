@@ -58,11 +58,6 @@
 </style>
 <script src="gawm.js"></script>
 <script>
-function reset()
-{
-    var result = JSON.parse(document.getElementById('debug').value );
-    render_game(result);
-}
 
 function start()
 {
@@ -79,12 +74,37 @@ function join()
     );
 }
 
-// add_player(game_id, player_name)
+function getParameterByName(name, url) 
+{
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function body_onload()
+{
+    load_cards();
+    
+    // pre-fill editable
+    
+    var game_id = getParameterByName('ugc');
+    if (game_id) document.getElementById('user_game_code').innerHTML = game_id;
+    
+    var name = getParameterByName('un');
+    if (name) document.getElementById('user_name').innerHTML = name;
+
+    var action = getParameterByName('a');  
+    if (action == 'join_game') join();
+}
 
 </script>
 </head>
 
-<body onload="load_cards()">
+<body onload="body_onload()">
 
 <textarea id="debug" name="text"></textarea>
 <input type="button" onclick="reload()" value="Refresh"/>
