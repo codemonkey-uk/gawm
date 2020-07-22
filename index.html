@@ -54,6 +54,10 @@
   padding: 5px;
   text-align: center;
 }
+.about p { 
+    width: 75%; 
+    margin: 25px auto 25px auto;
+}
 
 </style>
 <script src="gawm.js"></script>
@@ -117,18 +121,18 @@ function body_onload()
   </div>
   <div class="about"><p>
   GAWM is not a video game. It is a tabletop story telling game played with a deck of cards around a table.</p>
-  <p>This website is not a matchmaking service. GAWM is a 4-6 player game. You will need to organise with your friends.</p><p>
+  <p>This website replaces that pack of card, so you can play with your friends safely from home. It is not a matchmaking service. GAWM is a 4-6 player game. You will need to organise with your friends.</p><p>
   This website doesn't provide VOIP or Video chat. You'll need to use some other service. There are lots out there.
   Use your favourite. </p><p> Got your friends? Read the rules? Let's go:
   </p></div>
   <div class="action">
   <div class="row">
-   <span>Enter</span><span id="user_name" class="edit" contenteditable="true">Your Name</span><span>and:</span>
+   <span>Enter your name, </span><span id="user_name" class="edit" contenteditable="true">Player_1</span><span>and:</span>
    </div>
    <div>
    <div id="new_game" class="button" onclick="start()">Create</div> a <span id="player_count" class="edit" contenteditable="true">4</span> player game, or</div>
    <div>
-   <div id="join_game" class="button" onclick="join()">Join</div> using a game id <span id="user_game_code" class="edit" contenteditable="true">####</span>.
+   <div id="join_game" class="button" onclick="join()">Join</div> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
    </div>
   </div>
 </div>

@@ -159,7 +159,7 @@ function test_redact()
     $data["act"] = 4;
     $redacted = redact_for_player($data, 1);
 
-    // tokens are delt face down, redacted for all
+    // tokens not redacted in the 4th act (epilogue)
     test($redacted["players"][1]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p1 tokens to be intact.");
     test($redacted["players"][2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
     
