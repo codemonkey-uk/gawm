@@ -95,11 +95,28 @@ function isFunction(functionToCheck)
     return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
+function is_hand_redacted(hand)
+{
+    for (var deck in hand)
+    {
+        for (var card in hand[deck])
+        {
+            var i = hand[deck][card];
+            if (i>=0) return false;
+        }
+    }
+    return true;
+}
+
 function hand_tostr(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
     html += "<div class='hand_label'>"+label+"</div>";
-    html += "<div class='hand_grid'>";
+
+    // compact style for fully redacted hands
+    var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
+    
+    html += "<div class='hand_grid' style='"+style+"'>";
     for (var deck in hand)
     {
         for (var card in hand[deck])
