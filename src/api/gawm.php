@@ -427,6 +427,11 @@ function gawm_is_player_active(&$data, $player_id)
 
 function gawm_player_has_details_left_to_play(&$data, $player_id)
 {
+    if ($player_id==gawm_player_id_victim)
+    {
+        return isset($data['victim']['hand']) && count($data['victim']['hand'])>0;
+    }
+        
     $player = &$data["players"][$player_id];
 
     // acts 1-3,
@@ -443,7 +448,8 @@ function gawm_player_has_details_left_to_play(&$data, $player_id)
     if ($act>0 && $c <= 3*$r)
         return false;
 
-    return true;
+    // act 0 (set up), player gets 2 alias, and must play 1 & discard 1
+    return count($player['hand'])>0;
 }
 
 function tally_votes(&$data)
@@ -571,14 +577,28 @@ function gawm_list_players_by_most_guilty(&$data)
 // in which we remove data going back to the client for a given player
 function redact_for_player($data, $player_id)
 {
+    // redact any "hidden" information 
+    // (face down tokens, cards in other players hands)
+
     // cards left in the deck? cients dont need to know...
     unset($data["cards"]);
     // how the tokens got shuffled?
     unset($data["tokens"]);
     
+    // suplementals for victim
+    if (isset($data['victim']))
+    {
+        $data['victim']['active'] = gawm_is_player_active($data, gawm_player_id_victim);
+        $data['victim']['details_left_to_play'] = gawm_player_has_details_left_to_play($data, gawm_player_id_victim);
+    }    
+    
     // hide details of other players hands
     foreach( $data["players"] as $id => &$player )
     {
+        // inject sumplemental / derived info to simplify js and reduce duplication
+        $player['active'] = gawm_is_player_active($data, $id);
+        $player['details_left_to_play'] = gawm_player_has_details_left_to_play($data, $id);
+        
         $redact = [];
         
         // tokens are redacted, until the epilogue
@@ -598,9 +618,7 @@ function redact_for_player($data, $player_id)
                 foreach($deck as $key => $value)
                     $deck[$key] = -1;
     }
-
-    // todo (later) remove / reduce other players hands
-    // (keeping for now to make testing easier)
+    
     return $data;
 }
 

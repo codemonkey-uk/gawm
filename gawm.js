@@ -176,7 +176,7 @@ function votediv_html(player_id,value,action)
     var html ="";
     var url = 'assets/'+value_str+'.png';
     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+value_str+"\">";
-    html += "<div class='token' onclick='" +action+ "'>";
+    html += "<div class='token' onclick='" +action+ "' style='cursor: pointer;'>";
     html += img;
     html += "</div>"
     return html;
@@ -209,7 +209,8 @@ function show_hand(player,player_uid)
     // victim can have details but not vote
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
-        (game.act < 4 && player_uid!=0);
+        (game.act < 4 && player_uid!=0) ||
+        (player_uid==0 && is_firstbreak());
 }
 
 var pointer_template = `
@@ -314,14 +315,14 @@ function player_identity(player_uid)
         {
             i = game['players'][player_uid]['play']['aliases'][0];
         }
-        
-        // if note is set, use note instead?
-        if (i != undefined)
-        {
-            var alias_t = cards['aliases'][i]['subtype'];
-            player_name = alias_t + " (" +player_name  +")";
-        }
     }
+    
+    // if note is set, use note instead?
+    if (i != undefined)
+    {
+        var alias_t = cards['aliases'][i]['subtype'];
+        player_name = alias_t + " (" +player_name  +")";
+    }    
     
     return player_name;
 }
@@ -331,7 +332,7 @@ function render_player(player,player_uid)
     var html = "<div class='player'>";
     if (player_uid!=0)
     {
-        html += "<div>Player: " + player.name;
+        html += "<div>" + player_identity(player_uid);
         if (player.fate)
             html += " ("+player.fate+")";
         html += ", Hand: </div>";
@@ -355,23 +356,37 @@ function render_player(player,player_uid)
     }
     else if (show_hand(player,player_uid))
     {
-        // voting buttons?
-        var pfn = (game_stage_voting() && player_uid==local_player_id) ?
+        // other actions, local player or victim
+        var pfn = 
+            (player_uid==local_player_id || 
+            (player_uid==0 && is_firstbreak() && !unassigned_token_msg())) ?
             function(){
                 var str = "";
-                if (typeof player.vote == "undefined" || player.vote == 1)
-                    str += votebutton_html(player_uid,2);
-                if (typeof player.vote == "undefined" || player.vote == 2)
-                    str += votebutton_html(player_uid,1);
-                return str;
-            } : function(){
-                if (game.act==0 && player_uid==local_player_id)
+                // you can vote as the active player AFTER you've played your details
+                // you can vote on other players scenes at any time
+                if (game_stage_voting() && (player.active==false || player.details_left_to_play==false))
                 {
-                    var actions = "<button onclick='next(game)'>Start</button>";
-                    return pointer_html('BEGIN',actions);
+                    if (typeof player.vote == "undefined" || player.vote == 1)
+                        str += votebutton_html(player_uid,2);
+                    if (typeof player.vote == "undefined" || player.vote == 2)
+                        str += votebutton_html(player_uid,1);
                 }
-                return "";
-            };
+                if (player.active && player.details_left_to_play==false)
+                {
+                    if (game.act==0)
+                    {
+                        var actions = "<button onclick='next(game)'>Start</button>";
+                        str += pointer_html('BEGIN',actions);
+                    }
+                    else
+                    {
+                        var actions = "<button onclick='next(game)'>End Scene</button>";
+                        str += pointer_html('NEXT',actions);
+                    }
+                }
+                
+                return str;
+            } : null;
             
         var detail_action = is_twist() ? "twistdetail" :
             function(deck, id){
@@ -382,7 +397,7 @@ function render_player(player,player_uid)
                     // motives cant be given until 2nd act,
                     // aliases can only be given to yourself
                     // murder details can only be given to the victim
-                    var can_give = 
+                    var can_give = player.active &&
                         (game.act >= 2 || deck!="motives") && 
                         (player_uid==p || deck!="aliases") &&
                         (target_id==0 || !deck.startsWith("murder_"));
@@ -443,8 +458,8 @@ function unassigned_token_msg()
         if (game.players[player].unassigned_token)
             return "Waiting for " +game.players[player].name + " to assign a " + game.players[player].unassigned_token + " token.";
     }
- }
- 
+}
+
 function game_stage_str()
 {
     if (game.act == 0)
@@ -458,7 +473,7 @@ function game_stage_str()
     if (game.act==1 && game.scene==c)
         return "Extra Scene: Introduce a new character.";
 
-    if (game.act==1 && game.scene==c+1)
+    if (is_firstbreak())
         return "First Break: The Murder.";
 
     if (is_twist())
@@ -669,11 +684,13 @@ function next(gamestate)
     xmlhttp.send( JSON.stringify(request) );
 }
 
-function reload(player_id)
+function reload(player_id,newgame_id)
 {
     // player view switching debug hax
     if (player_id)
         local_player_id = player_id;
+    if (newgame_id)
+        game_id = newgame_id;
         
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = generic_response_handler;

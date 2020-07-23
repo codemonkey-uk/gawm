@@ -108,7 +108,7 @@ function test_innocence_and_guilt_ranking()
                 "innocence" => [3],      //innoc score: 3
                 "guilt" => [0,1,1,2,2,2] //guilt score: 5, wins most guilt tokens tie break
             ]]
-        ]
+        ],
     ];
 
     $sequence = gawm_list_players_by_most_innocent($data);
@@ -136,7 +136,9 @@ function test_redact()
                 "vote" => "guilt"
             ]
         ],
-        "act" => 1
+        "act" => 1,
+        "scene" => 1,
+        "victim" => []
     ];
 
     $data = $data_template;
@@ -163,6 +165,7 @@ function test_redact()
     test($redacted["players"][1]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p1 tokens to be intact.");
     test($redacted["players"][2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
     
+    test(array_keys($redacted["players"]),[1,2],"redact should not change the player uids");
 }
 
 function vote_scene( &$data )
