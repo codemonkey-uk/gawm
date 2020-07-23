@@ -391,8 +391,8 @@ function gawm_is_detail_active(&$data, $detail_type)
 
 function gawm_is_player_active(&$data, $player_id)
 {
-    // all players are active in set up (act 0)
-    if (gawm_is_setup($data))
+    // all players are active in set up and twist phases
+    if (gawm_is_setup($data) || gawm_is_twist($data))
     {
         return true;
     }

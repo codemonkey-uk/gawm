@@ -211,7 +211,8 @@ function show_hand(player,player_uid)
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
         (game.act < 4 && player_uid!=0) ||
-        (player_uid==0 && is_firstbreak());
+        (player_uid==0 && is_firstbreak()) ||
+        player.active;
 }
 
 var pointer_template = `

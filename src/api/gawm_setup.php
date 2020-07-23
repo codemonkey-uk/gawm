@@ -111,21 +111,21 @@ function complete_setup(&$data)
     // at least 4 players
     if (count($data["players"])<4)
     {
-        throw new Exception('Must have 4 Players to Complete Setup.');
+        throw new Exception('At least 4 Players required to Complete Setup.');
     }
 
     // every player has 1 alias
-    foreach( $data["players"] as $player )
+    foreach( $data["players"] as $id => $player )
     {
         // 0 alias in hand
         if (isset($player["hand"]["aliases"]))
         {
-            throw new Exception('Alias detail still in hand.');
+            throw new Exception($id.' has an alias detail still in hand.');
         }
         // 1 alias in play
         if (count($player["play"]["aliases"])!=1)
         {
-            throw new Exception('Alias detail missing from play.');
+            throw new Exception($id.' has an alias detail missing from play.');
         }
     }
 
