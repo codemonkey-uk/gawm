@@ -26,7 +26,7 @@ function gawm_add_player(&$data, $player_name)
         throw new Exception('Trying to add players outside setup step.');
     }
 
-    if (count($data["players"] ) > 6)
+    if (count($data["players"] ) >= 6)
     {
         throw new Exception('Trying to add a 7th player.');
     }

@@ -73,10 +73,10 @@ function start()
 
 function join()
 {
-    document.getElementById('landing').style.display = "none";
     add_player(
         get_contenteditable('user_game_code'), 
-        get_contenteditable('user_name')
+        get_contenteditable('user_name'),
+        function(){document.getElementById('landing').style.display = "none";}
     );
 }
 

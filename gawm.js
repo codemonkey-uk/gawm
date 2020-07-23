@@ -133,7 +133,7 @@ function hand_tostr(hand,player_id,action,postfix)
                 }
                 
                 // if note is set, use that
-                var note = game['notes'][deck] ? game['notes'][deck][i] : null;
+                var note = (game['notes'] && game['notes'][deck]) ? game['notes'][deck][i] : null;
                 var desc = note ? note : cards[deck][i]['desc'];
                 // if note is set, mark card
                 // todo: take first line from note for name, if note is set
@@ -647,7 +647,7 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     xmlhttp.send( JSON.stringify(request) );
 }
 
-function add_player(id, player_name)
+function add_player(id, player_name,onsucess)
 {
     game_id = id;
     
@@ -660,8 +660,12 @@ function add_player(id, player_name)
             document.getElementById('debug').value  = this.responseText;
             var result = JSON.parse(this.responseText);
             local_player_id = result.player_id
-            console.log("New player: "+local_player_id);
-            render_game(result.game);            
+            render_game(result.game);   
+            onsucess();
+        }
+        else if (this.status == 400)
+        {
+            error_popup(this.responseText);
         }
     };
 
@@ -714,15 +718,27 @@ function reload(player_id,newgame_id)
 
 function error_popup(msg) 
 {
-  // Get the snackbar DIV
-  var x = document.getElementById("snackbar");
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
 
-  // Add the "show" class to DIV
-  x.className = "show";
-  x.innerHTML = msg
+    // replace player ids in the error message with user-facing names:
+    if (game)
+    {
+        if (game.players)
+        {
+            for (var player in game.players)
+            {
+                msg = msg.replace(player, player_identity(player));
+            }
+        }
+    }
+    
+    // Add the "show" class to DIV
+    x.className = "show";
+    x.innerHTML = msg
 
-  // After 3 seconds, remove the show class from DIV
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function new_game(player_name)
