@@ -1,3 +1,4 @@
+
 @import 'https://fonts.googleapis.com/css?family=Special Elite';
 
 .aliases {
@@ -25,15 +26,36 @@
   border-color: lightgrey;
 }
 
+.player {
+  border: 2px solid;
+  border-radius: 5px;
+  margin: 2px;
+}
+
 .hand {
+  position: relative;
+}
+.hand_label {
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  font-family: 'Special Elite', serif;
+  font-size: 60px;
+  padding-top: 30px;
+  position: absolute;
+  top: 0px;
+  z-index: -1;
+}
+.hand_grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-auto-columns: minmax(64px, 260px);
   grid-auto-rows: 100px; /* minmax(100px, 360px); */
   
   grid-gap: 4px;
-  background-color: darkgrey;
+  background-color: rgba(76, 175, 80, 0.5);
   padding: 4px;
+  min-height: 100px;
 }
 
 .card, .halfcard  {
@@ -202,3 +224,4 @@
 .actions button:hover {
   background-color: #3e8e41;
 }
+

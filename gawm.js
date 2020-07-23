@@ -95,9 +95,11 @@ function isFunction(functionToCheck)
     return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
-function hand_tostr(hand,player_id,action,postfix)
+function hand_tostr(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
+    html += "<div class='hand_label'>"+label+"</div>";
+    html += "<div class='hand_grid'>";
     for (var deck in hand)
     {
         for (var card in hand[deck])
@@ -156,6 +158,7 @@ function hand_tostr(hand,player_id,action,postfix)
     if (postfix)
         html += postfix();
     html += '</div>';
+    html += '</div>';    
     return html;
 }
 
@@ -331,7 +334,8 @@ function player_identity(player_uid)
 
 function render_player(player,player_uid)
 {
-    var html = "<div class='player'>";
+    var c = (player.active || player.unassigned_token) ? 'red' : 'black';
+    var html = "<div class='player' style='border-color: "+c+"'>";
     if (player_uid!=0)
     {
         html += "<div>" + player_identity(player_uid);
@@ -423,9 +427,8 @@ function render_player(player,player_uid)
                     
                 return result;
             };
-        html += hand_tostr(player.hand,player_uid,detail_action,pfn);
+        html += hand_tostr(player.hand,player_uid,detail_action,pfn,"HELD");
     }
-    html += "<div>Details in play: </div>";
     if (player.play)
     {
         html += hand_tostr(player.play,player_uid,null,
@@ -434,19 +437,20 @@ function render_player(player,player_uid)
                 if (typeof player.vote != "undefined")
                     str += votediv_html(player_uid,player.vote,"");
                 return str;
-            }
+            },
+            "IN PLAY"
         );
     }
     if (player.tokens)
     {
-        html += "<div>Tokens recieved: </div>";
         html += hand_tostr(player.tokens,player_uid,null,
             function(){
                 var str = "";
                 if (game.the_accused == player_uid)
                     str += assign_token_html('accused','');
                 return str;
-            }
+            },
+            "TOKENS"
         );
     }
     html += '</div>';
@@ -465,7 +469,7 @@ function unassigned_token_msg()
 function game_stage_str()
 {
     if (game.act == 0)
-        return "Setup - Add Players and Select Alias Details.";
+        return "Setup: Add Players and Select Alias Details.";
 
     var uatm = unassigned_token_msg();
     if (uatm) return uatm;
@@ -501,7 +505,7 @@ function game_stage_str()
     if (game.act==4)
         act = "Epilogue";
 
-    return act + " - Scene " + (game.scene+1) + " / " + c;
+    return act + ", Scene " + (game.scene+1) + " / " + c;
 }
 
 function create_joinurl()
@@ -531,7 +535,7 @@ function render_game(result)
     }
         
     html += "<div class='game'>";
-    html += "<div>" + game_stage_str() + "</div>";
+    html += "<div class='header'>" + game_stage_str() + "</div>";
     if (result.victim)
     {
         html += render_player(result.victim,0,0);
