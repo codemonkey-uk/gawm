@@ -93,18 +93,23 @@ function getParameterByName(name, url)
 
 function body_onload()
 {
-    load_cards();
-    
     // pre-fill editable
-    
     var game_id = getParameterByName('ugc');
     if (game_id) document.getElementById('user_game_code').innerHTML = game_id;
-    
+
     var name = getParameterByName('un');
     if (name) document.getElementById('user_name').innerHTML = name;
 
-    var action = getParameterByName('a');  
-    if (action == 'join_game') join();
+    load_cards(function() {
+        var action = getParameterByName('a');  
+        if (action == 'join_game') join();
+
+        if (action == 'load_game')
+        {
+            reload(getParameterByName('pid'),game_id);
+            document.getElementById('landing').style.display = "none";
+        }
+    });
 }
 
 </script>
@@ -113,7 +118,6 @@ function body_onload()
 <body onload="body_onload()">
 
 <textarea id="debug" name="text"></textarea>
-<input type="button" onclick="reload()" value="Refresh"/>
 <input type="button" onclick="next(game)" value="Next"/>
 
 <div id="landing">

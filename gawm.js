@@ -5,12 +5,13 @@ var game = null;
 var game_id = 0;
 var local_player_id = 0;
 
-function load_cards()
+function load_cards(oncomplete)
 {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             cards = JSON.parse(this.responseText);
+            oncomplete();
         }
     };
 
@@ -535,7 +536,10 @@ function render_game(result)
         html += render_player(result.victim,0,0);
     }
 
-    html += render_player(result.players[local_player_id],local_player_id);
+    if (result.players[local_player_id])
+    {
+        html += render_player(result.players[local_player_id],local_player_id);
+    }
     
     for (var player in result.players)
     {
@@ -686,6 +690,8 @@ function next(gamestate)
 
 function reload(player_id,newgame_id)
 {
+    console.log("Loading: ",player_id,newgame_id);
+    
     // player view switching debug hax
     if (player_id)
         local_player_id = player_id;
