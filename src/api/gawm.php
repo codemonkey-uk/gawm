@@ -494,6 +494,15 @@ function gawm_is_lastbreak(&$data)
     return $data["act"]==3 && $data["scene"] == 2*count($data["players"]);
 }
 
+function gawm_get_player_names(&$data)
+{
+    $names = array();
+    foreach ($data["players"] as $player) {
+        $names[] = $player['name'];
+    }
+    return $names;
+}
+
 function gawm_list_players_by_most_innocent(&$data)
 {
     $players = $data['players'];

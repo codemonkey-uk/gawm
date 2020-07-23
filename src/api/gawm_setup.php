@@ -31,6 +31,19 @@ function gawm_add_player(&$data, $player_name)
         throw new Exception('Trying to add a 7th player.');
     }
 
+    // Ensure $player_name is unique
+    $player_name_list = gawm_get_player_names($data);
+    while (in_array($player_name,$player_name_list)) {
+        // Look for number at the end of the name
+        if (preg_match('/[0-9]+$/', $player_name, $matches, PREG_OFFSET_CAPTURE)) {
+            // Increment the number
+            [$number, $offset] = $matches[0];
+            $player_name = substr($player_name,0,$offset).++$number;
+        } else {
+            $player_name .= " 2";
+        }
+    }
+
     $new_player = [
         'name' => $player_name,
         'hand' => [],
