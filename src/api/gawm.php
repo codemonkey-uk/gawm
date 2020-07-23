@@ -410,6 +410,10 @@ function gawm_is_player_active(&$data, $player_id)
     {
         return $data["most_innocent"];
     }
+    if ($player_id==gawm_player_id_victim)
+    {
+        return false;
+    }
 
     // normally, players are active during their scene
     $i = array_search($player_id, array_keys($data["players"]));
