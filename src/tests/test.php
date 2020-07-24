@@ -303,6 +303,7 @@ function test_playthrough($c)
     play_scenes($data, $player_ids,"objects");
     test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
 
+    test( gawm_is_player_active($data, gawm_player_id_victim), false, "The victim should not be active in the Twist.");
     // every player twists 1 motive
     foreach( $player_ids as $player_id )
     {
