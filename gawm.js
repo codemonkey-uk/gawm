@@ -318,9 +318,18 @@ function render_record_accused(player,player_uid)
 function player_identity(player_uid)
 {
     // Victim special case
-    var player_name =  (player_uid==0)
-        ? "The Murder Victim"
-        : game['players'][player_uid].name;
+    var player_name;
+    if (player_uid==0)
+    {
+        player_name = "The Murder Victim";
+        var c = Object.keys(game.players).length;
+        if (game.act==1 && game.scene==c)
+            player_name += " will be...";
+    }
+    else
+    {
+        player_name = game['players'][player_uid].name;
+    }
     
     // find if there is an alias card 
     var i = undefined;
@@ -358,20 +367,10 @@ function render_player(player,player_uid)
 {
     var c = (player.active || player.unassigned_token) ? 'red' : 'black';
     var html = "<div class='player' style='border-color: "+c+"'>";
-    if (player_uid!=0)
-    {
-        html += player_identity(player_uid);
-        if (player.fate)
-            html += "<div>("+player.fate+")</div>";
-    }
-    else
-    {
-        var c = Object.keys(game.players).length;
-        if (game.act==1 && game.scene==c)
-            html += "<div>The Victim will be... (not yet)</div>";
-        else
-            html += "<div>The Victim.</div>";
-    }
+
+    html += player_identity(player_uid);
+    if (player.fate)
+        html += "<div>("+player.fate+")</div>";
 
     if (player.unassigned_token)
     {
