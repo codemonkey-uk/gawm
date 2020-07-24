@@ -337,16 +337,21 @@ function player_identity(player_uid)
         {
             i = game['players'][player_uid]['play']['aliases'][0];
         }
-    }
+    }  
     
+    var result = "<div class='identity'>";
+    result+="<span class='name'";
+    if (player_uid==local_player_id)
+        result += " contenteditable='true'"// TODO: add onblur save
+    result+=">"+player_name+"</span>";
     // if note is set, use note instead?
     if (i != undefined)
     {
         var alias_t = cards['aliases'][i]['subtype'];
-        player_name = alias_t + " (" +player_name  +")";
-    }    
-    
-    return player_name;
+        result+="<span class='alias'>"+alias_t+"</span>";
+    }  
+    result += "</div>";
+    return result;
 }
 
 function render_player(player,player_uid)
@@ -355,10 +360,9 @@ function render_player(player,player_uid)
     var html = "<div class='player' style='border-color: "+c+"'>";
     if (player_uid!=0)
     {
-        html += "<div>" + player_identity(player_uid);
+        html += player_identity(player_uid);
         if (player.fate)
-            html += " ("+player.fate+")";
-        html += ", Hand: </div>";
+            html += "<div>("+player.fate+")</div>";
     }
     else
     {

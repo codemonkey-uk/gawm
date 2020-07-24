@@ -6,6 +6,36 @@
 <head>
 <style>
 
+.identity 
+{
+    padding-top: 2px;    
+    background-color: rgba(76, 175, 80, 0.5);
+}
+.identity .name
+{
+  font-size: 16px;
+  font-family: 'Arial', serif;
+  margin: 4px;
+}
+.identity .name br 
+{
+    display: none
+}
+.identity .alias
+{
+    padding-left: 8px;
+    font-size: 16px;
+    font-family: 'Special Elite', serif;  
+}
+.alias::before
+{
+    content: "(";
+}
+.alias::after 
+{
+    content: ")";
+}
+
 .token {
     margin-right: 4px;
     width: 90px; height: 90px;

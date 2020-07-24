@@ -95,6 +95,7 @@
 .subtitle::before, .subtitle::after {
 	content: " ~ ";
 }
+
 .card .name {
     margin-top: 10px;
     border: 2px solid grey;
