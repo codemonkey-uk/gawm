@@ -408,9 +408,15 @@ function gawm_is_player_active(&$data, $player_id)
     }
     if (gawm_is_lastbreak($data))
     {
-        return $data["most_innocent"];
+        return $player_id==$data["most_innocent"];
     }
     if ($player_id==gawm_player_id_victim)
+    {
+        return false;
+    }
+
+    // game over, after the epilogue no one is active
+    if ($data["act"]==5)
     {
         return false;
     }

@@ -227,7 +227,8 @@ function game_stage_voting()
     if (game.act==1 && game.scene>c) return false;
     if (is_twist()) return false;
     if (game.act==3 && game.scene==c) return false;
-
+    if (game.act>=4) return false;
+    
     return true;
 }
 
@@ -239,7 +240,8 @@ function show_hand(player,player_uid)
     return (player.hand && Object.keys(player.hand).length>0) ||
         (game.act < 4 && player_uid!=0) ||
         (player_uid==0 && is_firstbreak()) ||
-        player.active;
+        player.active ||
+        player.fate;
 }
 
 var pointer_template = `
@@ -305,10 +307,8 @@ function render_unassigned_token(player,player_uid)
 function render_record_accused(player,player_uid)
 {
     var html = "<div class='hand'>";
-    
-    // todo: indicate who will be accused, was:
-    // if (game.the_accused)
-    //    html += "<div>Accused => " + game.players[game.the_accused].name + "</div>";
+    html += "<div class='hand_label'>ACCUSE</div>";
+    html += "<div class='hand_grid'>";
     
     var actions = "";
     for (var p in game.players)
@@ -319,9 +319,16 @@ function render_record_accused(player,player_uid)
             actions += "<button onclick='"+click+"'>Accuse "+player_identity_str(p)+"</button>";
         }
     }
+
+    if (game.the_accused)
+    {
+        actions += "<button onclick='next(game)'>End Scene</button>";
+    }
     
-    html += pointer_html('ACCUSE',actions);
-    html += '</div>';
+    html += pointer_html('NEXT',actions);
+    
+    html += '</div>';//hand_grid
+    html += '</div>';//hand
     return html; 
 }
 
@@ -396,14 +403,12 @@ function render_player(player,player_uid)
     var html = "<div class='player' style='border-color: "+c+"'>";
 
     html += player_identity_div(player_uid);
-    if (player.fate)
-        html += "<div>("+player.fate+")</div>";
 
-    if (player.unassigned_token)
+    if (player.unassigned_token && player_uid==local_player_id)
     {
         html += render_unassigned_token(player,player_uid);
     }
-    else if (game.most_innocent==player_uid && game.act==3)
+    else if (game.most_innocent==player_uid && game.act==3 && player_uid==local_player_id)
     {
         html += render_record_accused(player,player_uid);
     }
@@ -474,7 +479,9 @@ function render_player(player,player_uid)
                     
                 return result;
             };
-        html += hand_tostr(player.hand,player_uid,detail_action,pfn,"HELD");
+            
+        var banner = (player.fate) ? fate_to_str(player.fate) : "HELD";
+        html += hand_tostr(player.hand,player_uid,detail_action,pfn,banner);
     }
     if (player.play)
     {
@@ -513,10 +520,26 @@ function unassigned_token_msg()
     }
 }
 
+function fate_to_str(fate)
+{
+    switch(fate)
+    {
+        case "gawm": return "Got Away With Murder!";
+        case "got_caught": return "Got Caught";
+        case "got_it_right": return "Got It Right";
+        case "got_it_wrong": return "Got It Wrong";
+        case "got_framed": return "Got Framed";
+        case "got_out_alive": return "Got Out Alive";
+        default: return "Unknown fate id: "+fate;
+    }
+}
+
 function game_stage_str()
 {
-    if (game.act == 0)
+    if (game.act==0)
         return "Setup: Add Players and Select Alias Details.";
+    if (game.act==5)
+        return "FIN";
 
     var uatm = unassigned_token_msg();
     if (uatm) return uatm;
@@ -537,8 +560,8 @@ function game_stage_str()
 
     if (game.act==3 && game.scene==c)
     {
-        var n = game.players[game.most_innocent].name;
-        return "Last Break: The Accusation ("+n+") and The Guilty.";
+        var n = player_identity_str(game.most_innocent);
+        return "Last Break: The Accusation - "+n+" - and The Guilty ...";
     }
 
     var act = "";
@@ -548,7 +571,6 @@ function game_stage_str()
         act = "Act II: Investigations";
     if (game.act==3)
         act = "Act III: Incriminations";
-
     if (game.act==4)
         act = "Epilogue";
 
@@ -608,6 +630,10 @@ function render_game(result)
         html += "<div><textarea style='width: 50%; margin: auto;'>"+url_encoded+"</textarea></div>";
         html += "<div><a href='mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded)+"'><div class='button'>Email It</div></a></div>";
         html += "</div>";
+    }
+    if (game.act>=5)
+    {
+        document.getElementById('gameover').style.display="block";
     }
     
     html += "</div>";

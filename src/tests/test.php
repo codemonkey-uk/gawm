@@ -21,7 +21,7 @@ $data = null;
 function test( $result, $expected_result, $error_message )
 {
     global $test_count, $data;
-    if ($result!=$expected_result)
+    if ($result !== $expected_result)
     {
         // json_encode will nicely format almost anything
         throw new Exception(

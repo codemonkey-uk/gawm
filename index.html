@@ -128,6 +128,14 @@ function getParameterByName(name, url)
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+function reset()
+{
+    var url = window.location.protocol + "//"
+        + window.location.hostname
+        + window.location.pathname;
+    window.location.replace(url);
+}
+
 function body_onload()
 {
     // pre-fill editable
@@ -180,6 +188,13 @@ function body_onload()
   </div>
 </div>
 <div id="players"></div>
+
+<div id="gameover" style="display: none;">
+<div class='action'>
+<div><h1>Thanks for Playing!</h1></div>
+<div class='button' onclick='reset()'>Start Again</div>
+</div></div>
+
 <div class="footer">Game Rules, Software and Content (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley.</div>
 <div id="snackbar"></div>
 
