@@ -274,13 +274,15 @@ function assign_token_html(type, menu)
 function render_unassigned_token(player,player_uid)
 {
     var html = "<div class='hand'>";
+    html += "<div class='hand_label'>ASSIGN</div>";
+    html += "<div class='hand_grid'>";
     var actions = "";
     for (var p in game.players)
     {
         if (p!=player_uid)
         {
             var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
-            actions += "<button onclick='"+click+"'>Give to "+player_identity(p)+"</button>";
+            actions += "<button onclick='"+click+"'>Give to "+player_identity_str(p)+"</button>";
         }
     }
 
@@ -288,7 +290,8 @@ function render_unassigned_token(player,player_uid)
     actions += "<button onclick='"+click+"'>Discard</div>";
     
     html += assign_token_html(player.unassigned_token, actions);
-    html += '</div>';
+    html += '</div>';//hand_grid
+    html += '</div>';//hand
     return html;
 }
 
@@ -306,7 +309,7 @@ function render_record_accused(player,player_uid)
         if (p!=player_uid)
         {
             var click = "record_accused(game, \""+player_uid+"\", \""+p+"\")";
-            actions += "<button onclick='"+click+"'>Accuse "+player_identity(p)+"</button>";
+            actions += "<button onclick='"+click+"'>Accuse "+player_identity_str(p)+"</button>";
         }
     }
     
@@ -315,7 +318,26 @@ function render_record_accused(player,player_uid)
     return html; 
 }
 
-function player_identity(player_uid)
+function player_identity_str(player_uid)
+{
+    return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' ()','');
+}
+
+function player_identity_div(player_uid)
+{
+    var template = "<div class='identity'>";
+    template+="<span class='name'";
+    if (player_uid==local_player_id)
+        template += " contenteditable='true'";// TODO: add onblur save
+    template+=">_NAME</span>";
+    var alias = "<span class='alias'>_ALIAS</span>";
+    template += alias;
+    template += "</div>";
+    
+    return player_identity_template(player_uid,template).replace(alias,"");
+}
+
+function player_identity_template(player_uid,template)
 {
     // Victim special case
     var player_name;
@@ -348,19 +370,14 @@ function player_identity(player_uid)
         }
     }  
     
-    var result = "<div class='identity'>";
-    result+="<span class='name'";
-    if (player_uid==local_player_id)
-        result += " contenteditable='true'"// TODO: add onblur save
-    result+=">"+player_name+"</span>";
     // if note is set, use note instead?
     if (i != undefined)
     {
         var alias_t = cards['aliases'][i]['subtype'];
-        result+="<span class='alias'>"+alias_t+"</span>";
+        template = template.replace("_ALIAS",alias_t);
     }  
-    result += "</div>";
-    return result;
+
+    return template.replace("_NAME",player_name);
 }
 
 function render_player(player,player_uid)
@@ -368,7 +385,7 @@ function render_player(player,player_uid)
     var c = (player.active || player.unassigned_token) ? 'red' : 'black';
     var html = "<div class='player' style='border-color: "+c+"'>";
 
-    html += player_identity(player_uid);
+    html += player_identity_div(player_uid);
     if (player.fate)
         html += "<div>("+player.fate+")</div>";
 
@@ -430,7 +447,7 @@ function render_player(player,player_uid)
                         
                     if (can_give)
                     {
-                        var button_text = deck!="aliases" ? "Give to " + player_identity(target_id) : "Select";
+                        var button_text = deck!="aliases" ? "Give to " + player_identity_str(target_id) : "Select";
                         var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
                         var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
                         result += "<button onclick='"+click+"'>"+button_text+"</button>";
@@ -752,7 +769,7 @@ function error_popup(msg)
         {
             for (var player in game.players)
             {
-                msg = msg.replace(player, player_identity(player));
+                msg = msg.replace(player, player_identity_str(player));
             }
         }
     }
