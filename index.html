@@ -48,6 +48,11 @@
     display: inline-block;
 }
 
+#game_div
+{
+  background-color: #f1f1f1;
+  padding: 4px;
+}
 /* Style the header */
 .header {
   background-color: #f1f1f1;
@@ -145,6 +150,10 @@ function body_onload()
     var name = getParameterByName('un');
     if (name) document.getElementById('user_name').innerHTML = name;
 
+    var d = getParameterByName('d');
+    if (d) document.getElementById('debug_div').style.display="block";
+
+
     load_cards(function() {
         var action = getParameterByName('a');  
         if (action == 'join_game') join();
@@ -162,8 +171,7 @@ function body_onload()
 
 <body onload="body_onload()">
 
-<textarea id="debug" name="text"></textarea>
-<input type="button" onclick="next(game)" value="Next"/>
+<div id="debug_div" style="display: none;"></div>
 
 <div id="landing">
   <div class="header">
@@ -189,7 +197,8 @@ function body_onload()
    </div>
   </div>
 </div>
-<div id="players"></div>
+
+<div id="game_div"></div>
 
 <div id="gameover" style="display: none;">
 <div class='action'>

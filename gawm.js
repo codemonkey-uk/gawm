@@ -516,8 +516,10 @@ function unassigned_token_msg()
     for (var player in game.players)
     {
         if (game.players[player].unassigned_token)
-            return "Waiting for " +game.players[player].name + " to assign a " + game.players[player].unassigned_token + " token.";
+            return "Waiting for " +player_identity_str(player) + " to assign a " + game.players[player].unassigned_token + " token.";
     }
+    
+    return null;
 }
 
 function fate_to_str(fate)
@@ -593,17 +595,18 @@ function render_game(result)
 {
     game = result;
     var html = "";
-
-    // temp view-switch ui
-    html += "</span><span>VIEW: </span>";
+    var debug_html = "";
+    
+    // temp view-switch ui    
+    debug_html += "<span>VIEW: </span>";
     for (var player in game.players)
     {
-        if (player==local_player_id) html+="<b>";
-        html += "<span onclick='reload(\""+player+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
-        if (player==local_player_id) html+="</b>";
+        if (player==local_player_id) debug_html+="<b>";
+        debug_html += "<span onclick='reload(\""+player+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
+        if (player==local_player_id) debug_html+="</b>";
     }
-        
-    html += "<div class='game'>";
+    debug_html += '<input type="button" onclick="next(game)" value="Next"/>';
+
     html += "<div class='header'>" + game_stage_str() + "</div>";
     if (result.victim)
     {
@@ -625,20 +628,20 @@ function render_game(result)
     {
         var url_text = create_joinurl();
         var url_encoded = encodeURI(url_text);
+        debug_html += '<span>[<a href="'+url_encoded+'&d=1">Add Player</a>]</span>';
         html += "<div class='action'>";
         html += "<div>Have other players use this URL to join the game:</div>";
         html += "<div><textarea style='width: 50%; margin: auto;'>"+url_encoded+"</textarea></div>";
         html += "<div><a href='mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded)+"'><div class='button'>Email It</div></a></div>";
         html += "</div>";
     }
-    if (game.act>=5)
+    else if (game.act>=5)
     {
         document.getElementById('gameover').style.display="block";
     }
-    
-    html += "</div>";
 
-    document.getElementById('players').innerHTML = html;
+    document.getElementById('debug_div').innerHTML = debug_html;
+    document.getElementById('game_div').innerHTML = html;
 }
 
 function givetoken(gamestate,player_id,value)
@@ -673,10 +676,9 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
 
 function generic_response_handler()
 {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState == 4 && this.status == 200)
+    {
         var result = JSON.parse(this.responseText);
-        document.getElementById('debug').value = this.responseText;
-
         render_game(result.game);
     }
     else if (this.status == 400)
@@ -750,8 +752,8 @@ function add_player(id, player_name,onsucess)
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').value  = this.responseText;
+        if (this.readyState == 4 && this.status == 200) 
+        {
             var result = JSON.parse(this.responseText);
             local_player_id = result.player_id
             render_game(result.game);   
@@ -838,9 +840,10 @@ function error_popup(msg)
 function new_game(player_name)
 {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('debug').value = this.responseText;
+    xmlhttp.onreadystatechange = function() 
+    {
+        if (this.readyState == 4 && this.status == 200) 
+        {
             var result = JSON.parse(this.responseText);
             console.log("Game Id:" + result.game_id);
             console.log("Player Id:" + result.player_id);            
