@@ -217,16 +217,19 @@ function test_playthrough($c)
 
     $player_ids = [];
     for ($i=0;$i!=$c;$i=$i+1)
-        array_push( $player_ids, gawm_add_player($data,"player-".($i+1)));
-
+        array_push( $player_ids, gawm_add_player($data,"player"));
+        
     test(count($data["players"]), $c, "Expected ".$c." players.");
+    test(count(gawm_get_player_names($data)), $c, "Expected ".$c." player names.");
+    test(count( array_unique(gawm_get_player_names($data)) ), $c, "Expected ".$c." unique player names.");
+    
     test(gawm_is_detail_active($data, "aliases"), true, "aliases should be active in setup");
     test(gawm_is_detail_active($data, "objects"), false, "objects should not be active in setup");
     test(gawm_is_detail_active($data, "relationships"), false, "relationships should not be active in setup");
     test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
     test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
 
-    play_scenes($data, $player_ids,"aliases");
+    play_scenes($data, $player_ids, "aliases");
 
     // advance from setup to act I
     gawm_next_scene($data);

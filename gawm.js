@@ -84,6 +84,13 @@ function saveEdit(p_id,detail_type,d_id)
     edit_note(game,local_player_id,detail_type,d_id,t);
 }
 
+function saveName(div_id,player_id)
+{
+    var t = get_contenteditable(div_id);
+    console.log("player rename: "+player_id+" -> "+t);
+    rename_player(game,player_id,t);
+}
+
 function toggle_show(id)
 {
     var popup = document.getElementById(id);
@@ -326,9 +333,12 @@ function player_identity_str(player_uid)
 function player_identity_div(player_uid)
 {
     var template = "<div class='identity'>";
-    template+="<span class='name'";
+    template+="<span class='name' id='player_name"+player_uid+"'";
     if (player_uid==local_player_id)
-        template += " contenteditable='true'";// TODO: add onblur save
+    {
+        template += " contenteditable='true'";
+        template += " onblur=\"saveName('player_name"+player_uid+"','"+player_uid+"')\"";
+    }
     template+=">_NAME</span>";
     var alias = "<span class='alias'>_ALIAS</span>";
     template += alias;
@@ -683,6 +693,23 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     request.detail_type=detail_type;
     request.detail=detail;
     request.note=note;
+    
+    xmlhttp.open("POST", "game.php", true);
+    xmlhttp.send( JSON.stringify(request) );
+}
+
+// rename_player(&$data, $player_id, $player_name)
+function rename_player(game,player_id,player_name)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = generic_response_handler;
+    
+    // build request json
+    var request = {};
+    request.action = "rename_player";
+    request.game_id = game_id;
+    request.player_id=player_id;
+    request.player_name=player_name;
     
     xmlhttp.open("POST", "game.php", true);
     xmlhttp.send( JSON.stringify(request) );

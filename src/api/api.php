@@ -132,4 +132,14 @@ function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
     ]; 
 }
 
+function _api_rename_player(&$data, $player_id, $player_name)
+{
+    $player_name = sanitise_player_name($player_name);
+    gawm_rename_player($data, $player_id, $player_name);
+    
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ];
+}
 ?>

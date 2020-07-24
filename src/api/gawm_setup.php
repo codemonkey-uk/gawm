@@ -16,6 +16,40 @@ function gawm_is_setup(&$data)
     return $data["act"]==0;
 }
 
+// returns a unique player name
+function disambiguate_player_name($player_name_list, $player_name)
+{
+    while (in_array($player_name,$player_name_list)) {
+        // Look for number at the end of the name
+        if (preg_match('/[0-9]+$/', $player_name, $matches, PREG_OFFSET_CAPTURE)) {
+            // Increment the number
+            [$number, $offset] = $matches[0];
+            $player_name = substr($player_name,0,$offset).++$number;
+        } else {
+            $player_name .= " 2";
+        }
+    }
+    
+    return $player_name;
+}
+
+function gawm_rename_player(&$data, $player_id, $player_name)
+{
+    if (!array_key_exists($player_id,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$player_id);
+    
+    if ($player_name=="")
+        throw new Exception('Invalid Player Rename: '.$player_id);
+    
+    // rename to same name is fine
+    if ($data["players"][$player_id]['name']==$player_name)
+        return;
+    
+    // but do not allow duplicate names via renaming
+    $data["players"][$player_id]['name'] = 
+        disambiguate_player_name(gawm_get_player_names($data), $player_name);
+}
+
 // modifies data, returns player_id
 // name string sanatising, should be done in API layer
 function gawm_add_player(&$data, $player_name)
@@ -31,21 +65,8 @@ function gawm_add_player(&$data, $player_name)
         throw new Exception('Trying to add a 7th player.');
     }
 
-    // Ensure $player_name is unique
-    $player_name_list = gawm_get_player_names($data);
-    while (in_array($player_name,$player_name_list)) {
-        // Look for number at the end of the name
-        if (preg_match('/[0-9]+$/', $player_name, $matches, PREG_OFFSET_CAPTURE)) {
-            // Increment the number
-            [$number, $offset] = $matches[0];
-            $player_name = substr($player_name,0,$offset).++$number;
-        } else {
-            $player_name .= " 2";
-        }
-    }
-
     $new_player = [
-        'name' => $player_name,
+        'name' => disambiguate_player_name(gawm_get_player_names($data), $player_name),
         'hand' => [],
         'play' => [],
         'tokens' => [
