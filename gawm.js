@@ -743,15 +743,19 @@ function next(gamestate)
 }
 
 function reload(player_id,newgame_id)
-{
-    console.log("Loading: ",player_id,newgame_id);
-    
+{    
     // player view switching debug hax
     if (player_id)
         local_player_id = player_id;
     if (newgame_id)
         game_id = newgame_id;
+    
+    // there is no game zero, do not try to load it
+    if (game_id==0)
+        return;
         
+    console.log("Loading: ",player_id,newgame_id);
+    
     // build request json
     var request = {};
     request.action = 'get';

@@ -3,10 +3,8 @@ var requestInFlight = null;
 var requestQueue = [];
 var responseText = "";
 
-window.addEventListener("focus", function(event) 
-{ 
-    gawm_pumpRequestQueue();
-}, false);
+// reload on gain focus
+window.addEventListener("focus", function(event) { reload(); }, false);
 
 function http_response_handler()
 {
@@ -86,6 +84,14 @@ function gawm_pumpRequestQueue()
 
 function gawm_sendrequest(request, callback)
 {
+    // prevent request (click) spam
+    if (requestInFlight && requestInFlight.request == request)
+        return;
+        
+    for (i = 0; i < requestQueue.length; i++)
+        if (requestQueue[i].request == request)
+            return;
+    
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = http_response_handler;
     
