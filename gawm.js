@@ -635,7 +635,7 @@ function render_game(result)
         var url_encoded = encodeURI(url_text);
         debug_html += '<span>[<a href="'+url_encoded+'&d=1">Add Player</a>]</span>';
         html += "<div class='action'>";
-        html += "<div>Have other players use this URL to join the game:</div>";
+        html += "<div>Game id: <b>"+game_id+"</b>. Have other players use this URL to join in:</div>";
         html += "<div><textarea style='width: 50%; margin: auto;'>"+url_encoded+"</textarea></div>";
         html += "<div><a href='mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded)+"'><div class='button'>Email It</div></a></div>";
         html += "</div>";
