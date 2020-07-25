@@ -1,6 +1,12 @@
 
 var requestInFlight = null;
 var requestQueue = [];
+var responseText = "";
+
+window.addEventListener("focus", function(event) 
+{ 
+    gawm_pumpRequestQueue();
+}, false);
 
 function http_response_handler()
 {
@@ -11,26 +17,31 @@ function http_response_handler()
         {
             var result = JSON.parse(this.responseText);
         
-            if (result.game)
+            if (this.responseText!=responseText)
             {
-                render_game(result.game);
-            }
+                responseText = this.responseText;
+
+                if (result.game_id)
+                {
+                    game_id = result.game_id;
+                    console.log("Game Id:" + result.game_id);
+                }
         
-            if (result.game_id)
-            {
-                game_id = result.game_id;
-                console.log("Game Id:" + result.game_id);
-            }
-        
-            if (result.player_id)
-            {
-                local_player_id = result.player_id;
-                console.log("Player Id:" + result.player_id);  
-            }
-        
-            if (result.pending_id)
-            {
-                error_popup("Request processed, pending "+result.pending_id);
+                if (result.player_id)
+                {
+                    local_player_id = result.player_id;
+                    console.log("Player Id:" + result.player_id);  
+                }
+            
+                if (result.game)
+                {
+                    render_game(result.game);
+                }
+
+                if (result.pending_id)
+                {
+                    error_popup("Request processed, pending "+result.pending_id);
+                }
             }
             
             if (requestInFlight.callback)
@@ -60,6 +71,16 @@ function gawm_pumpRequestQueue()
 
         requestInFlight.xmlhttp.open("POST", "game.php", true);
         requestInFlight.xmlhttp.send( JSON.stringify(requestInFlight.request) );
+    }
+    else
+    {
+        // if nothing else happens, refresh in 5s (stops if window focus lost)
+        setTimeout(function(){ 
+            if (requestInFlight==null && document.hasFocus())
+            {
+                reload();
+            }
+        }, 5000);
     }
 }
 
