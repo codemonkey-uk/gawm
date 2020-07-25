@@ -2,9 +2,13 @@
 var requestInFlight = null;
 var requestQueue = [];
 var responseText = "";
+var refreshTimeout = undefined;
 
 // reload on gain focus
-window.addEventListener("focus", function(event) { reload(); }, false);
+window.addEventListener("focus", function(event) { 
+    if (refreshTimeout==undefined)
+        reload(); 
+}, false);
 
 function http_response_handler()
 {
@@ -74,13 +78,19 @@ function gawm_pumpRequestQueue()
     }
     else
     {
-        // if nothing else happens, refresh in 5s (stops if window focus lost)
-        setTimeout(function(){ 
-            if (requestInFlight==null && document.hasFocus())
-            {
-                reload();
-            }
-        }, 5000);
+        // if we dont already have a timer running
+        if (refreshTimeout==undefined)
+        {
+            // set a timer to refresh in 5s
+            refreshTimeout = setTimeout(function(){ 
+                refreshTimeout = undefined;
+                // only refresh if we have focus, and nothing queued
+                if (requestInFlight==null && document.hasFocus())
+                {
+                    reload();
+                }
+            }, 5000);
+        }
     }
 }
 
