@@ -334,7 +334,7 @@ function render_record_accused(player,player_uid)
 
 function player_identity_str(player_uid)
 {
-    return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' ()','');
+    return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' (_ALIAS)','');
 }
 
 function player_identity_div(player_uid)
@@ -680,6 +680,10 @@ function generic_response_handler()
     {
         var result = JSON.parse(this.responseText);
         render_game(result.game);
+        if (result.pending_id)
+        {
+            error_popup("Request processed, pending "+result.pending_id);
+        }
     }
     else if (this.status == 400)
     {
