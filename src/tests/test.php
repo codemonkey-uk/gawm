@@ -194,11 +194,17 @@ function play_scenes( &$data, $player_ids, $detail )
             ($detail == "aliases" || $detail == "motives") ? $player_id : current($other_players)
         );
 
-        if ($data["act"]>0)
+        // todo: "voting scene: methos (like in js)
+        $act = $data["act"];
+        if ($act>0)
         {
             vote_scene($data);
-            gawm_next_scene($data);
+        }
+        
+        gawm_request_next_scene($data, $player_id);
 
+        if ($act>0)
+        {
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
 
@@ -232,7 +238,6 @@ function test_playthrough($c)
     play_scenes($data, $player_ids, "aliases");
 
     // advance from setup to act I
-    gawm_next_scene($data);
     test($data["act"], 1, "Act 1 should follow set up.");
     test($data["scene"], 0, "Act 1 starts with Scene 0.");
 
@@ -274,7 +279,7 @@ function test_playthrough($c)
         $active_player
     );
     vote_scene($data);
-    gawm_next_scene($data);
+    gawm_request_next_scene($data,$active_player);
     gawm_give_token($data,$active_player,0);
     test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
     $vdc = count($data["victim"]["play"]);
@@ -292,7 +297,7 @@ function test_playthrough($c)
     );
     test(count($data["victim"]["play"]), $vdc+2,"The victim should have gained 2 murder details.");
 
-    gawm_next_scene($data);
+    gawm_request_next_scene($data,$data["victim"]["player_id"]);
 
     // advance from first break to act II
     test($data["act"], 2, "Act II should follow first break.");
@@ -311,9 +316,9 @@ function test_playthrough($c)
             $data, $player_id, "motives",
             current($data["players"][$player_id]["hand"]["motives"])
         );
+        $r = gawm_request_next_scene($data, $player_id);
     }
 
-    gawm_next_scene($data);
     test($data["act"], 3, "Act III should follow Twist.");
     test($data["scene"], 0, "Act III starts with Scene 0.");
 
@@ -332,7 +337,7 @@ function test_playthrough($c)
 
     gawm_record_accused($data, $data["most_innocent"], current($other_players));
 
-    gawm_next_scene($data);
+    gawm_request_next_scene($data, $data["most_innocent"]);
 
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
     test($data["scene"], 0, "Epilogue starts with Scene 0.");
@@ -350,7 +355,7 @@ function test_playthrough($c)
     {
         test(isset($data["players"][active_player_id($data)]["fate"]),true,"Every player should have a fate for the Epilogue");
         $fates[$data["players"][active_player_id($data)]["fate"]]++;
-        gawm_next_scene($data);
+        gawm_request_next_scene($data, active_player_id($data));
     }
     test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate ".json_encode($fates));
 

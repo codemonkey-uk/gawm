@@ -106,11 +106,12 @@ function _api_get(&$data, $player_id)
 
 function _api_next(&$data, $player_id)
 {
-    gawm_next_scene($data);
+    $id = gawm_request_next_scene($data, $player_id);
     
     return [
         'game' => redact_for_player($data, $player_id),
-        'player_id' => $player_id
+        'player_id' => $player_id,
+        'pending_id' => $id
     ]; 
 }
 

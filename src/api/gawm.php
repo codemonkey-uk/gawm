@@ -269,7 +269,37 @@ function complete_normalscene(&$data)
 
 // advances gamestate to the next scene, if appropriate
 // throws an exception if more steps need to be taken before moving on
-function gawm_next_scene(&$data)
+function gawm_request_next_scene(&$data, $player_id)
+{
+    // record who requested next scene:
+    if (!isset($data['next']))
+        $data['next']=[];
+    if (!in_array($player_id,$data['next']))
+        array_push($data['next'],$player_id);
+    
+    // check if everyone active has requested it:
+    foreach(array_keys($data["players"]) as $id)
+    {
+        if (gawm_is_player_active($data,$id))
+        {
+            // exit early, report waiting for player to calling code:
+            if (!in_array($id,$data['next']))
+                return $id;
+        }
+    }
+    
+    // okay, good to go:
+    gawm_go_next_scene($data);
+    
+    // done, clear concent:
+    unset($data['next']);
+    
+    return '';
+}
+
+
+// check all active players have requested next scene
+function gawm_go_next_scene(&$data)
 {
     if (count_unassigned_tokens($data)>0)
         throw new Exception('Cannot advance to next scene with unassigned token left.');
