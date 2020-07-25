@@ -674,30 +674,8 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
     detailaction_ex(gamestate,player_id,detail_type,detail,action,player_id);
 }
 
-function generic_response_handler()
-{
-    if (this.readyState == 4 && this.status == 200)
-    {
-        var result = JSON.parse(this.responseText);
-        render_game(result.game);
-        if (result.pending_id)
-        {
-            error_popup("Request processed, pending "+result.pending_id);
-        }
-    }
-    else if (this.status == 400)
-    {
-        error_popup(this.responseText);
-    }
-};
-    
 function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
 {
-    console.log("api action called: ",action,player_id,target_id,detail_type,detail);
-
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = generic_response_handler;
-
     // build request json
     var request = {};
     request.action = action;
@@ -707,16 +685,12 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
     request.detail_type=detail_type;
     request.detail=detail;
 
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
 
 // edit_note(&$data, $player_id, $detail_type, $detail, $note)
 function edit_note(gamestate,player_id,detail_type,detail,note)
 {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = generic_response_handler;
-    
     // build request json
     var request = {};
     request.action = "edit_note";
@@ -726,16 +700,12 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     request.detail=detail;
     request.note=note;
     
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
 
 // rename_player(&$data, $player_id, $player_name)
 function rename_player(game,player_id,player_name)
 {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = generic_response_handler;
-    
     // build request json
     var request = {};
     request.action = "rename_player";
@@ -743,8 +713,7 @@ function rename_player(game,player_id,player_name)
     request.player_id=player_id;
     request.player_name=player_name;
     
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
 
 function add_player(id, player_name,onsucess)
@@ -754,43 +723,23 @@ function add_player(id, player_name,onsucess)
     if (!player_name)
         player_name = prompt("Please enter your name", "Player "+(Object.keys(game.players).length+1));
 
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) 
-        {
-            var result = JSON.parse(this.responseText);
-            local_player_id = result.player_id
-            render_game(result.game);   
-            onsucess();
-        }
-        else if (this.status == 400)
-        {
-            error_popup(this.responseText);
-        }
-    };
-
-    xmlhttp.open("POST", "game.php", true);
-
     var request = {};
     request.action = 'add_player';
     request.game_id = game_id;
     request.player_name = player_name;
-    xmlhttp.send( JSON.stringify(request) );
+    
+    gawm_sendrequest(request,onsucess);
 }
 
 function next(gamestate)
 {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = generic_response_handler;
-
     // build request json
     var request = {};
     request.action = 'next';
     request.game_id = game_id;
-    request.player_id = local_player_id; // TODO: will be required when information hiding is implemented
+    request.player_id = local_player_id;
 
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
 
 function reload(player_id,newgame_id)
@@ -803,17 +752,13 @@ function reload(player_id,newgame_id)
     if (newgame_id)
         game_id = newgame_id;
         
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = generic_response_handler;
-
     // build request json
     var request = {};
     request.action = 'get';
     request.game_id = game_id;
     request.player_id = local_player_id;
 
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
 
 function error_popup(msg) 
@@ -843,25 +788,10 @@ function error_popup(msg)
 
 function new_game(player_name)
 {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() 
-    {
-        if (this.readyState == 4 && this.status == 200) 
-        {
-            var result = JSON.parse(this.responseText);
-            console.log("Game Id:" + result.game_id);
-            console.log("Player Id:" + result.player_id);            
-            game_id = result.game_id;
-            local_player_id = result.player_id;
-            render_game(result.game);            
-        }
-    };
-
     // build request json
     var request = {};
     request.action = 'new';
     request.player_name = player_name;
 
-    xmlhttp.open("POST", "game.php", true);
-    xmlhttp.send( JSON.stringify(request) );
+    gawm_sendrequest(request);
 }
