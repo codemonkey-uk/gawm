@@ -459,7 +459,12 @@ function render_player(player,player_uid)
                         (game.act >= 2 || deck!="motives") && 
                         (player_uid==p || deck!="aliases") &&
                         (target_id==0 || !deck.startsWith("murder_"));
-                        
+                    
+                    // cant give someone two motives
+                    if (deck=="motives")
+                        if (game['players'][target_id]['play']['motives'])
+                            can_give = false;
+                    
                     if (can_give)
                     {
                         var button_text = deck!="aliases" ? "Give to " + player_identity_str(target_id) : "Select";
