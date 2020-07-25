@@ -754,8 +754,6 @@ function reload(player_id,newgame_id)
     if (game_id==0)
         return;
         
-    console.log("Loading: ",player_id,newgame_id);
-    
     // build request json
     var request = {};
     request.action = 'get';
