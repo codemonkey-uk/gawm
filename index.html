@@ -46,14 +46,19 @@
     margin-right:4px;
     width: 64px; height: 90px;
     display: inline-block;
+    z-index: 1;
 }
 
 #game_div
 {
   background-color: #f1f1f1;
   padding: 4px;
-  z-index: -2;
   position: relative;
+}
+#loading_div
+{
+    display: none; position: fixed; top: 0; right: 0; pointer-events: none;
+    z-index: 99;
 }
 /* Style the header */
 .header {
@@ -175,6 +180,10 @@ function body_onload()
 <body onload="body_onload()">
 
 <div id="debug_div" style="display: none;"></div>
+
+<div id="loading_div">
+<img width=50 height=50 src="assets/loading.gif">
+</div>
 
 <div id="landing">
   <div class="header">

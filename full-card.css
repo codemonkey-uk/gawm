@@ -44,7 +44,6 @@
   padding-top: 30px;
   position: absolute;
   top: 0px;
-  z-index: -1;
 }
 .hand_grid {
   display: grid;
@@ -156,7 +155,7 @@
   text-align: center;
   cursor: text;
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: -80px;
   left: 125px;
   margin-left: 0px;
@@ -215,6 +214,7 @@
   display: block; /* Make the buttons appear below each other */
   margin: 0px;
   width: 115px;
+  z-index: 2;
 }
 
 .actions button:not(:last-child) {
