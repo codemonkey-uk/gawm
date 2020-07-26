@@ -29,7 +29,7 @@ function http_response_handler()
                     console.log("Game Id:" + result.game_id);
                 }
         
-                if (result.player_id)
+                if (result.player_id && result.player_id!=0)
                 {
                     local_player_id = result.player_id;
                     console.log("Player Id:" + result.player_id);  
