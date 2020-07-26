@@ -460,8 +460,12 @@ function render_player(player,player_uid)
                     
                     // cant give someone two motives
                     if (deck=="motives")
-                        if (game['players'][target_id]['play']['motives'])
+                    {
+                        if (target_id==0)
                             can_give = false;
+                        else if (game['players'][target_id]['play']['motives'])
+                            can_give = false;
+                    }
                     
                     if (can_give)
                     {
