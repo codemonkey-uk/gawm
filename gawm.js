@@ -31,15 +31,14 @@ function img_url(deck,i)
     if (i<0)
     {
         switch (deck){
-            case "aliases": return 'assets/alias_back.png';
-            case "motives": return 'assets/motive_back.png';
-            case "objects": return 'assets/object_back.png';
-            case "relationships": return 'assets/rel_back.png';
-            case "wildcards": return 'assets/wild_back.png';
-            case "guilt": return 'assets/guilt.png';
-            case "innocence": return 'assets/innocence.png';            
-            case "accuse": return 'assets/accuse.png';  
-            case "accused": return 'assets/accused.png';              
+            case 'aliases': return 'assets/alias_back.png';
+            case 'motives': return 'assets/motive_back.png';
+            case 'objects': return 'assets/object_back.png';
+            case 'relationships': return 'assets/rel_back.png';
+            case 'wildcards': return 'assets/wild_back.png';
+            case 'guilt': return 'assets/guilt.png';
+            case 'innocence': return 'assets/innocence.png';
+            case 'accused': return 'assets/accused.png';
         }
     }
     
@@ -87,7 +86,6 @@ function saveEdit(p_id,detail_type,d_id)
 function saveName(div_id,player_id)
 {
     var t = get_contenteditable(div_id);
-    console.log("player rename: "+player_id+" -> "+t);
     rename_player(game,player_id,t);
 }
 
