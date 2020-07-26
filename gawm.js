@@ -73,7 +73,6 @@ var card_template = `<div class="halfcard _TYPE">
 function get_contenteditable(p_id)
 {
     var t = document.getElementById(p_id).innerText;
-    t = t.replace(/<br>$/,'');
     return t;
 }
 
@@ -81,6 +80,17 @@ function saveEdit(p_id,detail_type,d_id)
 {
     var t = get_contenteditable(p_id);
     edit_note(game,local_player_id,detail_type,d_id,t);
+}
+
+// check if the input event added a <br> to the HTML, use that to trigger a save
+function editName(div_id,player_id)
+{
+    var t = document.getElementById(div_id).innerHTML;
+    if (t.includes('<br>'))
+    {
+        document.getElementById(div_id).innerHTML = document.getElementById(div_id).innerText;
+        saveName(div_id,player_id);
+    }
 }
 
 function saveName(div_id,player_id)
@@ -342,6 +352,7 @@ function player_identity_div(player_uid)
     if (player_uid==local_player_id)
     {
         template += " contenteditable='true'";
+        template += " oninput=\"editName('player_name"+player_uid+"','"+player_uid+"')\"";
         template += " onblur=\"saveName('player_name"+player_uid+"','"+player_uid+"')\"";
     }
     template+=">_NAME</span>";
