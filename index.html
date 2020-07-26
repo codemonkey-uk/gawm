@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="pointer.css">
 <link rel="stylesheet" href="snackbar.css">
 <head>
+<title>GAWM</title>
 <style>
 
 .player > .identity 
@@ -123,10 +124,15 @@ function start()
 
 function join()
 {
+    var ugc = get_contenteditable('user_game_code');
     add_player(
-        get_contenteditable('user_game_code'), 
+        ugc, 
         get_contenteditable('user_name'),
-        function(){document.getElementById('landing').style.display = "none";}
+        function(){
+            document.getElementById('landing').style.display = "none";
+            document.title = "GAWM #"+ugc;
+            history.pushState(game_id,document.title,create_loadnurl());            
+        }
     );
 }
 

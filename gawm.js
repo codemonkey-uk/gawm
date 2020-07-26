@@ -593,7 +593,19 @@ function create_joinurl()
         + "&un=" + "Player_"+(Object.keys(game.players).length+1)
         + "&a=join_game";
         
-    return url;    
+    return url;
+}
+
+function create_loadnurl()
+{
+    var url = window.location.protocol + "//"
+        + window.location.hostname
+        + window.location.pathname
+        + "?ugc="+game_id
+        + "&pid="+local_player_id
+        + "&a=load_game";
+        
+    return url;
 }
 
 function render_game(result)
@@ -800,5 +812,8 @@ function new_game(player_name)
     request.action = 'new';
     request.player_name = player_name;
 
-    gawm_sendrequest(request);
+    gawm_sendrequest(request,function(){
+        document.title = "GAWM #"+game_id;
+        history.pushState(game_id,document.title,create_loadnurl());
+    });
 }
