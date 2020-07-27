@@ -328,12 +328,14 @@ function render_record_accused(player,player_uid)
         }
     }
 
+    var label = 'ACCUSE';
     if (game.the_accused)
     {
         actions += "<button onclick='next(game)'>End Scene</button>";
+        label = 'NEXT';
     }
     
-    html += pointer_html('NEXT',actions);
+    html += pointer_html(label,actions);
     
     html += '</div>';//hand_grid
     html += '</div>';//hand
