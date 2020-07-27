@@ -642,7 +642,7 @@ function redact_for_player($data, $player_id)
         $redact = [];
         
         // tokens are redacted, until the epilogue
-        if (!gawm_is_epilogue($data))
+        if (!gawm_is_epilogue_inprogress_or_complete($data))
         {
             array_push($redact, "tokens");
         }

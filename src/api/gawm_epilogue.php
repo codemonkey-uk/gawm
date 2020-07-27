@@ -15,6 +15,11 @@ function gawm_is_epilogue(&$data)
     return $data["act"]==4;
 }
 
+function gawm_is_epilogue_inprogress_or_complete(&$data)
+{
+    return $data["act"]>=4;
+}
+
 function setup_epilogue(&$data)
 {
     // only set up on the 1st scene of this special *act*

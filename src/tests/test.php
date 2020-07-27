@@ -249,7 +249,14 @@ function test_playthrough($c)
     // play out act I
     play_scenes($data, $player_ids,"relationships");
 
+    // Scene progression test coverage:
     test(gawm_is_extrascene($data), true, "Extra Scene expected.");
+    test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), false, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), false, "Last Break should follow 2x player scenes in Act III");
+    test(gawm_is_epilogue($data), false, "Epilogue (Act 4) should follow Last Break.");
+    test(gawm_is_epilogue_inprogress_or_complete($data), false, "Epilogue (Act 4) should follow Last Break.");    
+    
     test(isset($data["victim"]), true, "The victim should have been selected");
     test(isset($data["victim"]["player_id"]), true, "The victim should have a player_id");
     test(count($data["victim"]["play"])>0, true, "The victim should have at leasr 1 detail in play (alias).");
@@ -281,7 +288,15 @@ function test_playthrough($c)
     vote_scene($data);
     gawm_request_next_scene($data,$active_player);
     gawm_give_token($data,$active_player,0);
-    test( gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
+
+    // Scene progression test coverage:
+    test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
+    test(gawm_is_firstbreak($data), true, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), false, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), false, "Last Break should follow 2x player scenes in Act III");
+    test(gawm_is_epilogue($data), false, "Epilogue (Act 4) should follow Last Break.");
+    test(gawm_is_epilogue_inprogress_or_complete($data), false, "Epilogue (Act 4) should follow Last Break.");   
+    
     $vdc = count($data["victim"]["play"]);
 
     // make play_detail calls for the muder details
@@ -306,8 +321,15 @@ function test_playthrough($c)
 
     // play out act II
     play_scenes($data, $player_ids,"objects");
-    test( gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
-
+    
+    // Scene progression test coverage:
+    test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
+    test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), true, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), false, "Last Break should follow 2x player scenes in Act III");
+    test(gawm_is_epilogue($data), false, "Epilogue (Act 4) should follow Last Break.");
+    test(gawm_is_epilogue_inprogress_or_complete($data), false, "Epilogue (Act 4) should follow Last Break.");  
+    
     test( gawm_is_player_active($data, gawm_player_id_victim), false, "The victim should not be active in the Twist.");
     // every player twists 1 motive
     foreach( $player_ids as $player_id )
@@ -326,8 +348,14 @@ function test_playthrough($c)
     play_scenes($data, $player_ids,"wildcards");
     play_scenes($data, $player_ids,"motives");
 
-    // test is last break
-    test( gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
+    // Scene progression test coverage:
+    test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
+    test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), false, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), true, "Last Break should follow 2x player scenes in Act III");
+    test(gawm_is_epilogue($data), false, "Epilogue (Act 4) should follow Last Break.");
+    test(gawm_is_epilogue_inprogress_or_complete($data), false, "Epilogue (Act 4) should follow Last Break.");
+    
     test( isset($data["most_innocent"]), true, "The Most Innocent must exist in the Last Break" );
     test( gawm_is_player_active($data, $data["most_innocent"]), true, "The Most Innocent should be the active player in the Last Break" );
 
@@ -339,7 +367,14 @@ function test_playthrough($c)
 
     gawm_request_next_scene($data, $data["most_innocent"]);
 
+    // Scene progression test coverage:
+    test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
+    test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), false, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), false, "Last Break should follow 2x player scenes in Act III");
     test(gawm_is_epilogue($data), true, "Epilogue (Act 4) should follow Last Break.");
+    test(gawm_is_epilogue_inprogress_or_complete($data), true, "Epilogue (Act 4) should follow Last Break."); 
+    
     test($data["scene"], 0, "Epilogue starts with Scene 0.");
 
     $fates=[
@@ -359,7 +394,13 @@ function test_playthrough($c)
     }
     test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate ".json_encode($fates));
 
+    // Scene progression test coverage:
+    test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
+    test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
+    test(gawm_is_twist($data), false, "Twist should follow player scenes in Act II");
+    test(gawm_is_lastbreak($data), false, "Last Break should follow 2x player scenes in Act III");
     test(gawm_is_epilogue($data), false, "Epilogue over...");
+    test(gawm_is_epilogue_inprogress_or_complete($data), true, "Epilogue over.");
 }
 
 echo "Testing... ";
