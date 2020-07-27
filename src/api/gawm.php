@@ -452,17 +452,20 @@ function gawm_is_player_active(&$data, $player_id)
     }
 
     // normally, players are active during their scene
-    $i = array_search($player_id, array_keys($data["players"]));
-
+    $player_index = array_search($player_id, array_keys($data["players"]));
+    $active_index = $data["scene"];
+    
     if ($data["act"]==3)
     {
         // in the 3rd act, 2 scenes per player
-        return ($data["scene"]%count($data["players"]))==$i;
+        $active_index = $active_index%count($data["players"]);
     }
-    else
+    else if (gawm_is_epilogue($data))
     {
-        return $data["scene"]==$i;
+        $active_index = $data["epilogue_order"][$active_index];
     }
+    
+    return $active_index ==$player_index;
 }
 
 function gawm_player_has_details_left_to_play(&$data, $player_id)

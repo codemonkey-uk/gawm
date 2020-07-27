@@ -10,6 +10,15 @@
 // - complete_epilogue- to be called at the end of each scene
 //
 
+$gawm_fate_order = array(
+    "got_out_alive" => 0,
+    "got_framed" => 1,
+    "got_it_wrong" => 2,
+    "got_it_right" => 3,
+    "got_caught" => 4,
+    "gawm" => 5,
+);
+
 function gawm_is_epilogue(&$data)
 {
     return $data["act"]==4;
@@ -60,6 +69,21 @@ function setup_epilogue(&$data)
                 $player["fate"]="got_out_alive";
         }
     }
+    setup_epilogue_order($data);
+}   
+
+function setup_epilogue_order(&$data)    
+{
+    $data["epilogue_order"]=range(0, count($data["players"])-1);
+    usort(
+        $data["epilogue_order"],
+        function($a, $b)use($data) { 
+            global $gawm_fate_order;
+            $fa = $data["players"][array_keys($data["players"])[$a]]["fate"];
+            $fb = $data["players"][array_keys($data["players"])[$b]]["fate"];
+            return $gawm_fate_order[$fa] - $gawm_fate_order[$fb];
+        }
+    );
 }
 
 function complete_epilogue(&$data)

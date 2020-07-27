@@ -159,6 +159,7 @@ function test_redact()
     // epilogue redactions differ
     $data = $data_template;
     $data["act"] = 4;
+    $data["epilogue_order"] = [0,1];
     $redacted = redact_for_player($data, 1);
 
     // tokens not redacted in the 4th act (epilogue)
@@ -166,6 +167,36 @@ function test_redact()
     test($redacted["players"][2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
     
     test(array_keys($redacted["players"]),[1,2],"redact should not change the player uids");
+}
+
+function test_setup_epilogue_order()
+{
+    global $data;
+
+    $data_template = [
+        "players" => [
+            "a" => ["fate" => "gawm"],
+            "b" => ["fate" => "got_framed"],
+            "c" => ["fate" => "got_it_wrong"],
+            "d" => ["fate" => "got_out_alive"]
+        ],
+    ];
+
+    $data = $data_template;
+    setup_epilogue_order($data);
+    test($data["epilogue_order"],[3,1,2,0],"Incorrect epilogue order for fates.");
+    
+    $data_template = [
+        "players" => [
+            "a" => ["fate" => "got_caught"],
+            "b" => ["fate" => "got_out_alive"],
+            "c" => ["fate" => "got_it_right"]
+        ],
+    ];
+
+    $data = $data_template;
+    setup_epilogue_order($data);
+    test($data["epilogue_order"],[1,2,0],"Incorrect epilogue order for fates.");
 }
 
 function vote_scene( &$data )
@@ -406,6 +437,7 @@ function test_playthrough($c)
 echo "Testing... ";
 
 try{
+    test_setup_epilogue_order();
     test_innocence_and_guilt_ranking();
     test_tally_votes();
     test_redact();
