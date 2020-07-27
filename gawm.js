@@ -252,9 +252,23 @@ function show_hand(player,player_uid)
         player.fate;
 }
 
-var pointer_template = `
+var accused_template =`
+<div class="pointer"><div class="frame">
+<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/cuffs.png"/>
+<p>ACCUSED</p>
+</div></div>
+`;
+
+function accused_html()
+{
+    return accused_template;
+}
+
+var pointer_template =`
 <div class="pointer" style="_CURSOR" onclick="toggle_show('pointer_id')">
-<div class="frame"><img src="assets/pointer.png"/><p>_TEXT</p></div>
+<div class="frame">
+<img style="margin-top: 16px; margin-bottom: 9px;" src="assets/pointer.png"/>
+<p>_TEXT</p></div>
 <div class="actions" id="pointer_id">_ACTIONS</div>  
 </div>
 `;
@@ -521,7 +535,7 @@ function render_player(player,player_uid)
             function(){
                 var str = "";
                 if (game.the_accused == player_uid)
-                    str += assign_token_html('accused','');
+                    str += accused_html();
                 return str;
             },
             "TOKENS"
