@@ -21,8 +21,7 @@ function load_cards(oncomplete)
 
 function deck_is_token(deck)
 {
-    return deck=="guilt" || deck=='innocence' || 
-        deck.startsWith('accuse'); // accuse + accused
+    return deck=="guilt" || deck=='innocence';
 }
 
 function img_url(deck,i)
@@ -38,7 +37,6 @@ function img_url(deck,i)
             case 'wildcards': return 'assets/wild_back.png';
             case 'guilt': return 'assets/guilt.png';
             case 'innocence': return 'assets/innocence.png';
-            case 'accused': return 'assets/accused.png';
         }
     }
     
