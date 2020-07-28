@@ -511,7 +511,7 @@ function render_player(player,player_uid)
                     // murder details can only be given to the victim
                     var can_give = player.active &&
                         (game.act >= 2 || deck!="motives") && 
-                        (player_uid==p || (deck!="wildcards" && deck!="aliases")) &&
+                        (target_id==local_player_id || (deck!="wildcards" && deck!="aliases")) &&
                         (target_id==0 || !deck.startsWith("murder_"));
                     
                     // cant give someone two motives
@@ -538,10 +538,11 @@ function render_player(player,player_uid)
                 }
                 
                 var result = "";
+                result += fn(local_player_id);
                 if (is_firstbreak())
                     result += fn(0);
                 for (var p in game.players)
-                    result += fn(p);
+                    if (local_player_id!=p) result += fn(p);
                     
                 return result;
             };
