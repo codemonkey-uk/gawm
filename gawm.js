@@ -48,6 +48,19 @@ function img_url(deck,i)
     return 'assets/'+cards[deck][i]['img'];
 }
 
+function deck_order(deck)
+{
+    // redacted cards/tokens
+    switch (deck){
+        case 'aliases': return 1;
+        case 'motives': return 5;
+        case 'objects': return 3;
+        case 'relationships': return 2;
+        case 'wildcards': return 4;
+        default: return 99;
+    }
+}
+    
 function img_alt(deck,i)
 {
     // temp workaround, card json doesn't have guilt/innocence tokens
@@ -147,9 +160,14 @@ function hand_tostr(hand,player_id,action,postfix,label)
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
     
+    var ordered_decks = Object.keys(hand).sort(function(a, b) {
+        return deck_order(a)-deck_order(b);
+    });
+
     html += "<div class='hand_grid' style='"+style+"'>";
-    for (var deck in hand)
+    for (var ideck in ordered_decks)
     {
+        var deck = ordered_decks[ideck];
         for (var card in hand[deck])
         {
             var card_str = "";
