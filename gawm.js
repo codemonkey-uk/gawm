@@ -772,7 +772,7 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
 }
 
 function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
-{
+{    
     // build request json
     var request = {};
     request.action = action;
@@ -783,6 +783,19 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
     request.detail=detail;
 
     gawm_sendrequest(request);
+    
+    if (detail_type=='relationships')
+    {
+        var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][target_id] : null;
+        if (note==null)
+        {
+            var who = player_id==target_id ? "... who?" : player_identity_str(player_id);
+            edit_note(
+                gamestate, player_id, 'player', target_id, 
+                cards['relationships'][detail].name + " with " + who
+            );
+        }
+    }    
 }
 
 // edit_note(&$data, $player_id, $detail_type, $detail, $note)
