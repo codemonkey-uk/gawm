@@ -480,7 +480,7 @@ function render_player(player,player_uid)
                     // murder details can only be given to the victim
                     var can_give = player.active &&
                         (game.act >= 2 || deck!="motives") && 
-                        (player_uid==p || deck!="aliases") &&
+                        (player_uid==p || (deck!="wildcards" && deck!="aliases")) &&
                         (target_id==0 || !deck.startsWith("murder_"));
                     
                     // cant give someone two motives
@@ -494,7 +494,10 @@ function render_player(player,player_uid)
                     
                     if (can_give)
                     {
-                        var button_text = deck!="aliases" ? "Give to " + player_identity_str(target_id) : "Select";
+                        var button_text = (deck=="aliases" || deck=="wildcards") 
+                            ? "Select"
+                            : "Give to " + player_identity_str(target_id);
+                            
                         var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
                         var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
                         result += "<button onclick='"+click+"'>"+button_text+"</button>";
