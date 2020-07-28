@@ -4,6 +4,7 @@ var cards = null;
 var game = null;
 var game_id = 0;
 var local_player_id = 0;
+var default_note_content = "Player Note";
 
 function load_cards(oncomplete)
 {
@@ -64,19 +65,36 @@ var card_template = `<div class="halfcard _TYPE">
   <div class="name" onclick="toggle_show('flavour-_ID_TYPE')"><p>_NAME</p></div>
   <div class="actions" id="actions-_ID_TYPE">_ACTIONS</div>  
   <div class="flavour" id='flavour-_ID_TYPE'>
-  <p id='flavour-_ID_editp' contenteditable="true" onblur="saveEdit('flavour-_ID_editp','_TYPE','_ID')">_DESC</p>
+  <p id='flavour-_ID_editp' contenteditable="true" onblur="saveNote('flavour-_ID_editp','_TYPE','_ID')">_DESC</p>
   </div>
 </div>`;
 
-function get_contenteditable(p_id)
+function get_contenteditable(div_id)
 {
-    var t = document.getElementById(p_id).innerText;
+    var t = document.getElementById(div_id).innerText;
     return t;
 }
 
-function saveEdit(p_id,detail_type,d_id)
+// check if the input event added a <br> to the HTML, use that to trigger a save
+function editPlayerNote(div_id,player_id)
 {
-    var t = get_contenteditable(p_id);
+    var t = document.getElementById(div_id).innerHTML;
+        
+    if (t.includes('<br>'))
+    {
+        t = document.getElementById(div_id).innerText;
+        document.getElementById(div_id).innerHTML = t;
+        if (t!=default_note_content)
+            saveNote(div_id,'player',player_id);
+    }
+    
+    if (t!=default_note_content)
+        document.getElementById(div_id).style.opacity="1";
+}
+
+function saveNote(div_id,detail_type,d_id)
+{
+    var t = get_contenteditable(div_id);
     edit_note(game,local_player_id,detail_type,d_id,t);
 }
 
@@ -369,9 +387,22 @@ function player_identity_div(player_uid)
         template += " oninput=\"editName('player_name"+player_uid+"','"+player_uid+"')\"";
         template += " onblur=\"saveName('player_name"+player_uid+"','"+player_uid+"')\"";
     }
-    template+=">_NAME</span>";
-    var alias = "<span class='alias'>_ALIAS</span>";
+    template+=">_NAME</span> ";
+    var alias = "<span class='alias'>_ALIAS</span> ";
     template += alias;
+
+    // saveNote(div_id,detail_type,d_id)
+    var note_html = " - <span class='name' id='player_note"+player_uid+"' contenteditable='true'"
+    note_html += " oninput=\"editPlayerNote('player_note"+player_uid+"','"+player_uid+"')\"";
+    note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
+
+    var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
+    var note_content = note ? note : default_note_content;
+    if (note==null || note_content==default_note_content) note_html += 'style="opacity: 0.5;"';
+    note_html +=">"+note_content+"</span> ";
+    note_html += "</span> ";
+    template += note_html;
+    
     template += "</div>";
     
     return player_identity_template(player_uid,template).replace(alias,"");
