@@ -16,7 +16,7 @@ function load_cards(oncomplete)
         }
     };
 
-    xmlhttp.open("GET", "cards.json", true);
+    xmlhttp.open("GET", "assets/cards.json", true);
     xmlhttp.send();
 }
 

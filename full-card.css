@@ -125,13 +125,15 @@
   height: 90px;
 }
 .halfcard .header {
-	height: 33px;
+	height: 31px;
     border: 2px solid grey;
+    padding-top: 2px;
 }
 .halfcard .title {
-	height: 14px;
-    line-height: 16px;
+	height: 12px;
+    line-height: 12px;
     font-size: 12px;
+    padding-top: 2px;
 }
 .halfcard .subtitle {
 	height: 17px;
