@@ -16,7 +16,7 @@ function load_cards(oncomplete)
         }
     };
 
-    xmlhttp.open("GET", "cards.json", true);
+    xmlhttp.open("GET", "assets/cards.json", true);
     xmlhttp.send();
 }
 
@@ -40,10 +40,6 @@ function img_url(deck,i)
             case 'innocence': return 'assets/innocence.png';
         }
     }
-    
-    // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck_is_token(deck))
-        return 'assets/'+deck+'_'+i+'.png';
     
     return 'assets/'+cards[deck][i]['img'];
 }
@@ -171,8 +167,9 @@ function hand_tostr(hand,player_id,action,postfix,label)
         {
             var card_str = "";
             var i = hand[deck][card];
-            if (deck_is_token(deck) || i<0)
+            if (i<0) 
             {
+                // token and card backs still use old img path
                 var divclass = (deck_is_token(deck)) ? "token" : "cardback";
                 var url = img_url(deck,i);
                 var alt = img_alt(deck,i);
@@ -180,6 +177,15 @@ function hand_tostr(hand,player_id,action,postfix,label)
                 var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
                 card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
                 card_str += img;
+                card_str += "</div>";
+            }
+            else if (deck_is_token(deck))
+            {
+                // numbered tokens (note: not sure these can have an action in practice?)
+                var divclass = deck;
+                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
+                card_str += "<div class='frame'><p>"+i+"</p></div>";
                 card_str += "</div>";
             }
             else 
