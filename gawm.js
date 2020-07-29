@@ -525,24 +525,6 @@ function render_player(player,player_uid)
             
         var detail_action = is_twist() ? "twistdetail" :
             function(deck, id){
-
-                // relationship detail menu building
-                if (deck=="relationships") {
-                    var pids = Object.keys(game.players);
-                    var result = "";
-                    for (var i = 0; i < pids.length - 1; i++) {
-                        for (var j = i + 1; j < pids.length; j++) {
-                            var button_text = "Between " +
-                                              player_identity_str(pids[i]) + " and " +
-                                              player_identity_str(pids[j]);
-
-                            var click = click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_relationship\",\""+pids[i]+"\",\""+pids[j]+"\")";
-                            result += "<button onclick='"+click+"'>"+button_text+"</button>";
-                        }
-                    }
-                    return result;
-                }
-
                 // All other detail types menu building
                 var fn = function(target_id)
                 {
@@ -566,11 +548,16 @@ function render_player(player,player_uid)
                     
                     if (can_give)
                     {
-                        var button_text = (deck=="aliases" || deck=="wildcards") 
+                        var button_text = (deck=="aliases" || deck=="wildcards")
                             ? "Select"
-                            : "Give to " + player_identity_str(target_id);
-                            
-                        var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
+                            : "Give to " + player_identity_str(target_id) +
+                            (deck=="relationships" ? " and..." : '');
+
+                        if (deck=="relationships") {
+                            var click = "menu_relationship_next_choice(this.parentElement, \""+player_uid+"\", \""+id+"\", \""+target_id+"\")";
+                        } else {
+                            var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
+                        }
                         var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
                         result += "<button onclick='"+click+"'>"+button_text+"</button>";
                     }
@@ -617,6 +604,24 @@ function render_player(player,player_uid)
     }
     html += '</div>';
     return html;
+}
+
+function menu_relationship_next_choice(div, player_uid, id, first_target_id)
+{
+    var result = '';
+    for (var p in game.players) {
+        if (p!=first_target_id) {
+            var button_text = "Give to " +
+                              player_identity_str(first_target_id) + " and "+
+                              player_identity_str(p);
+            var click = click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
+                                  ",\"play_relationship\",\""+first_target_id+"\",\""+p+"\")";
+            result += "<button class='second' onclick='"+click+"'>"+button_text+"</button>";
+        }
+    }
+    // Yikes. Really should just rerender the menu, but no easy way to do this
+    result += "<button class='second' onclick='render_game(game)'>Undo first choice</button>";
+    div.innerHTML = result;
 }
 
 function unassigned_token_msg()
