@@ -70,14 +70,14 @@ function img_alt(deck,i)
     return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
 }
 
-var card_template = `<div class="halfcard _TYPE"> 
-  <div class="header" style="_CURSOR" onclick="toggle_show('actions-_ID_TYPE')">
+var card_template = `<div class="halfcard _TYPE">
+  <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
   <div class="title">_TYPE</div>
   <div class="subtitle">_SUBTYPE</div>  
   </div>
-  <div class="name" onclick="toggle_show('flavour-_ID_TYPE')"><p>_NAME</p></div>
-  <div class="actions" id="actions-_ID_TYPE">_ACTIONS</div>  
-  <div class="flavour" id='flavour-_ID_TYPE'>
+  <div class="name" onclick="toggle_show(this.parentElement, 'flavour')"><p>_NAME</p></div>
+  <div class="actions">_ACTIONS</div>
+  <div class="flavour">
   <p id='flavour-_ID_editp' contenteditable="true" onblur="saveNote('flavour-_ID_editp','_TYPE','_ID')">_DESC</p>
   </div>
 </div>`;
@@ -128,10 +128,9 @@ function saveName(div_id,player_id)
     rename_player(game,player_id,t);
 }
 
-function toggle_show(id)
+function toggle_show(container, className)
 {
-    var popup = document.getElementById(id);
-    popup.classList.toggle("show");
+    container.querySelector('.'+className).classList.toggle("show");
 }
 
 function isFunction(functionToCheck)
@@ -299,11 +298,11 @@ function accused_html()
 }
 
 var pointer_template =`
-<div class="pointer" style="_CURSOR" onclick="toggle_show('pointer_id')">
+<div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'actions')">
 <div class="frame">
 <img style="margin-top: 16px; margin-bottom: 9px;" src="assets/pointer.png"/>
 <p>_TEXT</p></div>
-<div class="actions" id="pointer_id">_ACTIONS</div>  
+<div class="actions">_ACTIONS</div>
 </div>
 `;
 
@@ -317,9 +316,9 @@ function pointer_html(text, menu)
 }
 
 var tokenback_template = `
-<div class='token' style="_CURSOR" onclick="toggle_show('actions_TYPE')">
+<div class='token' style="_CURSOR" onclick="toggle_show(this, 'actions')">
 <img src="_IMGURL" style='max-width: 100%;max-height: 100%;' alt="_ALT">
-<div class="actions" id="actions_TYPE">_ACTIONS</div>  
+<div class="actions">_ACTIONS</div>
 </div>
 `;
 
@@ -520,7 +519,25 @@ function render_player(player,player_uid)
             
         var detail_action = is_twist() ? "twistdetail" :
             function(deck, id){
-                
+
+                // relationship detail menu building
+                if (deck=="relationships") {
+                    var pids = Object.keys(game.players);
+                    var result = "";
+                    for (var i = 0; i < pids.length - 1; i++) {
+                        for (var j = i + 1; j < pids.length; j++) {
+                            var button_text = "Between " +
+                                              player_identity_str(pids[i]) + " and " +
+                                              player_identity_str(pids[j]);
+
+                            var click = click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_relationship\",\""+pids[i]+"\",\""+pids[j]+"\")";
+                            result += "<button onclick='"+click+"'>"+button_text+"</button>";
+                        }
+                    }
+                    return result;
+                }
+
+                // All other detail types menu building
                 var fn = function(target_id)
                 {
                     var result = "";
@@ -771,31 +788,39 @@ function detailaction(gamestate,player_id,detail_type,detail,action)
     detailaction_ex(gamestate,player_id,detail_type,detail,action,player_id);
 }
 
-function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id)
-{    
+function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id,target_id2)
+{
     // build request json
     var request = {};
     request.action = action;
     request.game_id = game_id;
     request.player_id=player_id;
-    request.target_id=target_id;    
+    request.target_id=target_id;
+    request.target_id2=target_id2;
     request.detail_type=detail_type;
     request.detail=detail;
 
     gawm_sendrequest(request);
-    
+
     if (detail_type=='relationships')
     {
-        var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][target_id] : null;
-        if (note==null)
-        {
-            var who = player_id==target_id ? "... who?" : player_identity_str(player_id);
-            edit_note(
-                gamestate, player_id, 'player', target_id, 
-                cards['relationships'][detail].name + " with " + who
-            );
+        var note_target1 = '';
+        var note_target2 = '';
+        if ('notes' in game && 'player' in game['notes']) {
+            note_target1 = target_id in game['notes'] ['player'] ? game['notes']['player'][target_id] : '';
+            note_target2 = target_id2 in game['notes']['player'] ? game['notes']['player'][target_id2] : '';
         }
-    }    
+        var name_target1 = player_identity_str(target_id);
+        var name_target2 = player_identity_str(target_id2);
+        edit_note(
+            gamestate, player_id, 'player', target_id,
+            note_target1 + ' ' + cards['relationships'][detail].name + " with " + name_target2
+        );
+        edit_note(
+            gamestate, player_id, 'player', target_id2,
+            note_target2 + cards['relationships'][detail].name + " with " + name_target1
+        );
+    }
 }
 
 // edit_note(&$data, $player_id, $detail_type, $detail, $note)

@@ -28,7 +28,7 @@ function gawm_new_game()
 
 // modifies the game data such that the specified player has played the requested card
 // if that is in any way against the rules/structure, an exception is thrown
-function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $target_id)
+function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $target_id, $target_id2 = null)
 {
     if (count_unassigned_tokens($data)>0)
         throw new Exception('Cannot play details with unassigned token left.');
@@ -37,7 +37,9 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $targe
         throw new Exception('Invalid Player Id: '.$player_id);
     if ($target_id!=gawm_player_id_victim && !array_key_exists($target_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$target_id);
-        
+    if ($detail_type=='relationships' && !array_key_exists($target_id2,$data["players"]))
+        throw new Exception('Invalid Player Id: '.$target_id2);
+
     if ($player_id==gawm_player_id_victim)
     {
         if ($target_id!=gawm_player_id_victim)
@@ -77,15 +79,13 @@ function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $targe
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held '.$detail_type.$detail_card);
 
-    // make sure deck type exists in play
-    if (!array_key_exists($detail_type,$target["play"]))
-    {
-        $target["play"][$detail_type] = array();
-    }
-
     // move card from hand into play
-    $deck_to = &$target["play"][$detail_type];
-    array_push($deck_to, $detail_card);
+    $target["play"][$detail_type][] = $detail_card;
+
+    // Duplicate card for second target, relationships only
+    if ($detail_type=='relationships') {
+        $data['players'][$target_id2]["play"]['relationships'][] = $detail_card;
+    }
 
     $key = array_search($detail_card, $deck_from);
     unset( $deck_from[$key] );

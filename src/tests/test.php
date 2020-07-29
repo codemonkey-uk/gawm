@@ -222,7 +222,8 @@ function play_scenes( &$data, $player_ids, $detail )
         gawm_play_detail(
             $data, $player_id, $detail,
             current($data["players"][$player_id]["hand"][$detail]),
-            ($detail == "aliases" || $detail == "motives") ? $player_id : current($other_players)
+            ($detail == "aliases" || $detail == "motives") ? $player_id : current($other_players),
+            ($detail == 'relationships') ? current($other_players) : null
         );
 
         // todo: "voting scene: methos (like in js)
@@ -311,10 +312,16 @@ function test_playthrough($c)
         current($data["players"][$active_player]["hand"]["aliases"]),
         $active_player
     );
+
+    $other_players = array_filter( $player_ids,
+        function($id)use($active_player){return $id!=$active_player;}
+    );
+
     gawm_play_detail(
         $data, $active_player, "relationships",
         current($data["players"][$active_player]["hand"]["relationships"]),
-        $active_player
+        $active_player,
+        current($other_players)
     );
     vote_scene($data);
     gawm_request_next_scene($data,$active_player);
