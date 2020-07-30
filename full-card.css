@@ -203,7 +203,7 @@
   visibility: hidden;
   position: absolute;
   z-index: 1;
-  width: 115px;
+  width: 220px;
   border: 0px;
 }
 
@@ -216,7 +216,7 @@
   /* Set a width if needed */
   display: block; /* Make the buttons appear below each other */
   margin: 0px;
-  width: 115px;
+  width: 220px;
   z-index: 2;
 }
 
