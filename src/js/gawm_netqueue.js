@@ -72,7 +72,7 @@ function gawm_pumpRequestQueue()
     {
         requestInFlight=requestQueue.shift();
 
-        requestInFlight.xmlhttp.open("POST", "game.php", true);
+        requestInFlight.xmlhttp.open("POST", "api/game.php", true);
         requestInFlight.xmlhttp.send( JSON.stringify(requestInFlight.request) );
         document.getElementById('loading_div').style.display="block";
     }

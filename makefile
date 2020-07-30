@@ -11,4 +11,4 @@ db:
 	
 .PHONY : clean
 clean:
-	rm api/*
+	rm -rf api build/*
