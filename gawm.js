@@ -293,7 +293,7 @@ function show_hand(player,player_uid)
 
 var accused_template =`
 <div class="pointer"><div class="frame">
-<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/cuffs.png"/>
+<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/cuffs.png" alt="hand cuffs graphic"/>
 <p>ACCUSED</p>
 </div></div>
 `;
@@ -306,7 +306,7 @@ function accused_html()
 var pointer_template =`
 <div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'actions')">
 <div class="frame">
-<img style="margin-top: 16px; margin-bottom: 9px;" src="assets/pointer.png"/>
+<img style="margin-top: 16px; margin-bottom: 9px;" src="assets/pointer.png" alt="pointing finger graphic"/>
 <p>_TEXT</p></div>
 <div class="actions">_ACTIONS</div>
 </div>
