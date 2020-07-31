@@ -165,7 +165,10 @@
 }
 
 /* Toggle this class - hide and show the popup */
-.token .show, .halfcard .show, .pointer .show {
+.guilt .show, 
+.innocence .show,
+.halfcard .show, 
+.pointer .show {
   visibility: visible;
   -webkit-animation: fadeIn 0.25s;
   animation: fadeIn 0.25s;
@@ -187,16 +190,17 @@
   left: 230px;
 }
 
+.guilt .actions,
+.innocence .actions {
+  /* visibility: hidden; */
+  top: 0px;
+  left: 100px;
+}
+
 .halfcard .actions {
   /* visibility: hidden; */
   top: 0px;
   left: 125px;
-}
-
-.token .actions {
-  /* visibility: hidden; */
-  top: 0px;
-  left: 90px;
 }
 
 .actions {
@@ -230,17 +234,16 @@
 }
 
 .guilt {
-  background-color: #b80000; 
+  background-color: #be0712; /* 185 7 18 */ 
 }
 .innocence  { 
-  background-color: #4444dd; 
+  background-color: #0e62bd; /*14 98 189;*/
 }
 
 .guilt, .innocence  { 
   width: 100px;
   height: 100px;
   font-family: 'Special Elite', serif;
-  font-size: 70px; 
   text-align: center;
   border: 0;
   margin: 0;
@@ -257,10 +260,25 @@
 }
 .guilt p, 
 .innocence p {
-    border: 0px;
-    padding-top: 22px;
-    margin-block-start:0; 
-    margin-block-end:0;
+  font-size: 70px;
+  border: 0px;
+  padding-top: 22px;
+  margin-block-start:0; 
+  margin-block-end:0;
 }
-
-
+.guilt img,
+.innocence img {
+  border: 0px;
+  margin-top: 1px;
+  margin-bottom: 0px;
+}
+.guilt img + p,
+.innocence img + p
+{
+  font-size: 16px; 
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  margin-block-start:0; 
+  margin-block-end:0;
+}

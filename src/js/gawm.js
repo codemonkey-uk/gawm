@@ -147,6 +147,24 @@ function is_hand_redacted(hand)
     return true;
 }
 
+function token_html(type, i, click)
+{
+    var result = "<div class='"+type+"' onclick='" +click+ "'>";
+    result += '<div class="frame">';
+    if (i>=0)
+    {
+        result += "<p>"+i+"</p>";
+    }
+    else
+    {
+        result += "<img src='assets/"+type+".png'>";
+        result += "<p>"+type+"</p>";
+    }
+    result += "</div>";
+    result += "</div>";
+    return result;
+}
+
 function hand_tostr(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
@@ -167,25 +185,21 @@ function hand_tostr(hand,player_id,action,postfix,label)
         {
             var card_str = "";
             var i = hand[deck][card];
-            if (i<0) 
+            if (deck_is_token(deck))
             {
-                // token and card backs still use old img path
-                var divclass = (deck_is_token(deck)) ? "token" : "cardback";
+                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                card_str += token_html(deck, i, click);
+            }
+            else if (i<0) 
+            {
+                // card backs still use old img path
+                var divclass = "cardback";
                 var url = img_url(deck,i);
                 var alt = img_alt(deck,i);
                 var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
                 var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
                 card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
                 card_str += img;
-                card_str += "</div>";
-            }
-            else if (deck_is_token(deck))
-            {
-                // numbered tokens (note: not sure these can have an action in practice?)
-                var divclass = deck;
-                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
-                card_str += "<div class='frame'><p>"+i+"</p></div>";
                 card_str += "</div>";
             }
             else 
@@ -248,12 +262,9 @@ function is_firstbreak()
 function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
-    var html ="";
-    var url = 'assets/'+value_str+'.png';
-    var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+value_str+"\">";
-    html += "<div class='token' onclick='" +action+ "' style='cursor: pointer;'>";
-    html += img;
-    html += "</div>"
+    html = token_html(value_str, -1, action);
+    // style='cursor: pointer;'
+    
     return html;
 }
 
@@ -322,15 +333,17 @@ function pointer_html(text, menu)
 }
 
 var tokenback_template = `
-<div class='token' style="_CURSOR" onclick="toggle_show(this, 'actions')">
-<img src="_IMGURL" style='max-width: 100%;max-height: 100%;' alt="_ALT">
+<div class='_TYPE' style="_CURSOR" onclick="toggle_show(this, 'actions')">
+<div class="frame">
+<img src="_IMGURL" alt="_ALT"><p>_TYPE</p>
+</div>
 <div class="actions">_ACTIONS</div>
 </div>
 `;
 
 function assign_token_html(type, menu)
 {
-    var url = img_url(type,-1);
+    var url = "assets/"+type+".png";
     var alt = img_alt(type,-1);
     var cursor = menu.length > 0 ? "cursor: context-menu;" : "";
     return tokenback_template
