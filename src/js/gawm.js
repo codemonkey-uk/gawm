@@ -172,78 +172,85 @@ function hand_tostr(hand,player_id,action,postfix,label)
 
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
-    
-    var ordered_decks = Object.keys(hand).sort(function(a, b) {
-        return deck_order(a)-deck_order(b);
-    });
 
     html += "<div class='hand_grid' style='"+style+"'>";
-    for (var ideck in ordered_decks)
+    
+    if (hand)
     {
-        var deck = ordered_decks[ideck];
-        for (var card in hand[deck])
+        var ordered_decks = Object.keys(hand).sort(function(a, b) {
+            return deck_order(a)-deck_order(b);
+        });
+
+        for (var ideck in ordered_decks)
         {
-            var card_str = "";
-            var i = hand[deck][card];
-            if (deck_is_token(deck))
+            var deck = ordered_decks[ideck];
+            for (var card in hand[deck])
             {
-                var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                card_str += token_html(deck, i, click);
-            }
-            else if (i<0) 
-            {
-                // card backs still use old img path
-                var divclass = "cardback";
-                var url = img_url(deck,i);
-                var alt = img_alt(deck,i);
-                var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
-                var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
-                card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
-                card_str += img;
-                card_str += "</div>";
-            }
-            else 
-            {
-                var menu = "";
-                if (action)
+                var card_str = "";
+                var i = hand[deck][card];
+                if (deck_is_token(deck))
                 {
-                    if (isFunction(action))
-                    {
-                        menu += action(deck, i);
-                    }
-                    else
-                    {
-                        // old single action path, todo: deprecate this
-                        var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                        menu += "<button onclick='"+click+"'>"+action+"</button>";
-                    }
+                    var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                    card_str += token_html(deck, i, click);
                 }
+                else if (i<0) 
+                {
+                    // card backs still use old img path
+                    var divclass = "cardback";
+                    var url = img_url(deck,i);
+                    var alt = img_alt(deck,i);
+                    var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
+                    var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
+                    card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
+                    card_str += img;
+                    card_str += "</div>";
+                }
+                else 
+                {
+                    var menu = "";
+                    if (action)
+                    {
+                        if (isFunction(action))
+                        {
+                            menu += action(deck, i);
+                        }
+                        else
+                        {
+                            // old single action path, todo: deprecate this
+                            var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                            menu += "<button onclick='"+click+"'>"+action+"</button>";
+                        }
+                    }
                 
-                // if note is set, use that
-                var note = (game['notes'] && game['notes'][deck]) ? game['notes'][deck][i] : null;
-                var desc = note ? note : cards[deck][i]['desc'];
-                // if note is set, mark card
-                // todo: take first line from note for name, if note is set
-                var name = cards[deck][i]['name'];
-                if (note) name += "*";
+                    // if note is set, use that
+                    var note = (game['notes'] && game['notes'][deck]) ? game['notes'][deck][i] : null;
+                    var desc = note ? note : cards[deck][i]['desc'];
+                    // if note is set, mark card
+                    // todo: take first line from note for name, if note is set
+                    var name = cards[deck][i]['name'];
+                    if (note) name += "*";
                 
-                cursor = menu.length > 0 ? "cursor: context-menu;" : "";
-                card_str = card_template
-                    .replace(/_ID/g, i)
-                    .replace(/_TYPE/g, deck)
-                    .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
-                    .replace(/_NAME/g, name)
-                    .replace(/_DESC/g, desc)
-                    .replace(/_CURSOR/g, cursor)
-                    .replace(/_ACTIONS/g, menu);
+                    cursor = menu.length > 0 ? "cursor: context-menu;" : "";
+                    card_str = card_template
+                        .replace(/_ID/g, i)
+                        .replace(/_TYPE/g, deck)
+                        .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
+                        .replace(/_NAME/g, name)
+                        .replace(/_DESC/g, desc)
+                        .replace(/_CURSOR/g, cursor)
+                        .replace(/_ACTIONS/g, menu);
+                }
+                html += card_str;
             }
-            html += card_str;
         }
     }
+    
     if (postfix)
         html += postfix();
+        
     html += '</div>';
-    html += '</div>';    
+    html += '</div>';
+    
     return html;
 }
 

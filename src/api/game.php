@@ -61,7 +61,15 @@ try {
     $output = call_user_func_array($action_function, $parameter_list);
     // Save data if we loaded it
     if (isset($link)) {
-        complete_edit($link, $game_id, $data);
+
+        // check the endpoint was one that deals with a detail
+        $a = count( array_filter( $reflection->getParameters(), function($p) {return $p->name=="detail";} ) );
+        $b = count( array_filter( $reflection->getParameters(), function($p) {return $p->name=="detail_type";} ) );        
+        if ($a==1 && $b==1) {
+            record_event($link, $request['action'], $request['detail_type'], $request['detail']);
+        }
+        
+        complete_edit($link, $game_id, $data);        
     }
 } catch (Exception $e) {
     if (isset($link)) {

@@ -21,9 +21,20 @@ function save_new_game($game)
         mysqli_stmt_execute($stmt);
         $game_id = mysqli_insert_id($link);
     }
+    purge_old_games($link);
     mysqli_close($link);
 
     return $game_id;
+}
+
+// mostly making sure there is not retention of player notes
+function purge_old_games($link)
+{
+    $query = "DELETE FROM `gawm`.`games` WHERE time < DATE_SUB(NOW(), INTERVAL 14 day);";
+    if ($stmt = mysqli_prepare($link, $query))
+    {
+        mysqli_stmt_execute($stmt);
+    }
 }
 
 function load_for_edit($game_id, &$data)
@@ -67,6 +78,21 @@ function complete_edit($link, $game_id, $data)
         mysqli_stmt_execute($stmt);
     }
     mysqli_close($link);
+}
+
+function record_event($link, $action, $detail_type, $detail)
+{
+    $query = "INSERT INTO stats (date, action, detail_type, detail) "
+    . "VALUES (CURDATE(), ?, ?, ?) ON DUPLICATE KEY UPDATE count = count + 1;";
+    $stmt = mysqli_stmt_init($link);
+    if (mysqli_stmt_prepare($stmt, $query))
+    {
+        // special case to keep player uids out of the stats table
+        if ($detail_type=='player') $detail = 0;
+        
+        mysqli_stmt_bind_param($stmt, "ssi", $action, $detail_type, $detail);
+        mysqli_stmt_execute($stmt);
+    }
 }
 
 function cancel_edit($link)
