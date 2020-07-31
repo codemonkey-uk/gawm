@@ -433,7 +433,7 @@ function player_identity_div(player_uid)
     note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
 
     var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
-    var note_content = note ? note : default_note_content;
+    var note_content = note ? replace_playerids(note) : default_note_content;
     if (note==null || note_content==default_note_content) note_html += 'style="opacity: 0.5;"';
     note_html +=">"+note_content+"</span> ";
     note_html += "</span> ";
@@ -629,11 +629,11 @@ function menu_relationship_next_choice(div, player_uid, id, first_target_id)
                               player_identity_str(p);
             var click = click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
                                   ",\"play_relationship\",\""+first_target_id+"\",\""+p+"\")";
-            result += "<button class='second' onclick='"+click+"'>"+button_text+"</button>";
+            result += "<button onclick='"+click+"'>"+button_text+"</button>";
         }
     }
     // Yikes. Really should just rerender the menu, but no easy way to do this
-    result += "<button class='second' onclick='render_game(game)'>Undo first choice</button>";
+    result += "<button onclick='render_game(game)'>Undo first choice</button>";
     div.innerHTML = result;
 }
 
@@ -831,18 +831,16 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
         var note_target1 = '';
         var note_target2 = '';
         if ('notes' in game && 'player' in game['notes']) {
-            note_target1 = target_id in game['notes'] ['player'] ? game['notes']['player'][target_id] : '';
+            note_target1 = target_id in game['notes']['player'] ? game['notes']['player'][target_id] : '';
             note_target2 = target_id2 in game['notes']['player'] ? game['notes']['player'][target_id2] : '';
         }
-        var name_target1 = player_identity_str(target_id);
-        var name_target2 = player_identity_str(target_id2);
         edit_note(
             gamestate, player_id, 'player', target_id,
-            note_target1 + ' ' + cards['relationships'][detail].name + " with " + name_target2
+            note_target1 + ' ' + cards['relationships'][detail].name + " with " + target_id2 + ". "
         );
         edit_note(
             gamestate, player_id, 'player', target_id2,
-            note_target2 + cards['relationships'][detail].name + " with " + name_target1
+            note_target2 + cards['relationships'][detail].name + " with " + target_id + ". "
         );
     }
 }
@@ -922,11 +920,8 @@ function reload(player_id,newgame_id)
     gawm_sendrequest(request);
 }
 
-function error_popup(msg) 
+function replace_playerids(msg)
 {
-    // Get the snackbar DIV
-    var x = document.getElementById("snackbar");
-
     // replace player ids in the error message with user-facing names:
     if (game)
     {
@@ -938,6 +933,15 @@ function error_popup(msg)
             }
         }
     }
+    return msg;
+}
+
+function error_popup(msg) 
+{
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+
+    msg = replace_playerids(msg);
     
     // Add the "show" class to DIV
     x.className = "show";
