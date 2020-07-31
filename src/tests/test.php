@@ -156,6 +156,20 @@ function test_redact()
     test(isset($redacted["players"][1]["vote"]),true,"player 1 vote should be intact.");
     test(isset($redacted["players"][2]["vote"]),false,"player 2 vote should be redacted.");
     
+    // last break redactions differ
+    $data = $data_template;
+    $data["act"] = 3;
+    $data["scene"] = 4;
+    $data["most_innocent"] = 1;
+    test(gawm_is_lastbreak($data),true,"expected to be last break");
+    $redacted = redact_for_player($data, 1);
+
+    // innocence tokens not redacted during the accusations
+    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p1 innocence tokens to be intact.");
+    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p2 innocence tokens to be intact.");
+
+    
+    
     // epilogue redactions differ
     $data = $data_template;
     $data["act"] = 4;
