@@ -321,10 +321,25 @@ function accused_html()
     return accused_template;
 }
 
+var pointer1_template =`
+<div class="pointer" style="cursor: pointer" onclick="_ACTION">
+<div class="frame">
+<img src="assets/pointer.png" alt="pointing finger graphic"/>
+<p>_TEXT</p></div>
+</div>
+`;
+
+function pointer1_html(text, action)
+{
+    return pointer1_template
+        .replace(/_ACTION/g, action)
+        .replace(/_TEXT/g, text);
+}
+
 var pointer_template =`
 <div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'actions')">
 <div class="frame">
-<img style="margin-top: 16px; margin-bottom: 9px;" src="assets/pointer.png" alt="pointing finger graphic"/>
+<img src="assets/pointer.png" alt="pointing finger graphic"/>
 <p>_TEXT</p></div>
 <div class="actions">_ACTIONS</div>
 </div>
@@ -530,13 +545,11 @@ function render_player(player,player_uid)
                 {
                     if (game.act==0)
                     {
-                        var actions = "<button onclick='next(game)'>Start</button>";
-                        str += pointer_html('BEGIN',actions);
+                        str += pointer1_html('BEGIN','next(game)');
                     }
                     else
                     {
-                        var actions = "<button onclick='next(game)'>End Scene</button>";
-                        str += pointer_html('NEXT',actions);
+                        str += pointer1_html('NEXT','next(game)');
                     }
                 }
                 
