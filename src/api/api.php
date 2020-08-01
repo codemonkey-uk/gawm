@@ -1,6 +1,7 @@
 <?php
 require_once 'gawm.php';
 require_once 'db.php';
+require_once 'hashids.php';
 
 function sanitise_player_name($player_name)
 {
@@ -24,10 +25,10 @@ function _api_new($player_name)
     $player_id = gawm_add_player($data, $player_name);
     $game_id = save_new_game($data);
     
-    // Todo: I think I want ALL reponses to come back in this format...
+    $hashids = new Hashids\Hashids(GAWM_DB_PWD);
     return [
         'game' => redact_for_player($data, $player_id),
-        'game_id' => $game_id,
+        'game_id' => $hashids->encode($game_id),
         'player_id' => $player_id
     ];
 }
