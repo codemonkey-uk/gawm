@@ -128,23 +128,17 @@ function rate_limited_connect($action)
             mysqli_stmt_bind_param($stmt, "ss", $ip, $action);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
-            $row = mysqli_fetch_array($result, MYSQLI_NUM);
-            
-            // should only be one
-            if (isset($row))
+            if ($row = mysqli_fetch_assoc($result)) 
             {
-                foreach ($row as $r)
+                $count = $row['count'];
+                if ($count > $l) 
                 {
-                    $count = json_decode($r,true);
-                    if ($count > $l)
-                    {
-                        mysqli_close($link);
-                        http_response_code(429);
-                        $fn = array('HOUR' => 60*60,'MINUTE' => 60);
-                        $d = (($count-$l)/$n);
-                        header('Retry-After: '.($d * $fn[$f]), false);
-                        die ("Exceded usage limit ".$count." / ".$l);
-                    }
+                    mysqli_close($link);
+                    http_response_code(429);
+                    $fn = array('HOUR' => 60*60,'MINUTE' => 60);
+                    $d = (($count-$l)/$n);
+                    header('Retry-After: '.($d * $fn[$f]), false);
+                    die ("Exceded usage limit ".$count." / ".$l);
                 }
             }
         }
