@@ -16,7 +16,4 @@ cp assets/* build/assets
 
 cp src/*.html build
 
-# should probably be a submodule, or use php package management or whatever
-# but for now just put it in the same folder as gawm
-# git clone https://github.com/vinkla/hashids.git
-cp -r ../hashids/src build/api/Hashids
+cp -r libs/hashids-4.0.0/src build/api/Hashids
