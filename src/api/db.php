@@ -12,7 +12,8 @@ function db_connect()
 
 function save_new_game($game)
 {
-    $link = db_connect();
+    $link = rate_limited_connect("new");
+    
     $query = "INSERT INTO `games` (`uid`, `time`, `data`) VALUES (NULL, CURRENT_TIMESTAMP, ?)";
     if ($stmt = mysqli_prepare($link, $query))
     {
@@ -37,9 +38,9 @@ function purge_old_games($link)
     }
 }
 
-function load_for_edit($game_id, &$data)
+function load_for_edit($game_id, &$data, $action)
 {
-    $link = db_connect();
+    $link = rate_limited_connect($action);
     $query = "SELECT `data` FROM `games` WHERE `uid` = ? FOR UPDATE;";
 
     $stmt = mysqli_stmt_init($link);
@@ -58,10 +59,6 @@ function load_for_edit($game_id, &$data)
                 $data = json_decode($r,true);
             }
         }
-    }
-    else
-    {
-        $game_out["error"]=$query;
     }
 
     return $link;
@@ -93,6 +90,61 @@ function record_event($link, $action, $detail_type, $detail)
         mysqli_stmt_bind_param($stmt, "ssi", $action, $detail_type, $detail);
         mysqli_stmt_execute($stmt);
     }
+}
+
+function rate_limited_connect($action)
+{
+    $link = db_connect();
+    if ($action == 'new' || $action == 'edit_note')
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if ($ip=="") $ip="127.0.0.1"; // for localhost testing
+        
+        // new games, rate limit at 12 per day, 
+        // allows frequent play and mistakes on creation, but not spam
+        // note edits, 30 an hour allows all notes to be set during the course of a game
+        // but should prevents server being abused as IM chat room
+        
+        $n = ($action == 'new') ? 0.5 : 0.5;
+        $f = ($action == 'new') ? 'HOUR' : 'MINUTE';
+        $l = ($action == 'new') ? 12 : 30;
+        
+        $query = "INSERT INTO rates (`ipv4`, action)"
+            . "VALUES (INET_ATON(?), ?) "
+            . "ON DUPLICATE KEY UPDATE count = 1 + GREATEST(0, `count` - (".$n."*TIMESTAMPDIFF(".$f.",`time`,NOW())))";
+        
+        $stmt = mysqli_stmt_init($link);
+        if (mysqli_stmt_prepare($stmt, $query))
+        {
+            mysqli_stmt_bind_param($stmt, "ss", $ip, $action);
+            mysqli_stmt_execute($stmt);
+        }
+        
+        $query = "SELECT `count` FROM `rates` WHERE (`ipv4` = INET_ATON(?) AND `action` = ?)";
+
+        $stmt = mysqli_stmt_init($link);
+        if (mysqli_stmt_prepare($stmt, $query))
+        {
+            mysqli_stmt_bind_param($stmt, "ss", $ip, $action);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            if ($row = mysqli_fetch_assoc($result)) 
+            {
+                $count = $row['count'];
+                if ($count > $l) 
+                {
+                    mysqli_close($link);
+                    http_response_code(429);
+                    $fn = array('HOUR' => 60*60,'MINUTE' => 60);
+                    $d = (($count-$l)/$n);
+                    header('Retry-After: '.($d * $fn[$f]), false);
+                    die ("Exceded usage limit ".$count." / ".$l);
+                }
+            }
+        }
+    }
+    
+    return $link;
 }
 
 function cancel_edit($link)

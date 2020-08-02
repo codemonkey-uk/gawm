@@ -44,7 +44,7 @@ foreach ($reflection->getParameters() as $parameter) {
         $game_id = current( $hashids->decode( $request['game_id'] ) );
         // Load the game
         $data = null;
-        $link = load_for_edit($game_id, $data);
+        $link = load_for_edit($game_id, $data, $request['action']);
         // Check if a game was loaded
         if (!$data) {
             http_response_code(400);

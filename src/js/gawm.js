@@ -868,16 +868,24 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
 // edit_note(&$data, $player_id, $detail_type, $detail, $note)
 function edit_note(gamestate,player_id,detail_type,detail,note)
 {
-    // build request json
-    var request = {};
-    request.action = "edit_note";
-    request.game_id = game_id;
-    request.player_id=player_id;
-    request.detail_type=detail_type;
-    request.detail=detail;
-    request.note=note;
+    // only send if the note is changed by the edit
+    var current_note = detail in game['notes'][detail_type] ? game['notes'][detail_type][detail] : '';
+    if (note!=current_note)
+    {
+        // build request json
+        var request = {};
+        request.action = "edit_note";
+        request.game_id = game_id;
+        request.player_id=player_id;
+        request.detail_type=detail_type;
+        request.detail=detail;
+        request.note=note;
     
-    gawm_sendrequest(request);
+        gawm_sendrequest(request);
+        
+        // save note locally (prevents a DOM reset) 
+        game['notes'][detail_type][detail] = note;
+    }
 }
 
 // rename_player(&$data, $player_id, $player_name)
