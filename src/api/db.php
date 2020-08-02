@@ -105,12 +105,13 @@ function rate_limited_connect($action)
         // note edits, 30 an hour allows all notes to be set during the course of a game
         // but should prevents server being abused as IM chat room
         
-        $n = ($action == 'new') ? 12 : 30;
-        $f = ($action == 'new') ? 'DAY' : 'HOUR';
+        $n = ($action == 'new') ? 0.5 : 0.5;
+        $f = ($action == 'new') ? 'HOUR' : 'MINUTE';
+        $l = ($action == 'new') ? 12 : 30;
         
         $query = "INSERT INTO rates (`ipv4`, action)"
             . "VALUES (INET_ATON(?), ?) "
-            . "ON DUPLICATE KEY UPDATE count = 1 + GREATEST(0, `count` -".$n."*TIMESTAMPDIFF(".$f.",`time`,NOW()))";
+            . "ON DUPLICATE KEY UPDATE count = 1 + GREATEST(0, `count` - (".$n."*TIMESTAMPDIFF(".$f.",`time`,NOW())))";
         
         $stmt = mysqli_stmt_init($link);
         if (mysqli_stmt_prepare($stmt, $query))
@@ -135,10 +136,11 @@ function rate_limited_connect($action)
                 foreach ($row as $r)
                 {
                     $count = json_decode($r,true);
-                    if ($count > $n)
+                    if ($count > $l)
                     {
                         mysqli_close($link);
-                        throw new Exception("Exceded usage limit ".$n." / ".$f);
+                        http_response_code(429);
+                        die ("Exceded usage limit ".$count." / ".$l.", try again in ".(($count-$l)/$n)." ".$f);
                     }
                 }
             }
