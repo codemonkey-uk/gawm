@@ -12,7 +12,8 @@ function db_connect()
 
 function save_new_game($game)
 {
-    $link = db_connect();
+    $link = rate_limited_connect("new");
+    
     $query = "INSERT INTO `games` (`uid`, `time`, `data`) VALUES (NULL, CURRENT_TIMESTAMP, ?)";
     if ($stmt = mysqli_prepare($link, $query))
     {
@@ -37,9 +38,9 @@ function purge_old_games($link)
     }
 }
 
-function load_for_edit($game_id, &$data)
+function load_for_edit($game_id, &$data, $action)
 {
-    $link = db_connect();
+    $link = rate_limited_connect($action);
     $query = "SELECT `data` FROM `games` WHERE `uid` = ? FOR UPDATE;";
 
     $stmt = mysqli_stmt_init($link);
@@ -93,6 +94,36 @@ function record_event($link, $action, $detail_type, $detail)
         mysqli_stmt_bind_param($stmt, "ssi", $action, $detail_type, $detail);
         mysqli_stmt_execute($stmt);
     }
+}
+
+function rate_limited_connect($action)
+{
+    $link = db_connect();
+    if ($action == 'new' || $action == 'edit_note')
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        
+        // new games, rate limit at 12 per day, 
+        // allows frequent play and mistakes on creation, but not spam
+        // note edits, 30 an hour allows all notes to be set during the course of a game
+        // but should prevents server being abused as IM chat room
+        
+        $n = ($action == 'new') ? 12 : 30;
+        $f = ($action == 'new') ? 'DAY' : 'HOUR';
+        
+        $query = "INSERT INTO rates (`ipv4`, action)"
+            . "VALUES (INET_ATON(?), ?) "
+            . "ON DUPLICATE KEY UPDATE count = 1 + GREATEST(0, `count` -".$n."*TIMESTAMPDIFF(".$f.",`time`,NOW()))";
+        
+        $stmt = mysqli_stmt_init($link);
+        if (mysqli_stmt_prepare($stmt, $query))
+        {
+            mysqli_stmt_bind_param($stmt, "ss", $ip, $action);
+            mysqli_stmt_execute($stmt);
+        }
+        
+    }    
+    return $link;
 }
 
 function cancel_edit($link)
