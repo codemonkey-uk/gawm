@@ -60,10 +60,6 @@ function load_for_edit($game_id, &$data, $action)
             }
         }
     }
-    else
-    {
-        $game_out["error"]=$query;
-    }
 
     return $link;
 }
@@ -102,6 +98,7 @@ function rate_limited_connect($action)
     if ($action == 'new' || $action == 'edit_note')
     {
         $ip = $_SERVER['REMOTE_ADDR'];
+        if ($ip=="") $ip="127.0.0.1"; // for localhost testing
         
         // new games, rate limit at 12 per day, 
         // allows frequent play and mistakes on creation, but not spam
@@ -122,7 +119,32 @@ function rate_limited_connect($action)
             mysqli_stmt_execute($stmt);
         }
         
-    }    
+        $query = "SELECT `count` FROM `rates` WHERE (`ipv4` = INET_ATON(?) AND `action` = ?)";
+
+        $stmt = mysqli_stmt_init($link);
+        if (mysqli_stmt_prepare($stmt, $query))
+        {
+            mysqli_stmt_bind_param($stmt, "ss", $ip, $action);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_array($result, MYSQLI_NUM);
+            
+            // should only be one
+            if (isset($row))
+            {
+                foreach ($row as $r)
+                {
+                    $count = json_decode($r,true);
+                    if ($count > $n)
+                    {
+                        mysqli_close($link);
+                        throw new Exception("Exceded usage limit ".$n." / ".$f);
+                    }
+                }
+            }
+        }
+    }
+    
     return $link;
 }
 
