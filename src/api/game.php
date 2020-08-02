@@ -52,6 +52,8 @@ foreach ($reflection->getParameters() as $parameter) {
         }
         // Set param to loaded data
         $parameter_list[] = &$data;
+    } else if ($parameter_name == 'hashids') {
+        $parameter_list[] = $hashids;
     } else if (isset($request[$parameter_name])) {
         $parameter_list[] = $request[$parameter_name];
     } else {
