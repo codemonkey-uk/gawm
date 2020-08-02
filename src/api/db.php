@@ -140,7 +140,10 @@ function rate_limited_connect($action)
                     {
                         mysqli_close($link);
                         http_response_code(429);
-                        die ("Exceded usage limit ".$count." / ".$l.", try again in ".(($count-$l)/$n)." ".$f);
+                        $fn = array('HOUR' => 60*60,'MINUTE' => 60);
+                        $d = (($count-$l)/$n);
+                        header('Retry-After: '.($d * $fn[$f]), false);
+                        die ("Exceded usage limit ".$count." / ".$l);
                     }
                 }
             }
