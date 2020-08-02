@@ -28,14 +28,21 @@ function save_new_game($game)
     return $game_id;
 }
 
-// mostly making sure there is not retention of player notes
+// mostly making sure there is no retention of player data
 function purge_old_games($link)
 {
+    // old game json
     $query = "DELETE FROM `gawm`.`games` WHERE time < DATE_SUB(NOW(), INTERVAL 14 day);";
     if ($stmt = mysqli_prepare($link, $query))
     {
         mysqli_stmt_execute($stmt);
     }
+    // old ip-addresses from rate-limiter
+    $query = "DELETE FROM `gawm`.`rates` WHERE time < DATE_SUB(NOW(), INTERVAL 14 day);";
+    if ($stmt = mysqli_prepare($link, $query))
+    {
+        mysqli_stmt_execute($stmt);
+    }    
 }
 
 function load_for_edit($game_id, &$data, $action)

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 mkdir -p build/api
 for F in $(ls src/api/ | grep "php$")
 do
