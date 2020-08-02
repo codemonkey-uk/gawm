@@ -15,3 +15,5 @@ mkdir -p build/assets
 cp assets/* build/assets
 
 cp src/*.html build
+
+cp -r libs/hashids-4.0.0/src build/api/Hashids

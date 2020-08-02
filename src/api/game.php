@@ -1,6 +1,7 @@
 <?php
 require_once 'api.php';
 require_once 'db.php';
+require_once 'hashids.php';
 
 // Takes raw data from the request
 if (php_sapi_name() == "cli") {
@@ -25,6 +26,9 @@ if (!function_exists($action_function)) {
     http_response_code(400);
     die('Action does not exist');
 }
+
+$hashids = new Hashids\Hashids(GAWM_DB_PWD);
+
 // Build parameters
 $parameter_list = array();
 $reflection = new ReflectionFunction($action_function);
@@ -37,17 +41,19 @@ foreach ($reflection->getParameters() as $parameter) {
             http_response_code(400);
             die("game_id: parameter missing");
         }
-        $game_id = $request['game_id'];
+        $game_id = current( $hashids->decode( $request['game_id'] ) );
         // Load the game
         $data = null;
         $link = load_for_edit($game_id, $data);
         // Check if a game was loaded
         if (!$data) {
             http_response_code(400);
-            die("Game not found.");
+            die("Game not found: ". json_encode($game_id));
         }
         // Set param to loaded data
         $parameter_list[] = &$data;
+    } else if ($parameter_name == 'hashids') {
+        $parameter_list[] = $hashids;
     } else if (isset($request[$parameter_name])) {
         $parameter_list[] = $request[$parameter_name];
     } else {
