@@ -844,8 +844,8 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
     
     if (target_id)
     {
-        request.target_id=[target_id];
-        if (target_id2) request.target_id.push(target_id2);
+        request.targets=[target_id];
+        if (target_id2) request.targets.push(target_id2);
     }
 
     gawm_sendrequest(request);

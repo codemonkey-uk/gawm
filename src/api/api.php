@@ -43,9 +43,9 @@ function _api_add_player(&$data, $player_name)
     ];   
 }
 
-function _api_play_detail(&$data, $player_id, $detail_type, $detail, $target_id)
+function _api_play_detail(&$data, $player_id, $detail_type, $detail, $targets)
 {
-    gawm_play_detail($data, $player_id, $detail_type, $detail, $target_id);
+    gawm_play_detail($data, $player_id, $detail_type, $detail, $targets);
     
     return [
         'game' => redact_for_player($data, $player_id),
