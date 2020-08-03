@@ -648,7 +648,7 @@ function menu_relationship_next_choice(div, player_uid, id, first_target_id)
                               player_identity_str(first_target_id) + " and "+
                               player_identity_str(p);
             var click = click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
-                                  ",\"play_relationship\",\""+first_target_id+"\",\""+p+"\")";
+                                  ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
             result += "<button onclick='"+click+"'>"+button_text+"</button>";
         }
     }
@@ -838,11 +838,15 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
     var request = {};
     request.action = action;
     request.game_id = game_id;
-    request.player_id=player_id;
-    request.target_id=target_id;
-    request.target_id2=target_id2;
-    request.detail_type=detail_type;
-    request.detail=detail;
+    request.player_id = player_id;
+    request.detail_type = detail_type;
+    request.detail = detail;
+    
+    if (target_id)
+    {
+        request.target_id=[target_id];
+        if (target_id2) request.target_id.push(target_id2);
+    }
 
     gawm_sendrequest(request);
 
