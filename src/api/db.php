@@ -56,15 +56,9 @@ function load_for_edit($game_id, &$data, $action)
         mysqli_stmt_bind_param($stmt, "s", $game_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_array($result, MYSQLI_NUM);
-
-        // should only be one
-        if (isset($row))
+        if ($row = mysqli_fetch_assoc($result))
         {
-            foreach ($row as $r)
-            {
-                $data = json_decode($r,true);
-            }
+            $data = json_decode($row['data'],true);
         }
     }
 
