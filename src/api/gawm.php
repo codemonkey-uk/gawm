@@ -26,65 +26,86 @@ function gawm_new_game()
     return $data;
 }
 
+function valid_player_id(&$data, $player_id)
+{
+    if ($player_id==gawm_player_id_victim)
+        return true;
+        
+    return array_key_exists($player_id,$data["players"]);
+}
+
 // modifies the game data such that the specified player has played the requested card
 // if that is in any way against the rules/structure, an exception is thrown
-function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $target_id, $target_id2 = null)
+function gawm_play_detail(&$data, $player_id, $detail_type, $detail_card, $target_array)
 {
     if (count_unassigned_tokens($data)>0)
         throw new Exception('Cannot play details with unassigned token left.');
 
-    if ($player_id!=gawm_player_id_victim && !array_key_exists($player_id,$data["players"]))
+    if (!valid_player_id($data, $player_id))
         throw new Exception('Invalid Player Id: '.$player_id);
-    if ($target_id!=gawm_player_id_victim && !array_key_exists($target_id,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$target_id);
-    if ($detail_type=='relationships' && !array_key_exists($target_id2,$data["players"]))
-        throw new Exception('Invalid Player Id: '.$target_id2);
 
-    if ($player_id==gawm_player_id_victim)
-    {
-        if ($target_id!=gawm_player_id_victim)
-            throw new Exception('Invalid Use of Murder Victim Cards');
+    if (!gawm_is_detail_active($data, $detail_type))
+        throw new Exception('Invalid Detail for Act');
         
+    if (!gawm_is_player_active($data, $player_id))
+        throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
+    
+    if (!gawm_player_has_details_left_to_play($data, $player_id))
+        throw new Exception('Insufficent Details for Remaining Acts.');    
+    
+    // hold a reference to the source player 
+    if (($player_id==gawm_player_id_victim))
         $player = &$data["victim"];
-        $target = &$data["victim"];        
-    }
     else
-    {
-        if ($target_id==gawm_player_id_victim)
-            throw new Exception('Cannot assign the Murder Victim player details');
-
-        if (!gawm_player_has_details_left_to_play($data, $player_id))
-            throw new Exception('Insufficent Details for Remaining Acts: ');    
-            
         $player = &$data["players"][$player_id];
-        $target = &$data["players"][$target_id];
-    }
-
+    
     if (!array_key_exists($detail_type, $player["hand"]))
         throw new Exception('Invalid Detail Type: '.$detail_type);
 
     if (isset($player["hand"]["aliases"]) && $detail_type!="aliases")
         throw new Exception('An alias must be played first if any are held.');
 
-    if (isset($target["play"]["motives"]) && $detail_type=="motives")
-        throw new Exception('Each player can only have 1 motive.');
-
-    if (!gawm_is_detail_active($data, $detail_type))
-        throw new Exception('Invalid Detail for Act');
-
-    if (!gawm_is_player_active($data, $player_id))
-        throw new Exception('Invalid Player ('.$player_id.') for Scene: '.$data["scene"]);
-
     $deck_from = &$player["hand"][$detail_type];
     if (!in_array($detail_card,$deck_from))
         throw new Exception('Detail Not Held '.$detail_type.$detail_card);
+        
+    // legacy code support, if targets are not and array, make an array of one
+    if (is_array($target_array)==false)
+        $target_array = [$target_array];
+    
+    // targets should be unique
+    $target_array = array_unique($target_array);
+    
+    // check validitiy of card type to target count
+    $expected_targets = ($detail_type=='relationships') ? 2 : 1;
+    if ($expected_targets!=count($target_array))
+        throw new Exception("Expected ".$expected_targets." for Detail Type ".$detail_type.", found ".count($target_array));
+    
+    foreach ($target_array as $target_id)
+    {
+        if (!valid_player_id($data, $target_id))
+            throw new Exception('Invalid Player Id: '.$target_id);
+        
+        // check validitiy of card type to target
+        // * murder detail cards only go to murder victim targets
+        if ($detail_type=='murder_discovery' && $target_id!=gawm_player_id_victim)
+            throw new Exception('Invalid Use of Murder Victim Cards');
+        if ($detail_type=='murder_cause' && $target_id!=gawm_player_id_victim)
+            throw new Exception('Invalid Use of Murder Victim Cards');
+        // * aliases only go to self
+        if ($detail_type=='aliases' && $target_id!=$player_id)
+            throw new Exception('Invalid Use of Alias Cards');
+        
+        if ($target_id==gawm_player_id_victim) 
+            $target = &$data["victim"];
+        else
+            $target = &$data["players"][$target_id];
+        
+        if (isset($target["play"]["motives"]) && $detail_type=="motives")
+            throw new Exception('Each player can only have 1 motive.');
 
-    // move card from hand into play
-    $target["play"][$detail_type][] = $detail_card;
-
-    // Duplicate card for second target, relationships only
-    if ($detail_type=='relationships') {
-        $data['players'][$target_id2]["play"]['relationships'][] = $detail_card;
+        // move card from hand into play
+        $target["play"][$detail_type][] = $detail_card;
     }
 
     $key = array_search($detail_card, $deck_from);

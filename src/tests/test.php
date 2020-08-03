@@ -233,11 +233,14 @@ function play_scenes( &$data, $player_ids, $detail )
         
         test(gawm_is_player_active($data, $player_id), true, "players should be active in setup");
         test(gawm_player_has_details_left_to_play($data, $player_id), true, "players have details to play in setup");
+        
+        $targets = [$player_id];
+        if ($detail == 'relationships') $targets[] = current($other_players);
+        
         gawm_play_detail(
             $data, $player_id, $detail,
             current($data["players"][$player_id]["hand"][$detail]),
-            ($detail == "aliases" || $detail == "motives") ? $player_id : current($other_players),
-            ($detail == 'relationships') ? current($other_players) : null
+            $targets
         );
 
         // todo: "voting scene: methos (like in js)
@@ -334,8 +337,7 @@ function test_playthrough($c)
     gawm_play_detail(
         $data, $active_player, "relationships",
         current($data["players"][$active_player]["hand"]["relationships"]),
-        $active_player,
-        current($other_players)
+        [$active_player, current($other_players)]
     );
     vote_scene($data);
     gawm_request_next_scene($data,$active_player);
