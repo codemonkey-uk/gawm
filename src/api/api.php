@@ -105,10 +105,13 @@ function _api_record_accused(&$data, $player_id, $detail)
     ]; 
 }
 
-function _api_get(&$data, $player_id)
+function _api_get($game_id, $player_id)
 {
     return [
-        'game' => redact_for_player($data, $player_id),
+        'game' => redact_for_player(
+            load_and_release($game_id), 
+            $player_id
+        ),
         'player_id' => $player_id
     ]; 
 }

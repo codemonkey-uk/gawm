@@ -45,6 +45,27 @@ function purge_old_games($link)
     }    
 }
 
+function load_and_release($game_id)
+{
+    $link = db_connect();
+    $query = "SELECT `data` FROM `games` WHERE `uid` = ?;";
+
+    $stmt = mysqli_stmt_init($link);
+    if (mysqli_stmt_prepare($stmt, $query))
+    {
+        mysqli_stmt_bind_param($stmt, "s", $game_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_assoc($result))
+        {
+            $data = json_decode($row['data'],true);
+        }
+    }
+    mysqli_close($link);
+
+    return $data;
+}
+
 function load_for_edit($game_id, &$data, $action)
 {
     $link = rate_limited_connect($action);
