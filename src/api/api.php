@@ -53,16 +53,6 @@ function _api_play_detail(&$data, $player_id, $detail_type, $detail, $target_id)
     ];
 }
 
-function _api_play_relationship(&$data, $player_id, $detail_type, $detail, $target_id, $target_id2)
-{
-    gawm_play_detail($data, $player_id, $detail_type, $detail, [$target_id, $target_id2]);
-
-    return [
-        'game' => redact_for_player($data, $player_id),
-        'player_id' => $player_id
-    ];
-}
-
 function _api_twist_detail(&$data, $player_id, $detail_type, $detail)
 {
     gawm_twist_detail($data, $player_id, $detail_type, $detail);
