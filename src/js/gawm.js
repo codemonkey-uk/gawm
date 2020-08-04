@@ -463,10 +463,11 @@ function player_identity_template(player_uid,template)
     var player_name;
     if (player_uid==0)
     {
-        player_name = "The Murder Victim";
         var c = Object.keys(game.players).length;
         if (game.act==1 && game.scene==c)
-            player_name += " will be...";
+            player_name = "The Murder Victim will be...";
+        else
+            player_name = "DECEASED";
     }
     else
     {
@@ -549,8 +550,8 @@ function render_player(player,player_uid)
             
         var detail_action = is_twist() ? 
             function(deck,id) {
-                var click = "twistdetail(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                menu += "<button onclick='"+click+"'>Twist (Discard)</button>";
+                var click = "twistdetail(game, \""+player_uid+"\", \""+deck+"\", "+id+")";
+                return "<button onclick='"+click+"'>Twist (Discard)</button>";
             } :
             function(deck, id){
                 // All other detail types menu building
@@ -586,7 +587,7 @@ function render_player(player,player_uid)
                         } else {
                             var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"play_detail\",\""+target_id+"\")";
                         }
-                        var name = (target_id==0) ? "The Victim" : game.players[target_id].name;
+
                         result += "<button onclick='"+click+"'>"+button_text+"</button>";
                     }
                     
