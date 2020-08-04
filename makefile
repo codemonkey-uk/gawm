@@ -9,13 +9,20 @@ JS_OUT := $(patsubst ./src/js/%.js,./build/js/%.js,$(SRC_JS))
 CSS_OUT := $(patsubst ./src/css/%.css,./build/css/%.css,$(SRC_CSS))
 API_OUT := $(patsubst ./src/api/%.php,./build/api/%.php,$(SRC_PHP))
 
+CPJS = cat
+
 # The default is to build all the OUTPUTS files
-all: run_tests $(JS_OUT) $(API_OUT) $(CSS_OUT) copy_files
+all: run_tests build
+
+release: CPJS = terser --compress --
+release: run_tests build
+
+build: $(JS_OUT) $(API_OUT) $(CSS_OUT) copy_files
 
 # Tell make how to build a minified js file
 ./build/js/%.js  : ./src/js/%.js
 	@mkdir -p $(@D)
-	terser --compress -- $< > $@
+	$(CPJS) $< > $@
 
 # css, for now just copy it
 ./build/css/%.css  : ./src/css/%.css
