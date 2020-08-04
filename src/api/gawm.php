@@ -3,6 +3,7 @@
 define( 'gawm_player_id_victim', '0' );
 define( 'gawm_vote_guilty', '1' );
 define( 'gawm_vote_innocent', '2' );
+define( 'gawm_allow_active_player_unilatteral_voting', false );
 
 require_once 'gawm_twist.php';
 require_once 'gawm_setup.php';
@@ -265,7 +266,7 @@ function complete_normalscene(&$data)
     if ($tally[gawm_vote_innocent]==$tally[gawm_vote_guilty])
     {
         throw new Exception(
-            'Players must agree on innocence/guilt: '.
+            'Players must decide on innocence/guilt: '.
             ($tally[gawm_vote_innocent] . ':' . $tally[gawm_vote_guilty])
         );
     }
@@ -533,16 +534,20 @@ function tally_votes(&$data)
             }
         }
     }
-
-    // tie break if necessery
-    if ($result[gawm_vote_innocent]==$result[gawm_vote_guilty])
+    
+    // (optionally) prevent active players breaking a tie where no one else voted
+    if (gawm_allow_active_player_unilatteral_voting ||
+        $result[gawm_vote_innocent]+$result[gawm_vote_guilty]>0)
     {
-        $ap = &$data["players"][$active_player_id];
-        if (array_key_exists("vote", $ap))
+        // tie break if necessery
+        if ($result[gawm_vote_innocent]==$result[gawm_vote_guilty])
         {
-            $result[$ap["vote"]]++;
+            $ap = &$data["players"][$active_player_id];
+            if (array_key_exists("vote", $ap))
+            {
+                $result[$ap["vote"]]++;
+            }
         }
-
     }
 
     return $result;
