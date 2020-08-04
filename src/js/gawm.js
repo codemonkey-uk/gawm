@@ -190,18 +190,18 @@ function hand_tostr(hand,player_id,action,postfix,label)
                 var i = hand[deck][card];
                 if (deck_is_token(deck))
                 {
-                    var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                    card_str += token_html(deck, i, click);
+                    // no action/click on held tokens
+                    // note: vote buttons are generated during postfix 
+                    card_str += token_html(deck, i, "");
                 }
                 else if (i<0) 
                 {
-                    // card backs still use old img path
+                    // card backs use img path
                     var divclass = "cardback";
                     var url = img_url(deck,i);
                     var alt = img_alt(deck,i);
                     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
-                    var click = (i>=0) ? action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")" : "";
-                    card_str += "<div class='"+divclass+"' onclick='" +click+ "'>";
+                    card_str += "<div class='"+divclass+"'>";
                     card_str += img;
                     card_str += "</div>";
                 }
@@ -210,16 +210,7 @@ function hand_tostr(hand,player_id,action,postfix,label)
                     var menu = "";
                     if (action)
                     {
-                        if (isFunction(action))
-                        {
-                            menu += action(deck, i);
-                        }
-                        else
-                        {
-                            // old single action path, todo: deprecate this
-                            var click = action+"(game, \""+player_id+"\", \""+deck+"\", "+i+")";
-                            menu += "<button onclick='"+click+"'>"+action+"</button>";
-                        }
+                        menu += action(deck, i);
                     }
                 
                     // if note is set, use that
@@ -556,7 +547,11 @@ function render_player(player,player_uid)
                 return str;
             } : null;
             
-        var detail_action = is_twist() ? "twistdetail" :
+        var detail_action = is_twist() ? 
+            function(deck,id) {
+                var click = "twistdetail(game, \""+player_id+"\", \""+deck+"\", "+i+")";
+                menu += "<button onclick='"+click+"'>Twist (Discard)</button>";
+            } :
             function(deck, id){
                 // All other detail types menu building
                 var fn = function(target_id)
@@ -873,7 +868,9 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
 function edit_note(gamestate,player_id,detail_type,detail,note)
 {
     // only send if the note is changed by the edit
-    var current_note = detail in game['notes'][detail_type] ? game['notes'][detail_type][detail] : '';
+    var current_note = 'notes' in game && detail_type in game['notes']
+        ? game['notes'][detail_type][detail] 
+        : '';
     if (note!=current_note)
     {
         // build request json
