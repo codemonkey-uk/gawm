@@ -4,7 +4,12 @@ var cards = null;
 var game = null;
 var game_id = 0;
 var local_player_id = 0;
-var default_note_content = "Player Note";
+
+function default_note(deck,i)
+{
+    if (deck=='player') return "Player Note";
+    else return cards[deck][i]['desc'];
+}
 
 function load_cards(oncomplete)
 {
@@ -93,11 +98,11 @@ function editPlayerNote(div_id,player_id)
     {
         t = document.getElementById(div_id).innerText;
         document.getElementById(div_id).innerHTML = t;
-        if (t!=default_note_content)
+        if (t!=default_note('player',player_id))
             saveNote(div_id,'player',player_id);
     }
     
-    if (t!=default_note_content)
+    if (t!=default_note('player',player_id))
         document.getElementById(div_id).style.opacity="1";
 }
 
@@ -446,8 +451,8 @@ function player_identity_div(player_uid)
     note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
 
     var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
-    var note_content = note ? replace_playerids(note) : default_note_content;
-    if (note==null || note_content==default_note_content) note_html += 'style="opacity: 0.5;"';
+    var note_content = note ? replace_playerids(note) : default_note('player',player_uid);
+    if (note==null || note_content==default_note('player',player_uid)) note_html += 'style="opacity: 0.5;"';
     note_html +=">"+note_content+"</span> ";
     note_html += "</span> ";
     template += note_html;
@@ -868,10 +873,17 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
 // edit_note(&$data, $player_id, $detail_type, $detail, $note)
 function edit_note(gamestate,player_id,detail_type,detail,note)
 {
+    note = note.trim();
+    
+    // if the note matches the default note, blank to empty
+    if (note == default_note(detail_type,detail))
+        note = '';
+    
     // only send if the note is changed by the edit
     var current_note = 'notes' in game && detail_type in game['notes']
         ? game['notes'][detail_type][detail] 
         : '';
+
     if (note!=current_note)
     {
         // build request json
@@ -886,6 +898,8 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
         gawm_sendrequest(request);
         
         // save note locally (prevents a DOM reset) 
+        if (!(detail_type in game['notes']))
+            game['notes'][detail_type] = [];
         game['notes'][detail_type][detail] = note;
     }
 }
