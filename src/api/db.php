@@ -7,7 +7,13 @@ function db_connect()
     $username = GAWM_DB_USER;   // the username specified when setting-up the database
     $password = GAWM_DB_PWD;   // the password specified when setting-up the database
     $database = "gawm";   // the database name chosen when setting-up the database (unique)
-    return mysqli_connect($hostname,$username,$password,$database);
+    $link = mysqli_connect($hostname,$username,$password,$database);
+    if (!$link)
+    {
+        http_response_code(500);
+        die ("Database unavailable.");
+    }
+    return $link;
 }
 
 function save_new_game($game)
