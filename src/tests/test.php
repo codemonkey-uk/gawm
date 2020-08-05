@@ -133,7 +133,8 @@ function test_redact()
             2 => [
                 "hand" => ["aliases" => [1,2]],
                 "tokens" => ["guilt" => [1,2],"innocence" => [1,2]],
-                "vote" => "guilt"
+                "vote" => "guilt",
+                "unassigned_token" => "guilt",
             ]
         ],
         "act" => 1,
@@ -161,9 +162,17 @@ function test_redact()
     $data["act"] = 3;
     $data["scene"] = 4;
     $data["most_innocent"] = 1;
+
     test(gawm_is_lastbreak($data),true,"expected to be last break");
     $redacted = redact_for_player($data, 1);
 
+    // innocence tokens are redacted until the last one is assigned...
+    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p1 innocence tokens to be redacted.");
+    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p2 innocence tokens to be redacted.");
+
+    unset($data["players"][2]["unassigned_token"]);
+    $redacted = redact_for_player($data, 1);
+    
     // innocence tokens not redacted during the accusations
     test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p1 innocence tokens to be intact.");
     test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p2 innocence tokens to be intact.");

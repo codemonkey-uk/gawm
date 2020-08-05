@@ -674,7 +674,7 @@ function redact_for_player($data, $player_id)
         $redact = [];
         
         // tokens are redacted, until the epilogue
-        if (gawm_is_lastbreak($data))
+        if (gawm_is_lastbreak($data) && count_unassigned_tokens($data)==0)
         {
             // during the last break, the innocence tokens should be shown, 
             // and the guilt tokens remain hidden
