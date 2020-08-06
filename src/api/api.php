@@ -63,6 +63,17 @@ function _api_twist_detail(&$data, $player_id, $detail_type, $detail)
     ]; 
 }
 
+function _api_move_detail(&$data, $player_id, $detail_type, $detail, $target_id)
+{
+    gawm_move_detail($data, $player_id, $detail_type, $detail, $target_id);
+    
+    return [
+        'game' => redact_for_player($data, $player_id),
+        'player_id' => $player_id
+    ]; 
+ 
+}
+
 function _api_vote(&$data, $player_id, $detail)
 {
     $vote_value = intval($detail);

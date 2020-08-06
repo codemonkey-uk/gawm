@@ -123,19 +123,25 @@ function record_event($link, $action, $detail_type, $detail)
 function rate_limited_connect($action)
 {
     $link = db_connect();
-    if ($action == 'new' || $action == 'edit_note')
+    
+    // new games, rate limit at 12 per day, 
+    // allows frequent play and mistakes on creation, but not spam
+    // note edits, 30 an hour allows all notes to be set during the course of a game
+    // but should prevents server being abused as IM chat room  
+    // move_detail, 6 moves, everyone can move one object, then once per 5 mins
+    $rates = [
+        "new" => [ "n" => 0.5, "f" => "HOUR", "l" => 12],
+        "edit_note" => [ "n" => 0.5, "f" => "MINUTE", "l" => 30],
+        "move_detail" => [ "n" => 0.2, "f" => "MINUTE", "l" => 6],
+    ];
+    if (array_key_exists($action, $rates))
     {
         $ip = $_SERVER['REMOTE_ADDR'];
         if ($ip=="") $ip="127.0.0.1"; // for localhost testing
         
-        // new games, rate limit at 12 per day, 
-        // allows frequent play and mistakes on creation, but not spam
-        // note edits, 30 an hour allows all notes to be set during the course of a game
-        // but should prevents server being abused as IM chat room
-        
-        $n = ($action == 'new') ? 0.5 : 0.5;
-        $f = ($action == 'new') ? 'HOUR' : 'MINUTE';
-        $l = ($action == 'new') ? 12 : 30;
+        $n = $rates[$action]["n"];
+        $f = $rates[$action]["f"];
+        $l = $rates[$action]["l"];
         
         $query = "INSERT INTO rates (`ipv4`, action)"
             . "VALUES (INET_ATON(?), ?) "

@@ -192,6 +192,49 @@ function test_redact()
     test(array_keys($redacted["players"]),[1,2],"redact should not change the player uids");
 }
 
+function test_move_detail()
+{
+    global $data;
+
+    $data_template = [
+        "players" => [
+            "aa" => [
+                "play" => ["objects" => [1,2]],
+            ],
+            "bb" => [
+                "play" => []
+            ]
+        ],
+    ];
+    $data_expected = [
+        "players" => [
+            "aa" => [
+                "play" => ["objects" => [2]],
+            ],
+            "bb" => [
+                "play" => ["objects" => [1]],
+            ]
+        ],
+    ];
+    $data = $data_template;
+    gawm_move_detail($data,'aa',"objects",1,'bb');
+    test($data,$data_expected,"object 1 should be moved from player aa to player bb");
+    
+    $data_expected = [
+        "players" => [
+            "aa" => [
+                "play" => [],
+            ],
+            "bb" => [
+                "play" => ["objects" => [1,2]],
+            ]
+        ],
+    ];    
+    gawm_move_detail($data,'aa',"objects",2,'bb');
+    test($data,$data_expected,"object 2 should be moved from player aa to player bb");
+    
+}
+
 function test_setup_epilogue_order()
 {
     global $data;
@@ -473,6 +516,7 @@ try{
     test_innocence_and_guilt_ranking();
     test_tally_votes();
     test_redact();
+    test_move_detail();
     test_playthrough(4);
     test_playthrough(5);
     test_playthrough(6);
@@ -480,6 +524,7 @@ try{
     echo "Passed ".$test_count." tests.\n";
 }
 catch (Exception $e) {
-    echo "Caught ".$e."\nWith: ".json_encode($data) ."\n";
+    echo("Caught ".$e."\nWith: ".json_encode($data) ."\n");
+    exit(1);
 }
 ?>

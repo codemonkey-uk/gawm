@@ -182,6 +182,49 @@ function gawm_give_token(&$data, $player_id, $target_id)
     }
 }
 
+// moving objects between players is a free action, and can happen at any time
+function gawm_move_detail(&$data, $player_id, $detail_type, $detail_card, $target_id)
+{
+    if ($detail_type!='objects')
+        throw new Exception('Only objects can be freely moved between players: '.$detail_type);
+
+    // FROM player 
+    if (!valid_player_id($data, $player_id))
+        throw new Exception('Invalid Player Id: '.$player_id);
+        
+    if (($player_id==gawm_player_id_victim))
+        $player = &$data["victim"];
+    else
+        $player = &$data["players"][$player_id];
+            
+    if (!array_key_exists($detail_type, $player["play"]))
+        throw new Exception('Invalid Detail Type: '.$detail_type);
+
+    $deck_from = &$player["play"][$detail_type];
+    if (!in_array($detail_card,$deck_from))
+        throw new Exception('Detail Not In Play '.$detail_type.$detail_card);
+
+    // TOO player 
+        
+    if (!valid_player_id($data, $target_id))
+        throw new Exception('Invalid Player Id: '.$target_id);
+    
+    if ($target_id==gawm_player_id_victim) 
+        $target = &$data["victim"];
+    else
+        $target = &$data["players"][$target_id];
+    
+    // move card from one players hand to the other
+    $target["play"][$detail_type][] = $detail_card;
+    
+    $key = array_search($detail_card, $deck_from);
+    $v = array_pop($deck_from);
+    if ($key<count($deck_from))
+        $deck_from[$key]=$v;
+    else if (count($deck_from)==0)
+        unset($player["play"][$detail_type]);
+}
+
 function gawm_record_accused(&$data, $player_id, $target_id)
 {
     if (!array_key_exists($player_id,$data["players"]))
