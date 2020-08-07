@@ -132,7 +132,7 @@ function rate_limited_connect($action)
     $rates = [
         "new" => [ "n" => 0.5, "f" => "HOUR", "l" => 12],
         "edit_note" => [ "n" => 0.5, "f" => "MINUTE", "l" => 30],
-        "move_detail" => [ "n" => 0.2, "f" => "MINUTE", "l" => 6],
+        "move_detail" => [ "n" => 0.2, "f" => "MINUTE", "l" => 6]
     ];
     if (array_key_exists($action, $rates))
     {
