@@ -182,6 +182,13 @@ function gawm_give_token(&$data, $player_id, $target_id)
     }
 }
 
+function swap3(&$x, &$y) 
+{
+    $tmp=$x;
+    $x=$y;
+    $y=$tmp;
+}
+
 // moving objects between players is a free action, and can happen at any time
 function gawm_move_detail(&$data, $player_id, $detail_type, $detail_card, $target_id)
 {
@@ -217,11 +224,12 @@ function gawm_move_detail(&$data, $player_id, $detail_type, $detail_card, $targe
     // move card from one players hand to the other
     $target["play"][$detail_type][] = $detail_card;
     
+    // remove the detail using swap-last-pop method 
     $key = array_search($detail_card, $deck_from);
-    $v = array_pop($deck_from);
-    if ($key<count($deck_from))
-        $deck_from[$key]=$v;
-    else if (count($deck_from)==0)
+    swap3( $deck_from[$key], $deck_from[array_key_last($deck_from)] );
+    array_pop($deck_from);
+
+    if (count($deck_from)==0)
         unset($player["play"][$detail_type]);
 }
 
