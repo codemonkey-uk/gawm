@@ -1,0 +1,35 @@
+Looking at token values for outcome balance, consider different token face values, 
+and the impact they have on outcomes, towards getting away with murder.
+
+= random accusation:
+
+token values: 0-3
+{"got_caught":78,"gawm":222,"got_it_right":78,"got_it_wrong":217,"got_framed":222,"got_out_alive":683}
+ 
+token values: 1-4
+{"got_caught":71,"gawm":229,"got_it_right":71,"got_it_wrong":225,"got_framed":229,"got_out_alive":675}
+
+
+= accuse whoever has the most guilty tokens
+
+token values: 0-3
+{"got_caught":180,"gawm":120,"got_it_right":180,"got_it_wrong":114,"got_framed":120,"got_out_alive":786}
+
+token values: 1-4
+{"got_caught":211,"gawm":89,"got_it_right":211,"got_it_wrong":84,"got_framed":89,"got_out_alive":816}
+
+= accuse whoever has the most guilty tokens, minus their innocence tokens count:
+
+token values: 0-3
+{"got_caught":198,"gawm":102,"got_it_right":198,"got_it_wrong":91,"got_framed":102,"got_out_alive":809}
+
+token values: 1-4
+{"got_caught":239,"gawm":61,"got_it_right":239,"got_it_wrong":58,"got_framed":61,"got_out_alive":842}
+
+= accuse whoever has the most guilty tokens, minus their innocence score
+
+token values: 0-3 (guilt token assumed value = 1.5)
+{"got_caught":231,"gawm":69,"got_it_right":231,"got_it_wrong":65,"got_framed":69,"got_out_alive":835}
+
+token values: 1-4 (guilt token assumed value = 2.5)
+{"got_caught":236,"gawm":64,"got_it_right":236,"got_it_wrong":60,"got_framed":64,"got_out_alive":840}

@@ -658,6 +658,58 @@ function gawm_list_players_by_most_innocent(&$data)
     return array_keys($players);
 }
 
+function gawm_list_players_by_most_guilty_tokens(&$data)
+{
+    $players = $data['players'];
+
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $a_guilt_count  = count($a['tokens']['guilt']);
+        $b_guilt_count  = count($b['tokens']['guilt']);
+        return $b_guilt_count - $a_guilt_count;
+    });
+        
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
+}
+
+function gawm_list_players_by_net_tokens(&$data)
+{
+    $players = $data['players'];
+
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $a_guilt_count  = count($a['tokens']['guilt']);
+        $a_innocence_count  = count($a['tokens']['innocence']);
+        $b_guilt_count  = count($b['tokens']['guilt']);
+        $b_innocence_count  = count($b['tokens']['innocence']);
+        
+        return ($b_guilt_count-$b_innocence_count) - ($a_guilt_count-$a_innocence_count);
+    });
+        
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
+}
+
+function gawm_list_players_by_guilty_tokens_vs_innocence_scores(&$data)
+{
+    $players = $data['players'];
+
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $token_value = 2.5;
+        $a_guilt  = count($a['tokens']['guilt']) * $token_value;
+        $a_innocence  = array_sum($a['tokens']['innocence']);
+        $b_guilt  = count($b['tokens']['guilt']) * $token_value;
+        $b_innocence  = array_sum($b['tokens']['innocence']);
+        
+        return ($b_guilt-$b_innocence) - ($a_guilt-$a_innocence);
+    });
+        
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
+}
+
 function gawm_list_players_by_most_guilty(&$data)
 {
     $players = $data['players'];

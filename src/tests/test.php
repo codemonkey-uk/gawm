@@ -272,7 +272,9 @@ function vote_scene( &$data )
         function($id){global $data; return !gawm_is_player_active($data,$id);}
     );
     test( count($inactive_players), count($data["players"])-1, "All bar 1 players should be active in the scene." );
-    gawm_vote($data, current($inactive_players), gawm_vote_guilty);
+    $v = [gawm_vote_guilty, gawm_vote_innocent];
+    $vk = array_rand($v);
+    gawm_vote($data, current($inactive_players), $v[$vk]);
 }
 
 function play_scenes( &$data, $player_ids, $detail )
@@ -308,8 +310,12 @@ function play_scenes( &$data, $player_ids, $detail )
         {
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
-
-            gawm_give_token($data, $player_id, current($other_players));
+            
+            // include victim in token gifting (discards)
+            $other_players[] = gawm_player_id_victim;
+            $vk = array_rand($other_players);
+            gawm_give_token($data, $player_id, $other_players[$vk]);
+            
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
     }
@@ -469,7 +475,19 @@ function test_playthrough($c)
         function($id)use($data){return $id!=$data["most_innocent"];}
     );
 
-    gawm_record_accused($data, $data["most_innocent"], current($other_players));
+
+    // accuse who has the most guilty tokens
+    // $g = gawm_list_players_by_most_guilty_tokens($data);
+    // $g = gawm_list_players_by_net_tokens($data);
+    $g = gawm_list_players_by_guilty_tokens_vs_innocence_scores($data);
+    if ($g[0]==$data["most_innocent"])
+        array_shift($g);
+    $accused = $g[0];
+    
+    // random accusation
+    // $vk = array_rand($other_players);
+    // $accused = $other_players[$vk]
+    gawm_record_accused($data, $data["most_innocent"],$accused);
 
     gawm_request_next_scene($data, $data["most_innocent"]);
 
@@ -499,7 +517,7 @@ function test_playthrough($c)
         gawm_request_next_scene($data, active_player_id($data));
     }
     test($fates["got_caught"]+$fates["gawm"],1,"There can only be one guilty fate ".json_encode($fates));
-
+    
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
     test(gawm_is_firstbreak($data), false, "First break should follow Extra Scene");
@@ -520,7 +538,28 @@ try{
     test_playthrough(4);
     test_playthrough(5);
     test_playthrough(6);
-
+    
+    
+    $fates=[
+        "got_caught" => 0,
+        "gawm" => 0,
+        "got_it_right" => 0,
+        "got_it_wrong" => 0,
+        "got_framed" => 0,
+        "got_out_alive" => 0
+    ];    
+    for ($i = 1; $i <= 100; $i++)
+    {
+        for ($c = 4; $c <= 6; $c++)
+        {
+            test_playthrough($c);
+            foreach(array_keys($data["players"]) as $pk)
+                $fates[$data["players"][$pk]["fate"]]++;
+        }
+    }
+    
+    echo json_encode($fates) . "\n";
+    
     echo "Passed ".$test_count." tests.\n";
 }
 catch (Exception $e) {
