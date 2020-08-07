@@ -63,9 +63,12 @@ function _api_twist_detail(&$data, $player_id, $detail_type, $detail)
     ]; 
 }
 
-function _api_move_detail(&$data, $player_id, $detail_type, $detail, $target_id)
+function _api_move_detail(&$data, $player_id, $detail_type, $detail, $targets)
 {
-    gawm_move_detail($data, $player_id, $detail_type, $detail, $target_id);
+    if (is_array($targets))
+        $target = current($targets);
+
+    gawm_move_detail($data, $player_id, $detail_type, $detail, $target);
     
     return [
         'game' => redact_for_player($data, $player_id),
