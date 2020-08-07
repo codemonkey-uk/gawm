@@ -28,5 +28,5 @@ jobs:
           GAWM_DB_HOST: url.com
           GAWM_DB_PWD: dummy
           GAWM_DB_USER: dummy
-      run: make release
+      run: make
 
