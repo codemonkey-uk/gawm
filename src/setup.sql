@@ -18,6 +18,6 @@ CREATE TABLE IF NOT EXISTS `gawm`.`rates` (
 `ipv4` INT UNSIGNED NOT NULL ,
 `action` CHAR(64) NOT NULL , 
 `time` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-`count` INT NOT NULL ,
+`count` INT NOT NULL DEFAULT '0',
 UNIQUE `RateIndex` (`ipv4`, `action`)) 
 ENGINE = Memory;

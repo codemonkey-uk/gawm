@@ -614,7 +614,25 @@ function render_player(player,player_uid)
     }
     if (player.play)
     {
-        html += hand_tostr(player.play,player_uid,null,
+        html += hand_tostr(player.play,player_uid,
+            // move/give detail menu:
+            function(deck, id){
+                var result = "";
+                if (deck=="objects" && local_player_id==player_uid)
+                {
+                    for (var target_id in game.players)
+                    {
+                        if (local_player_id!=target_id)
+                        {
+                            var button_text = "Give to " + player_identity_str(target_id);
+                            var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"move_detail\",\""+target_id+"\")";
+                            result += "<button onclick='"+click+"'>"+button_text+"</button>";
+                        }
+                    }
+                }
+                return result;
+            },
+            // vote buttons
             function(){
                 var str = "";
                 if (typeof player.vote != "undefined")
