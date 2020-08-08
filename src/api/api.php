@@ -89,9 +89,11 @@ function _api_vote(&$data, $player_id, $detail)
     ]; 
 }
 
-function _api_give_token(&$data, $player_id, $detail)
+function _api_give_token(&$data, $player_id, $detail_type, $detail)
 {
-    gawm_give_token($data, $player_id, $detail);
+    // detail type == innocence/guilt
+    // detail = playeruid
+    gawm_give_token($data, $player_id, $detail_type, $detail);
 
     return [
         'game' => redact_for_player($data, $player_id),

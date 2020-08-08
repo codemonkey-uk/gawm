@@ -59,7 +59,8 @@ function play_scenes( &$data, $player_ids, $detail )
             // include victim in token gifting (discards)
             $other_players[] = gawm_player_id_victim;
             $vk = array_rand($other_players);
-            gawm_give_token($data, $player_id, $other_players[$vk]);
+            $token = $data["players"][$player_id]["unassigned_token"];
+            gawm_give_token($data, $player_id, $token, $other_players[$vk]);
             
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
@@ -144,7 +145,8 @@ function test_playthrough($c, $rules, $accusation_fn)
     );
     vote_scene($data);
     gawm_request_next_scene($data,$active_player);
-    gawm_give_token($data,$active_player,0);
+    $token = $data["players"][$active_player]["unassigned_token"];
+    gawm_give_token($data,$active_player,$token,0);
 
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
