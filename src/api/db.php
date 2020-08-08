@@ -112,8 +112,9 @@ function record_event($link, $action, $detail_type, $detail)
     $stmt = mysqli_stmt_init($link);
     if (mysqli_stmt_prepare($stmt, $query))
     {
-        // special case to keep player uids out of the stats table
-        if ($detail_type=='player') $detail = 0;
+        // - to keep player uids out of the stats table
+        if ($detail_type=='player' || $action=='give_token')
+            $detail = ($detail!=0) ? 1 : 0;
         
         mysqli_stmt_bind_param($stmt, "ssi", $action, $detail_type, $detail);
         mysqli_stmt_execute($stmt);

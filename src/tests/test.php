@@ -308,8 +308,8 @@ function play_scenes( &$data, $player_ids, $detail )
         {
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
-
-            gawm_give_token($data, $player_id, current($other_players));
+            $token = $data["players"][$player_id]["unassigned_token"];
+            gawm_give_token($data, $player_id, $token, current($other_players));
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
     }
@@ -393,7 +393,8 @@ function test_playthrough($c)
     );
     vote_scene($data);
     gawm_request_next_scene($data,$active_player);
-    gawm_give_token($data,$active_player,0);
+    $token = $data["players"][$active_player]["unassigned_token"];
+    gawm_give_token($data,$active_player,$token,0);
 
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");

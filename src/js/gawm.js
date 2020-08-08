@@ -382,12 +382,12 @@ function render_unassigned_token(player,player_uid)
     {
         if (p!=player_uid)
         {
-            var click = "givetoken(game, \""+player_uid+"\", \""+p+"\")";
+            var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \""+p+"\")";
             actions += "<button onclick='"+click+"'>Give to "+player_identity_str(p)+"</button>";
         }
     }
 
-    var click = "givetoken(game, \""+player_uid+"\", \"0\")";
+    var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \"0\")";
     actions += "<button onclick='"+click+"'>Discard</div>";
     
     html += assign_token_html(player.unassigned_token, actions);
@@ -499,7 +499,7 @@ function player_identity_template(player_uid,template)
     // if note is set, use note instead?
     if (i != undefined)
     {
-        var alias_t = cards['aliases'][i]['subtype'];
+        var alias_t = cards['aliases'][i]['name'];
         template = template.replace("_ALIAS",alias_t);
     }  
 
@@ -821,9 +821,13 @@ function render_game(result)
     document.getElementById('game_div').innerHTML = html;
 }
 
-function givetoken(gamestate,player_id,value)
+function givetoken(gamestate,player_id,value,target_id)
 {
-    detailaction(gamestate,player_id,"token",value,"give_token");
+    // _api_give_token expects:
+    // - detail type == innocence/guilt
+    // - detail = playeruid
+    // detailaction(gamestate,player_id,detail_type,detail,action)
+    detailaction(gamestate,player_id,value,target_id,"give_token");
 }
 
 function record_accused(gamestate,player_id,value)

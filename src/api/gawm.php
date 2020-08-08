@@ -149,7 +149,7 @@ function gawm_vote(&$data, $player_id, $vote_value)
     $player["vote"]=$vote_value;
 }
 
-function gawm_give_token(&$data, $player_id, $target_id)
+function gawm_give_token(&$data, $player_id, $token, $target_id)
 {
     if (!array_key_exists($player_id,$data["players"]))
         throw new Exception('Invalid Player Id: '.$player_id);
@@ -158,6 +158,9 @@ function gawm_give_token(&$data, $player_id, $target_id)
 
     if (!isset($player["unassigned_token"]))
         throw new Exception('No unassigned_token found on Player Id: '.$player_id);
+
+    if ($token != $player["unassigned_token"])
+        throw new Exception('Mismatch with unassigned_token on Player Id: '.$player_id);
 
     // passing in the victim id as target is taken to imply discard (give to no one)
     if ($target_id!=gawm_player_id_victim)
@@ -170,7 +173,6 @@ function gawm_give_token(&$data, $player_id, $target_id)
 
         $target = &$data["players"][$target_id];
 
-        $token = $player["unassigned_token"];
         array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
     }
 
