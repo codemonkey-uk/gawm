@@ -321,16 +321,16 @@ function play_scenes( &$data, $player_ids, $detail )
     }
 }
 
-function test_playthrough($c)
+function test_playthrough($c, $rules)
 {
     global $data;
 
-    $data = gawm_new_game();
+    $data = gawm_new_game($rules);
     test(gawm_is_setup($data), true, "New game should start in Setup");
 
     $player_ids = [];
     for ($i=0;$i!=$c;$i=$i+1)
-        array_push( $player_ids, gawm_add_player($data,"player"));
+        array_push( $player_ids, gawm_add_player($data,"player", $rules) );
         
     test(count($data["players"]), $c, "Expected ".$c." players.");
     test(count(gawm_get_player_names($data)), $c, "Expected ".$c." player names.");
@@ -479,7 +479,7 @@ function test_playthrough($c)
     // accuse who has the most guilty tokens
     // $g = gawm_list_players_by_most_guilty_tokens($data);
     // $g = gawm_list_players_by_net_tokens($data);
-    $g = gawm_list_players_by_guilty_tokens_vs_innocence_scores($data);
+    $g = gawm_list_players_by_guilty_tokens_vs_innocence_scores($data, $rules);
     if ($g[0]==$data["most_innocent"])
         array_shift($g);
     $accused = $g[0];
@@ -535,9 +535,9 @@ try{
     test_tally_votes();
     test_redact();
     test_move_detail();
-    test_playthrough(4);
-    test_playthrough(5);
-    test_playthrough(6);
+    test_playthrough(4, gawm_default_rules);
+    test_playthrough(5, gawm_default_rules);
+    test_playthrough(6, gawm_default_rules);
     
     
     $fates=[
@@ -552,7 +552,7 @@ try{
     {
         for ($c = 4; $c <= 6; $c++)
         {
-            test_playthrough($c);
+            test_playthrough($c, gawm_default_rules);
             foreach(array_keys($data["players"]) as $pk)
                 $fates[$data["players"][$pk]["fate"]]++;
         }

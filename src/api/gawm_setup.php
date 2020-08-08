@@ -52,7 +52,7 @@ function gawm_rename_player(&$data, $player_id, $player_name)
 
 // modifies data, returns player_id
 // name string sanatising, should be done in API layer
-function gawm_add_player(&$data, $player_name)
+function gawm_add_player(&$data, $player_name, $rules = gawm_default_rules)
 {
     // only add players, up to 6, in act 0 (setup)
     if (!gawm_is_setup($data))
@@ -76,7 +76,7 @@ function gawm_add_player(&$data, $player_name)
     ];
 
     // draw aliases
-    draw_player_cards($data, $new_player, array("aliases" => 2) );
+    draw_player_cards($data, $new_player, $rules["new_player_draw"] );
 
     // TODO: optional rule, draw details with alias during set up
     // draw_player_details($data, $new_player);
@@ -90,13 +90,13 @@ function gawm_add_player(&$data, $player_name)
 
     // each player put four guilt tokens and four innocence tokens,
     // numbered "0" to "3", in a central pile
-    $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], range(0,3));
-    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], range(0,3));
+    $data["tokens"]["innocence"] = array_merge($data["tokens"]["innocence"], $rules["new_player_tokens"]);
+    $data["tokens"]["guilt"] = array_merge($data["tokens"]["guilt"], $rules["new_player_tokens"]);
 
     return $player_id;
 }
 
-function setup_setup(&$data)
+function setup_setup(&$data, $rules = gawm_default_rules)
 {
     // component list
     $data = [
@@ -104,15 +104,7 @@ function setup_setup(&$data)
             "guilt" => [],
             "innocence" => []
         ],
-        "cards" => [
-            "aliases" => range(0,15),
-            "relationships" => range(0,29),
-            "objects" => range(0,29),
-            "motives" => range(0,29),
-            "wildcards" => range(0,29),
-            "murder_discovery" => range(0,5),
-            "murder_cause" => range(0,9)
-        ]
+        "cards" => $rules["cards"]
     ];
 
     // shuffle the cards
