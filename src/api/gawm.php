@@ -712,7 +712,7 @@ function gawm_list_players_by_guilty_tokens_vs_innocence_scores(&$data, $rules)
 {
     $players = $data['players'];
 
-    $token_value = $average = array_sum($rules["new_player_tokens"]) / count($rules["new_player_tokens"]);
+    $token_value = array_sum($rules["new_player_tokens"]) / count($rules["new_player_tokens"]);
     // Sort the array based on guilt scoring
     uasort($players, function($a, $b) use($token_value) {
         $a_guilt  = count($a['tokens']['guilt']) * $token_value;
