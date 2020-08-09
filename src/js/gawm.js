@@ -670,18 +670,33 @@ function render_player(player,player_uid)
 function menu_relationship_next_choice(div, player_uid, id, first_target_id)
 {
     var result = '';
-    for (var p in game.players) {
-        if (p!=first_target_id) {
-            var button_text = "Give to " +
-                              player_identity_str(first_target_id) + " and "+
-                              player_identity_str(p);
-            var click = click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
-                                  ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
-            result += "<button onclick='"+click+"'>"+button_text+"</button>";
+    
+    var buttonfn = function(p)
+    {
+        var button_text = "Give to " +
+            player_identity_str(first_target_id) + " and "+ player_identity_str(p);
+            var click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
+                ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
+        return "<button onclick='"+click+"'>"+button_text+"</button>";
+    }
+    
+    // put relationship with self first in the button list
+    if (player_uid!=first_target_id)
+    {
+        result += buttonfn(player_uid);
+    }
+    
+    for (var p in game.players)
+    {
+        if (p!=first_target_id && p!=player_uid) 
+        {
+            result += buttonfn(p);
         }
     }
+    
     // Yikes. Really should just rerender the menu, but no easy way to do this
     result += "<button onclick='render_game(game)'>Undo first choice</button>";
+    
     div.innerHTML = result;
 }
 
