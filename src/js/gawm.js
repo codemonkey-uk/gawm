@@ -154,7 +154,13 @@ function is_hand_redacted(hand)
 
 function token_html(type, i, click)
 {
-    var result = "<div class='"+type+"' onclick='" +click+ "'>";
+    var result = "<div class='"+type+"'";
+    if (click)
+    {
+        result += "onclick='"+click+"'";
+        result += "style='cursor: pointer;'";
+    }
+    result += ">";
     result += '<div class="frame">';
     if (i>=0)
     {
@@ -177,7 +183,6 @@ function hand_tostr(hand,player_id,action,postfix,label)
 
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
-
     html += "<div class='hand_grid' style='"+style+"'>";
     
     if (hand)
@@ -266,7 +271,6 @@ function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
     html = token_html(value_str, -1, action);
-    // style='cursor: pointer;'
     
     return html;
 }
@@ -506,9 +510,14 @@ function player_identity_template(player_uid,template)
     return template.replace("_NAME",player_name);
 }
 
+function player_border_colour(player)
+{
+    return (player.active || player.unassigned_token) ? '#be0712' : '#0e62bd';
+}
+
 function render_player(player,player_uid)
 {
-    var c = (player.active || player.unassigned_token) ? 'red' : 'black';
+    var c = player_border_colour(player);
     var html = "<div class='player' style='border-color: "+c+"'>";
 
     html += player_identity_div(player_uid);
