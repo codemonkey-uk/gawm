@@ -946,6 +946,9 @@ function rename_player(game,player_id,player_name)
     request.player_name=player_name;
     
     gawm_sendrequest(request);
+    
+    // save edit locally
+    game['players'][player_id].name = player_name;
 }
 
 function add_player(id, player_name,onsucess)
