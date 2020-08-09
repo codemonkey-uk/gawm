@@ -392,7 +392,7 @@ function render_unassigned_token(player,player_uid)
     }
 
     var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \"0\")";
-    actions += "<button onclick='"+click+"'>Discard</div>";
+    actions += "<button onclick='"+click+"'>Discard</button>";
     
     html += assign_token_html(player.unassigned_token, actions);
     html += '</div>';//hand_grid
@@ -896,7 +896,7 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
         );
         edit_note(
             gamestate, player_id, 'player', target_id2,
-            note_target2 + cards['relationships'][detail].name + " with " + target_id + ". "
+            note_target2 + ' ' + cards['relationships'][detail].name + " with " + target_id + ". "
         );
     }
 }
@@ -1007,7 +1007,8 @@ function replace_playerids(msg)
         {
             for (var player in game.players)
             {
-                msg = msg.replace(player, player_identity_str(player));
+                var re = new RegExp(player, 'g');
+                msg = msg.replace(re, player_identity_str(player));
             }
         }
     }
