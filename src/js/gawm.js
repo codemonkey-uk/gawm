@@ -177,16 +177,6 @@ function hand_tostr(hand,player_id,action,postfix,label)
 
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
-    
-    // additional stlying to distinguish hand/play/token areas
-    
-    if (label=="IN PLAY" && player_id!=0)
-    {
-        var c = player_border_colour(game['players'][player_id]);
-        style += "background-color: #A9C6C1;";
-        style += "border-top: 1px solid "+c+";";
-        style += "border-bottom: 1px solid "+c+";";
-    }
     html += "<div class='hand_grid' style='"+style+"'>";
     
     if (hand)
