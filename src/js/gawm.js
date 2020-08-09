@@ -177,7 +177,16 @@ function hand_tostr(hand,player_id,action,postfix,label)
 
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
-
+    
+    // additional stlying to distinguish hand/play/token areas
+    
+    if (label=="IN PLAY" && player_id!=0)
+    {
+        var c = player_border_colour(game['players'][player_id]);
+        style += "background-color: #A9C6C1;";
+        style += "border-top: 1px solid "+c+";";
+        style += "border-bottom: 1px solid "+c+";";
+    }
     html += "<div class='hand_grid' style='"+style+"'>";
     
     if (hand)
@@ -506,9 +515,14 @@ function player_identity_template(player_uid,template)
     return template.replace("_NAME",player_name);
 }
 
+function player_border_colour(player)
+{
+    return (player.active || player.unassigned_token) ? '#be0712' : '#0e62bd';
+}
+
 function render_player(player,player_uid)
 {
-    var c = (player.active || player.unassigned_token) ? 'red' : 'black';
+    var c = player_border_colour(player);
     var html = "<div class='player' style='border-color: "+c+"'>";
 
     html += player_identity_div(player_uid);

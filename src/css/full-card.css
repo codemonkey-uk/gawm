@@ -22,8 +22,14 @@
   border-color: #680a85;
 }
 .murder_cause, .murder_discovery {
-  background-color: lightgrey;
-  border-color: lightgrey;
+  background-color: #3B3C3F;
+  border-color: #3B3C3F;
+}
+.guilt {
+  background-color: #be0712; /* 185 7 18 */ 
+}
+.innocence  { 
+  background-color: #0e62bd; /*14 98 189;*/
 }
 
 .player {
@@ -45,6 +51,7 @@
   position: absolute;
   top: 0px;
   pointer-events: none;
+  color: #62938B;
 }
 .hand_grid {
   display: grid;
@@ -53,7 +60,7 @@
   grid-auto-rows: 100px; /* minmax(100px, 360px); */
   
   grid-gap: 4px;
-  background-color: rgba(76, 175, 80, 0.5);
+  background-color: #BAD1CD;
   padding: 4px;
   min-height: 100px;
 }
@@ -80,7 +87,7 @@
 }
 .card .header {
 	height: 66px;
-    border: 2px solid grey;
+    border: 2px #8A8D91;
 }
 .card .title {
 	height: 28px;
@@ -212,9 +219,9 @@
 }
 
 .actions button {
-  background-color: #4CAF50; /* Green background */
-  border: 1px solid green; /* Green border */
-  color: white; /* White text */
+  background-color: BCBDC0; /* background */
+  border: 1px solid black; /* Green border */
+  color: black; /* White text */
   padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   /* Set a width if needed */
@@ -230,14 +237,7 @@
 
 /* Add a background color on hover */
 .actions button:hover {
-  background-color: #3e8e41;
-}
-
-.guilt {
-  background-color: #be0712; /* 185 7 18 */ 
-}
-.innocence  { 
-  background-color: #0e62bd; /*14 98 189;*/
+  background-color: white;
 }
 
 .guilt, .innocence  { 
