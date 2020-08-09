@@ -154,7 +154,13 @@ function is_hand_redacted(hand)
 
 function token_html(type, i, click)
 {
-    var result = "<div class='"+type+"' onclick='" +click+ "'>";
+    var result = "<div class='"+type+"'";
+    if (click)
+    {
+        result += "onclick='"+click+"'";
+        result += "style='cursor: pointer;'";
+    }
+    result += ">";
     result += '<div class="frame">';
     if (i>=0)
     {
@@ -265,7 +271,6 @@ function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
     html = token_html(value_str, -1, action);
-    // style='cursor: pointer;'
     
     return html;
 }

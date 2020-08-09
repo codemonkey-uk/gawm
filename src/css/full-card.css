@@ -229,8 +229,8 @@
 }
 
 .actions button {
-  background-color: BCBDC0; /* background */
-  border: 1px solid black; /* Green border */
+  background-color: #BCBDC0;
+  border: 1px solid black; 
   color: black; /* White text */
   padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
