@@ -235,6 +235,18 @@ function test_setup_epilogue_order()
     test($data["epilogue_order"],[1,2,0],"Incorrect epilogue order for fates.");
 }
 
+function test_token_bias()
+{
+    global $data;
+    global $random_accusation;
+    
+    test_playthrough(4, gawm_default_rules, $random_accusation, 100);
+    test(token_count($data,"innocence"),0,"Expected 0 Innocence Tokens with 100% guilt bias.");
+
+    test_playthrough(5, gawm_default_rules, $random_accusation, 0);
+    test(token_count($data,"guilt"),0,"Expected 0 Guilt Tokens with 0% guilt bias.");
+}
+
 echo "Testing... ";
 
 try{
@@ -243,6 +255,8 @@ try{
     test_tally_votes();
     test_redact();
     test_move_detail();
+    test_token_bias();
+    
     test_playthrough(4, gawm_default_rules, $random_accusation);
     test_playthrough(5, gawm_default_rules, $random_accusation);
     test_playthrough(6, gawm_default_rules, $random_accusation);

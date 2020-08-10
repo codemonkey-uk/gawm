@@ -32,4 +32,12 @@ function test( $result, $expected_result, $error_message )
     $test_count++;
 }
 
+function token_count($data, $token)
+{
+    $c = 0;
+    foreach($data["players"] as $p)
+        $c += count($p['tokens'][$token]);
+    return $c;
+}
+
 ?>
