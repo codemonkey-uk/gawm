@@ -26,22 +26,38 @@ function make_rules($override)
     return $rules;
 }
 
+function accumulate_fates(&$data, &$fates)
+{
+    foreach(array_keys($data["players"]) as $pk)
+    {
+        $fates[$data["players"][$pk]["fate"]]++;
+    }
+}
+
+function accumulate_token_counts(&$data, &$tc)
+{
+    foreach($tc as $k => &$v)
+    {
+        $v += token_count($data, $k);
+    }
+}
+
 try{
 
     $scenario[] = gawm_default_rules;
-    $scenario[] = make_rules(["new_player_tokens" => range(1,4)]);
+    $scenario[] = make_rules(["new_player_tokens" => [0,1,2,4]]);
     $guilt_bias = [75,50,25];
     
     $ft=[
-            "got_caught" => 0,
-            "gawm" => 0,
-            "got_it_right" => 0,
-            "got_it_wrong" => 0,
-            "got_framed" => 0,
-            "got_out_alive" => 0
-        ];
+        "got_caught" => 0,
+        "gawm" => 0,
+        "got_it_right" => 0,
+        "got_it_wrong" => 0,
+        "got_framed" => 0,
+        "got_out_alive" => 0
+    ];
         
-    echo "guilt, innocence, ";    
+    echo "guilt, innocence, ";
     foreach(array_keys($ft) as $h)
         echo $h.', ';
     echo "rules\n";
@@ -68,18 +84,15 @@ try{
             for ($c = 4; $c <= 6; $c++)
             {
                 test_playthrough($c, $rules, $f[array_rand($f)], $bias);
-                foreach(array_keys($data["players"]) as $pk)
-                {
-                    $fates[$data["players"][$pk]["fate"]]++;
-                }
-                foreach($tc as $k => &$v)
-                    $v += token_count($data, $k);
+                accumulate_fates($data, $fates);
+                accumulate_token_counts($data, $tc);
             }
         }
 
         echo $tc['guilt'] . ', ' . $tc['innocence']. ', ';
         foreach($fates as $v)
             echo $v.', ';
+        echo $tc['guilt'] . ', ' . $tc['innocence']. ', ';
         echo '"'.json_encode($rules["new_player_tokens"]).'"'."\n";
 
     }
