@@ -154,7 +154,13 @@ function is_hand_redacted(hand)
 
 function token_html(type, i, click)
 {
-    var result = "<div class='"+type+"' onclick='" +click+ "'>";
+    var result = "<div class='"+type+"'";
+    if (click)
+    {
+        result += "onclick='"+click+"'";
+        result += "style='cursor: pointer;'";
+    }
+    result += ">";
     result += '<div class="frame">';
     if (i>=0)
     {
@@ -177,7 +183,6 @@ function hand_tostr(hand,player_id,action,postfix,label)
 
     // compact style for fully redacted hands
     var style = is_hand_redacted(hand) ? "grid-template-columns: repeat(12, 1fr);" : "";
-
     html += "<div class='hand_grid' style='"+style+"'>";
     
     if (hand)
@@ -266,7 +271,6 @@ function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
     html = token_html(value_str, -1, action);
-    // style='cursor: pointer;'
     
     return html;
 }
@@ -388,7 +392,7 @@ function render_unassigned_token(player,player_uid)
     }
 
     var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \"0\")";
-    actions += "<button onclick='"+click+"'>Discard</div>";
+    actions += "<button onclick='"+click+"'>Discard</button>";
     
     html += assign_token_html(player.unassigned_token, actions);
     html += '</div>';//hand_grid
@@ -506,9 +510,14 @@ function player_identity_template(player_uid,template)
     return template.replace("_NAME",player_name);
 }
 
+function player_border_colour(player)
+{
+    return (player.active || player.unassigned_token) ? '#be0712' : '#0e62bd';
+}
+
 function render_player(player,player_uid)
 {
-    var c = (player.active || player.unassigned_token) ? 'red' : 'black';
+    var c = player_border_colour(player);
     var html = "<div class='player' style='border-color: "+c+"'>";
 
     html += player_identity_div(player_uid);
@@ -661,18 +670,33 @@ function render_player(player,player_uid)
 function menu_relationship_next_choice(div, player_uid, id, first_target_id)
 {
     var result = '';
-    for (var p in game.players) {
-        if (p!=first_target_id) {
-            var button_text = "Give to " +
-                              player_identity_str(first_target_id) + " and "+
-                              player_identity_str(p);
-            var click = click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
-                                  ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
-            result += "<button onclick='"+click+"'>"+button_text+"</button>";
+    
+    var buttonfn = function(p)
+    {
+        var button_text = "Give to " +
+            player_identity_str(first_target_id) + " and "+ player_identity_str(p);
+            var click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
+                ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
+        return "<button onclick='"+click+"'>"+button_text+"</button>";
+    }
+    
+    // put relationship with self first in the button list
+    if (player_uid!=first_target_id)
+    {
+        result += buttonfn(player_uid);
+    }
+    
+    for (var p in game.players)
+    {
+        if (p!=first_target_id && p!=player_uid) 
+        {
+            result += buttonfn(p);
         }
     }
+    
     // Yikes. Really should just rerender the menu, but no easy way to do this
     result += "<button onclick='render_game(game)'>Undo first choice</button>";
+    
     div.innerHTML = result;
 }
 
@@ -887,7 +911,7 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
         );
         edit_note(
             gamestate, player_id, 'player', target_id2,
-            note_target2 + cards['relationships'][detail].name + " with " + target_id + ". "
+            note_target2 + ' ' + cards['relationships'][detail].name + " with " + target_id + ". "
         );
     }
 }
@@ -937,6 +961,9 @@ function rename_player(game,player_id,player_name)
     request.player_name=player_name;
     
     gawm_sendrequest(request);
+    
+    // save edit locally
+    game['players'][player_id].name = player_name;
 }
 
 function add_player(id, player_name,onsucess)
@@ -995,7 +1022,8 @@ function replace_playerids(msg)
         {
             for (var player in game.players)
             {
-                msg = msg.replace(player, player_identity_str(player));
+                var re = new RegExp(player, 'g');
+                msg = msg.replace(re, player_identity_str(player));
             }
         }
     }

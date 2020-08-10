@@ -1,7 +1,6 @@
 
 var requestInFlight = null;
 var requestQueue = [];
-var responseText = "";
 var refreshTimeout = undefined;
 
 // reload on gain focus
@@ -18,34 +17,36 @@ function http_response_handler()
         {
             var result = JSON.parse(this.responseText);
 
-            if (this.responseText!=responseText)
+            var force_rebuild = false;
+            if (result.game_id && game_id!=result.game_id)
             {
-                responseText = this.responseText;
+                game_id = result.game_id;
+                console.log("New Game Id:" + result.game_id);
+                force_rebuild = true;
+            }
 
-                if (result.game_id)
-                {
-                    game_id = result.game_id;
-                    console.log("Game Id:" + result.game_id);
-                }
+            if (result.player_id && result.player_id!=0 && result.player_id!=local_player_id)
+            {
+                local_player_id = result.player_id;
+                console.log("New Player Id:" + result.player_id);
+                force_rebuild = true;
+            }
 
-                if (result.player_id && result.player_id!=0)
-                {
-                    local_player_id = result.player_id;
-                    console.log("Player Id:" + result.player_id);
-                }
-
-                if (result.game)
+            if (result.game)
+            {
+                // only rebuild the DOM if the data has changed
+                if (force_rebuild || (JSON.stringify(result.game)!=JSON.stringify(game)))
                 {
                     render_game(result.game);
                 }
+            }
 
-                if (result.pending_id)
-                {
-                    error_popup(
-                        "Request processed, pending " +
-                        result.pending_id
-                    );
-                }
+            if (result.pending_id)
+            {
+                error_popup(
+                    "Request processed, pending " +
+                    result.pending_id
+                );
             }
 
             if (requestInFlight.callback)

@@ -46,7 +46,14 @@ function setup_extrascene(&$data)
         {
             array_push( $data["tokens"][$token_type], array_pop($token_array) );
         }
-    }  
+    }
+    
+    // move player notes to victim player
+    if (array_key_exists("player",$data["notes"]))
+    {
+        $data["notes"]["player"][gawm_player_id_victim] = $data["notes"]["player"][$player_id];
+        unset($data["notes"]["player"][$player_id]);
+    }
 }
 
 function complete_extrascene(&$data)
