@@ -73,7 +73,7 @@ function img_alt(deck,i)
 
 var card_template = `<div class="halfcard _TYPE">
   <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
-  <div class="title">_TYPE</div>
+  <div class="title">_TYPE_TXT</div>
   <div class="subtitle">_SUBTYPE</div>  
   </div>
   <div class="name" onclick="toggle_show(this.parentElement, 'flavour')"><p>_NAME</p></div>
@@ -176,6 +176,22 @@ function token_html(type, i, click)
     return result;
 }
 
+function gawm_deckid2txt(deck)
+{
+    switch (deck)
+    {
+        case "aliases": return "Alias";
+        case "objects": return "Object";
+        case "relationships": return "Relationship";
+        case "wildcards": return "Wildcard";
+        case "motives": return "Motive";
+        case "murder_discovery": return "Murder Discovery";
+        case "murder_cause": return "Murder Cause";
+        
+        default: return deck;
+    }
+}
+
 function hand_tostr(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
@@ -234,6 +250,7 @@ function hand_tostr(hand,player_id,action,postfix,label)
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                     card_str = card_template
                         .replace(/_ID/g, i)
+                        .replace(/_TYPE_TXT/g, gawm_deckid2txt(deck))
                         .replace(/_TYPE/g, deck)
                         .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
                         .replace(/_NAME/g, name)
