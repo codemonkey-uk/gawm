@@ -97,7 +97,7 @@ function editPlayerNote(div_id,player_id)
     if (t.includes('<br>'))
     {
         t = document.getElementById(div_id).innerText;
-        document.getElementById(div_id).innerHTML = t;
+        document.getElementById(div_id).innerHTML = t.toHtmlEntities();
         if (t!=default_note('player',player_id))
             saveNote(div_id,'player',player_id);
     }
@@ -192,6 +192,25 @@ function gawm_deckid2txt(deck)
     }
 }
 
+/**
+ * Convert a string to HTML entities
+ */
+String.prototype.toHtmlEntities = function() {
+    return this.replace(/./gm, function(s) {
+        // return "&#" + s.charCodeAt(0) + ";";
+        return (s.match(/[a-z0-9\s]+/i)) ? s : "&#" + s.charCodeAt(0) + ";";
+    });
+};
+
+/**
+ * Create string from HTML entities
+ */
+String.fromHtmlEntities = function(string) {
+    return (string+"").replace(/&#\d+;/gm,function(s) {
+        return String.fromCharCode(s.match(/\d+/gm)[0]);
+    })
+};
+
 function hand_tostr(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
@@ -253,8 +272,8 @@ function hand_tostr(hand,player_id,action,postfix,label)
                         .replace(/_TYPE_TXT/g, gawm_deckid2txt(deck))
                         .replace(/_TYPE/g, deck)
                         .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
-                        .replace(/_NAME/g, name)
-                        .replace(/_DESC/g, desc)
+                        .replace(/_NAME/g, name.toHtmlEntities())
+                        .replace(/_DESC/g, desc.toHtmlEntities())
                         .replace(/_CURSOR/g, cursor)
                         .replace(/_ACTIONS/g, menu);
                 }
@@ -474,7 +493,7 @@ function player_identity_div(player_uid)
     var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
     var note_content = note ? replace_playerids(note) : default_note('player',player_uid);
     if (note==null || note_content==default_note('player',player_uid)) note_html += 'style="opacity: 0.5;"';
-    note_html +=">"+note_content+"</span> ";
+    note_html +=">"+note_content.toHtmlEntities()+"</span> ";
     note_html += "</span> ";
     template += note_html;
     
