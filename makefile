@@ -36,7 +36,7 @@ build: $(JS_OUT) $(API_OUT) $(CSS_OUT) copy_files
 
 .PHONY : run_tests
 run_tests: 
-	(cd src/tests && exec php test*.php)
+	(cd src/tests && exec php test.php)
 
 .PHONY : copy_files
 copy_files: 

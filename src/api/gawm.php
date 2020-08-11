@@ -5,6 +5,21 @@ define( 'gawm_vote_guilty', '1' );
 define( 'gawm_vote_innocent', '2' );
 define( 'gawm_allow_active_player_unilatteral_voting', false );
 
+define('gawm_default_rules', [
+    "cards" => [
+        "aliases" => range(0,15),
+        "relationships" => range(0,29),
+        "objects" => range(0,29),
+        "motives" => range(0,29),
+        "wildcards" => range(0,29),
+        "murder_discovery" => range(0,5),
+        "murder_cause" => range(0,9)
+    ],
+
+    "new_player_tokens" => range(0,3),
+    "new_player_draw" => ["aliases" => 2]
+]);
+
 require_once 'gawm_twist.php';
 require_once 'gawm_setup.php';
 require_once 'gawm_extrascene.php';
@@ -20,10 +35,10 @@ $gawm_opposites = array(
     gawm_vote_innocent => gawm_vote_guilty,
 );
 
-function gawm_new_game()
+function gawm_new_game($rules = gawm_default_rules)
 {
     $data = null;
-    setup_setup($data);
+    setup_setup($data,$rules);
     return $data;
 }
 
@@ -657,6 +672,58 @@ function gawm_list_players_by_most_innocent(&$data)
     });
 
     // Index 0 is the ID of the most innocent player
+    return array_keys($players);
+}
+
+function gawm_list_players_by_most_guilty_tokens(&$data)
+{
+    $players = $data['players'];
+
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $a_guilt_count  = count($a['tokens']['guilt']);
+        $b_guilt_count  = count($b['tokens']['guilt']);
+        return $b_guilt_count - $a_guilt_count;
+    });
+        
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
+}
+
+function gawm_list_players_by_net_tokens(&$data)
+{
+    $players = $data['players'];
+
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) {
+        $a_guilt_count  = count($a['tokens']['guilt']);
+        $a_innocence_count  = count($a['tokens']['innocence']);
+        $b_guilt_count  = count($b['tokens']['guilt']);
+        $b_innocence_count  = count($b['tokens']['innocence']);
+        
+        return ($b_guilt_count-$b_innocence_count) - ($a_guilt_count-$a_innocence_count);
+    });
+        
+    // Index 0 is the ID of the guilty player
+    return array_keys($players);
+}
+
+function gawm_list_players_by_guilty_tokens_vs_innocence_scores(&$data, $rules)
+{
+    $players = $data['players'];
+
+    $token_value = array_sum($rules["new_player_tokens"]) / count($rules["new_player_tokens"]);
+    // Sort the array based on guilt scoring
+    uasort($players, function($a, $b) use($token_value) {
+        $a_guilt  = count($a['tokens']['guilt']) * $token_value;
+        $a_innocence  = array_sum($a['tokens']['innocence']);
+        $b_guilt  = count($b['tokens']['guilt']) * $token_value;
+        $b_innocence  = array_sum($b['tokens']['innocence']);
+        
+        return ($b_guilt-$b_innocence) - ($a_guilt-$a_innocence);
+    });
+        
+    // Index 0 is the ID of the guilty player
     return array_keys($players);
 }
 
