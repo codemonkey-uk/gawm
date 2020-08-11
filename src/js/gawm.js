@@ -791,7 +791,6 @@ function create_joinurl()
         + window.location.hostname
         + window.location.pathname
         + "?ugc="+game_id
-        + "&un=" + "Player_"+(Object.keys(game.players).length+1)
         + "&a=join_game";
         
     return url;
