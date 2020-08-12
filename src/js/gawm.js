@@ -176,23 +176,7 @@ function token_html(type, i, click)
     return result;
 }
 
-function gawm_deckid2txt(deck)
-{
-    switch (deck)
-    {
-        case "aliases": return "Alias";
-        case "objects": return "Object";
-        case "relationships": return "Relationship";
-        case "wildcards": return "Wildcard";
-        case "motives": return "Motive";
-        case "murder_discovery": return "Murder Discovery";
-        case "murder_cause": return "Murder Cause";
-        
-        default: return deck;
-    }
-}
-
-function hand_tostr(hand,player_id,action,postfix,label)
+function hand_html(hand,player_id,action,postfix,label)
 {
     var html = "<div class='hand'>";
     html += "<div class='hand_label'>"+label+"</div>";
@@ -212,13 +196,13 @@ function hand_tostr(hand,player_id,action,postfix,label)
             var deck = ordered_decks[ideck];
             for (var card in hand[deck])
             {
-                var card_str = "";
+                var card_html = "";
                 var i = hand[deck][card];
                 if (deck_is_token(deck))
                 {
                     // no action/click on held tokens
                     // note: vote buttons are generated during postfix 
-                    card_str += token_html(deck, i, "");
+                    card_html += token_html(deck, i, "");
                 }
                 else if (i<0) 
                 {
@@ -227,9 +211,9 @@ function hand_tostr(hand,player_id,action,postfix,label)
                     var url = img_url(deck,i);
                     var alt = img_alt(deck,i);
                     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
-                    card_str += "<div class='"+divclass+"'>";
-                    card_str += img;
-                    card_str += "</div>";
+                    card_html += "<div class='"+divclass+"'>";
+                    card_html += img;
+                    card_html += "</div>";
                 }
                 else 
                 {
@@ -248,9 +232,9 @@ function hand_tostr(hand,player_id,action,postfix,label)
                     if (note) name += "*";
                 
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
-                    card_str = card_template
+                    card_html = card_template
                         .replace(/_ID/g, i)
-                        .replace(/_TYPE_TXT/g, gawm_deckid2txt(deck))
+                        .replace(/_TYPE_TXT/g, gawm_deckid_txt(deck))
                         .replace(/_TYPE/g, deck)
                         .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
                         .replace(/_NAME/g, name)
@@ -258,7 +242,7 @@ function hand_tostr(hand,player_id,action,postfix,label)
                         .replace(/_CURSOR/g, cursor)
                         .replace(/_ACTIONS/g, menu);
                 }
-                html += card_str;
+                html += card_html;
             }
         }
     }
@@ -284,6 +268,18 @@ function is_firstbreak()
     return (game.act==1 && game.scene==c+1);
 }
 
+function is_lastbreak()
+{
+    var c = Object.keys(game.players).length;
+    return (game.act==3 && game.scene==c*2);
+}
+
+function is_extrascene()
+{
+    var c = Object.keys(game.players).length;
+    return (game.act==1 && game.scene==c)
+ }
+ 
 function votediv_html(player_id,value,action)
 {
     var value_str = (value == 1) ? "guilt" : "innocence";
@@ -404,7 +400,7 @@ function render_unassigned_token(player,player_uid)
         if (p!=player_uid)
         {
             var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \""+p+"\")";
-            actions += "<button onclick='"+click+"'>Give to "+player_identity_str(p)+"</button>";
+            actions += "<button onclick='"+click+"'>Give to "+player_identity_txt(p)+"</button>";
         }
     }
 
@@ -429,7 +425,7 @@ function render_record_accused(player,player_uid)
         if (p!=player_uid)
         {
             var click = "record_accused(game, \""+player_uid+"\", \""+p+"\")";
-            actions += "<button onclick='"+click+"'>Accuse "+player_identity_str(p)+"</button>";
+            actions += "<button onclick='"+click+"'>Accuse "+player_identity_txt(p)+"</button>";
         }
     }
 
@@ -447,7 +443,7 @@ function render_record_accused(player,player_uid)
     return html; 
 }
 
-function player_identity_str(player_uid)
+function player_identity_txt(player_uid)
 {
     return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' (_ALIAS)','');
 }
@@ -554,29 +550,29 @@ function render_player(player,player_uid)
             (player_uid==local_player_id || 
             (player_uid==0 && is_firstbreak() && !unassigned_token_msg())) ?
             function(){
-                var str = "";
+                var html = "";
                 // you can vote as the active player AFTER you've played your details
                 // you can vote on other players scenes at any time
                 if (game_stage_voting() && (player.active==false || player.details_left_to_play==false))
                 {
                     if (typeof player.vote == "undefined" || player.vote == 1)
-                        str += votebutton_html(player_uid,2);
+                        html += votebutton_html(player_uid,2);
                     if (typeof player.vote == "undefined" || player.vote == 2)
-                        str += votebutton_html(player_uid,1);
+                        html += votebutton_html(player_uid,1);
                 }
                 if (player.active && player.details_left_to_play==false)
                 {
                     if (game.act==0)
                     {
-                        str += pointer1_html('BEGIN','next(game)');
+                        html += pointer1_html('BEGIN','next(game)');
                     }
                     else
                     {
-                        str += pointer1_html('NEXT','next(game)');
+                        html += pointer1_html('NEXT','next(game)');
                     }
                 }
                 
-                return str;
+                return html;
             } : null;
             
         var detail_action = is_twist() ? 
@@ -610,7 +606,7 @@ function render_player(player,player_uid)
                     {
                         var button_text = (deck=="aliases" || deck=="wildcards")
                             ? "Select"
-                            : "Give to " + player_identity_str(target_id) +
+                            : gawm_button_action_giveto_txt( player_identity_txt(target_id) )+
                             (deck=="relationships" ? " and..." : '');
 
                         if (deck=="relationships") {
@@ -635,12 +631,12 @@ function render_player(player,player_uid)
                 return result;
             };
             
-        var banner = (player.fate) ? fate_to_str(player.fate) : "HELD";
-        html += hand_tostr(player.hand,player_uid,detail_action,pfn,banner);
+        var banner = (player.fate) ? gawm_fate_txt(player.fate) : "HELD";
+        html += hand_html(player.hand,player_uid,detail_action,pfn,banner);
     }
     if (player.play)
     {
-        html += hand_tostr(player.play,player_uid,
+        html += hand_html(player.play,player_uid,
             // move/give detail menu:
             function(deck, id){
                 var result = "";
@@ -650,7 +646,7 @@ function render_player(player,player_uid)
                     {
                         if (local_player_id!=target_id)
                         {
-                            var button_text = "Give to " + player_identity_str(target_id);
+                            var button_text = gawm_button_action_giveto_txt( player_identity_txt(target_id) );
                             var click = "detailaction_ex(game, \""+player_uid+"\", \""+deck+"\", "+id+",\"move_detail\",\""+target_id+"\")";
                             result += "<button onclick='"+click+"'>"+button_text+"</button>";
                         }
@@ -660,22 +656,22 @@ function render_player(player,player_uid)
             },
             // vote buttons
             function(){
-                var str = "";
+                var html = "";
                 if (typeof player.vote != "undefined")
-                    str += votediv_html(player_uid,player.vote,"");
-                return str;
+                    html += votediv_html(player_uid,player.vote,"");
+                return html;
             },
             "IN PLAY"
         );
     }
     if (player.tokens)
     {
-        html += hand_tostr(player.tokens,player_uid,null,
+        html += hand_html(player.tokens,player_uid,null,
             function(){
-                var str = "";
+                var html = "";
                 if (game.the_accused == player_uid)
-                    str += accused_html();
-                return str;
+                    html += accused_html();
+                return html;
             },
             "TOKENS"
         );
@@ -691,7 +687,7 @@ function menu_relationship_next_choice(div, player_uid, id, first_target_id)
     var buttonfn = function(p)
     {
         var button_text = "Give to " +
-            player_identity_str(first_target_id) + " and "+ player_identity_str(p);
+            player_identity_txt(first_target_id) + " and "+ player_identity_txt(p);
             var click = "detailaction_ex(game, \""+player_uid+"\", \"relationships\", "+id+
                 ",\"play_detail\",\""+first_target_id+"\",\""+p+"\")";
         return "<button onclick='"+click+"'>"+button_text+"</button>";
@@ -722,39 +718,18 @@ function unassigned_token_msg()
     for (var player in game.players)
     {
         if (game.players[player].unassigned_token)
-            return "Waiting for " +player_identity_str(player) + " to assign a " + game.players[player].unassigned_token + " token.";
+            return "Waiting for " +player_identity_txt(player) + " to assign a " + game.players[player].unassigned_token + " token.";
     }
     
     return null;
 }
 
-function fate_to_str(fate)
+function game_stage_txt()
 {
-    switch(fate)
-    {
-        case "gawm": return "Got Away With Murder!";
-        case "got_caught": return "Got Caught";
-        case "got_it_right": return "Got It Right";
-        case "got_it_wrong": return "Got It Wrong";
-        case "got_framed": return "Got Framed";
-        case "got_out_alive": return "Got Out Alive";
-        default: return "Unknown fate id: "+fate;
-    }
-}
-
-function game_stage_str()
-{
-    if (game.act==0)
-        return "Setup: Add Players and Select Alias Details.";
-    if (game.act==5)
-        return "FIN";
-
     var uatm = unassigned_token_msg();
     if (uatm) return uatm;
-    
-    var c = Object.keys(game.players).length;
 
-    if (game.act==1 && game.scene==c)
+    if (is_extrascene())
         return "Extra Scene: Introduce a new character.";
 
     if (is_firstbreak())
@@ -763,26 +738,18 @@ function game_stage_str()
     if (is_twist())
         return "Second Break: The Twist.";
 
-    if (game.act==3)
-        c = c*2;
+    if (is_lastbreak())
+        return gawm_lastbreak_scene_txt( player_identity_txt(game.most_innocent) );
 
-    if (game.act==3 && game.scene==c)
+    var act_scene = gawm_act_txt(game.act);
+    if (game.act>=1 && game.act<=4)
     {
-        var n = player_identity_str(game.most_innocent);
-        return "Last Break: The Accusation - "+n+" - and The Guilty ...";
-    }
-
-    var act = "";
-    if (game.act==1)
-        act = "Act I: Introductions";
-    if (game.act==2)
-        act = "Act II: Investigations";
-    if (game.act==3)
-        act = "Act III: Incriminations";
-    if (game.act==4)
-        act = "Epilogue";
-
-    return act + ", Scene " + (game.scene+1) + " / " + c;
+        var c = Object.keys(game.players).length;
+        if (game.act==3)
+            c = c*2;
+        act_scene += ", Scene " + (game.scene+1) + " of " + c;
+    }   
+    return act_scene;
 }
 
 function create_joinurl()
@@ -824,7 +791,7 @@ function render_game(result)
     }
     debug_html += '<input type="button" onclick="next(game)" value="Next"/>';
 
-    html += "<div class='header'>" + game_stage_str() + "</div>";
+    html += "<div class='header'>" + game_stage_txt() + "</div>";
     if (result.victim)
     {
         html += render_player(result.victim,0,0);
@@ -1039,7 +1006,7 @@ function replace_playerids(msg)
             for (var player in game.players)
             {
                 var re = new RegExp(player, 'g');
-                msg = msg.replace(re, player_identity_str(player));
+                msg = msg.replace(re, player_identity_txt(player));
             }
         }
     }
