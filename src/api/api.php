@@ -135,9 +135,6 @@ function _api_next(&$data, $player_id)
 
 function _api_edit_note(&$data, $player_id, $detail_type, $detail, $note)
 {
-    // Minimal input filtering on the plain text
-    $note = htmlentities($note);
-    
     // Strip note to max length of 1024.
     $note = substr($note, 0, 1024);
 
