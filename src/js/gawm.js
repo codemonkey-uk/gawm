@@ -5,10 +5,35 @@ var game = null;
 var game_id = 0;
 var local_player_id = 0;
 
-function default_note(deck,i)
+function default_note(detail_type,i)
 {
-    if (deck=='player') return "Player Note";
-    else return cards[deck][i]['desc'];
+    if (detail_type=='player') return "Player Note";
+    else return cards[detail_type][i]['desc'];
+}
+
+function note_part(detail_type, d_id, part)
+{
+    // notes support store a name and a description
+    var note = (game['notes'] && game['notes'][detail_type]) 
+        ? game['notes'][detail_type][d_id]
+        : "";
+    if (note===undefined) note = "";
+    var pivot = note.indexOf("\n");
+    var note_part = (part=='name') ? note.substr(0, pivot) : note.substr(pivot);
+    if (note_part.length === 0)
+        note_part = cards[detail_type][d_id][part];
+
+    return note_part;
+}
+
+function note_name(detail_type, d_id)
+{
+    return note_part(detail_type, d_id,'name');
+}
+
+function note_desc(detail_type, d_id)
+{
+    return note_part(detail_type, d_id,'desc');
 }
 
 function load_cards(oncomplete)
@@ -108,22 +133,54 @@ function editPlayerNote(div_id,player_id)
 
 function saveNote(div_id,detail_type,d_id)
 {
-    var t = get_contenteditable(div_id);
-    edit_note(game,local_player_id,detail_type,d_id,t);
+    var text = get_contenteditable(div_id);
+    
+    if (detail_type!='player')
+    {
+        // notes support store a name and a description, newline separated
+        text = note_name(detail_type,d_id) + "\n" + text;
+    }
+    
+    edit_note(game,local_player_id,detail_type,d_id,text);
+}
+
+function editDetailName(div_id,detail_type,d_id)
+{
+    var t = document.getElementById(div_id).innerHTML;
+        
+    if (t.includes('<br>'))
+    {
+        t = document.getElementById(div_id).innerText;
+        document.getElementById(div_id).innerHTML = t.toHtmlEntities();
+        saveDetailName(div_id,detail_type,d_id);
+    }
+}
+
+function saveDetailName(div_id,detail_type,d_id)
+{
+    var text = get_contenteditable(div_id);
+    
+    if (detail_type!='player')
+    {
+        // notes support store a name and a description, newline separated
+        text +=  "\n" + note_desc(detail_type,d_id);
+    }
+    
+    edit_note(game,local_player_id,detail_type,d_id,text);
 }
 
 // check if the input event added a <br> to the HTML, use that to trigger a save
-function editName(div_id,player_id)
+function editPlayerName(div_id,player_id)
 {
     var t = document.getElementById(div_id).innerHTML;
     if (t.includes('<br>'))
     {
         document.getElementById(div_id).innerHTML = document.getElementById(div_id).innerText;
-        saveName(div_id,player_id);
+        savePlayerName(div_id,player_id);
     }
 }
 
-function saveName(div_id,player_id)
+function savePlayerName(div_id,player_id)
 {
     var t = get_contenteditable(div_id);
     rename_player(game,player_id,t);
@@ -241,14 +298,21 @@ function hand_html(hand,player_id,action,postfix,label)
                     {
                         menu += action(deck, i);
                     }
-                
-                    // if note is set, use that
-                    var note = (game['notes'] && game['notes'][deck]) ? game['notes'][deck][i] : null;
-                    var desc = note ? note : cards[deck][i]['desc'];
-                    // if note is set, mark card
-                    // todo: take first line from note for name, if note is set
-                    var name = cards[deck][i]['name'];
-                    if (note) name += "*";
+                    
+                    // notes support store a name and a description
+                    var note = (game['notes'] && game['notes'][deck]) ? game['notes'][deck][i] : "";
+                    if (note===undefined) note = "";
+                    var pivot = note.indexOf("\n");
+                    var note_name = note.substr(0, pivot);
+                    var note_desc = note.substr(pivot);
+                    
+                    var desc = note_desc.length > 0 ? note_desc : cards[deck][i]['desc'];
+                    var name = note_name.length > 0 ? note_name : cards[deck][i]['name'];
+                    
+                    if (note_desc)
+                    {
+                        note_name += "*";
+                    }
                 
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                     card_html = card_template
@@ -462,6 +526,28 @@ function record_accused_html(player,player_uid)
     return html; 
 }
 
+function player_alias_id(player_uid)
+{
+    // find if there is an alias card 
+    var i = undefined;
+    
+    // if its the victim, the victim always has an alias
+    if (player_uid==0)
+    {
+        i = game['victim']['play']['aliases'][0];
+    }
+    else
+    {   
+        // players do not always have an alias...
+        if (game['players'][player_uid]['play']['aliases'])
+        {
+            i = game['players'][player_uid]['play']['aliases'][0];
+        }
+    }
+    
+    return i;
+}
+
 function player_identity_txt(player_uid)
 {
     return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' (_ALIAS)','');
@@ -474,11 +560,19 @@ function player_identity_html(player_uid)
     if (player_uid==local_player_id)
     {
         template += " contenteditable='true'";
-        template += " oninput=\"editName('player_name"+player_uid+"','"+player_uid+"')\"";
-        template += " onblur=\"saveName('player_name"+player_uid+"','"+player_uid+"')\"";
+        template += " oninput=\"editPlayerName('player_name"+player_uid+"','"+player_uid+"')\"";
+        template += " onblur=\"savePlayerName('player_name"+player_uid+"','"+player_uid+"')\"";
     }
     template+=">_NAME</span> ";
-    var alias = "<span class='alias'>_ALIAS</span> ";
+    var alias = "<span class='alias' id='alias_name"+player_uid+"'";
+    if (player_uid==local_player_id && player_alias_id(player_uid)!=undefined)
+    {
+        alias += " contenteditable='true'";
+        alias += " oninput=\"editDetailName('alias_name"+player_uid+"','aliases','"+player_alias_id(player_uid)+"')\"";
+        // saveDetailName(div_id,detail_type,d_id)
+        alias += " onblur=\"saveDetailName('alias_name"+player_uid+"','aliases','"+player_alias_id(player_uid)+"')\"";
+    }
+    alias += ">_ALIAS</span> ";
     template += alias;
 
     // saveNote(div_id,detail_type,d_id)
@@ -515,28 +609,12 @@ function player_identity_template(player_uid,template)
         player_name = game['players'][player_uid].name;
     }
     
-    // find if there is an alias card 
-    var i = undefined;
+    var i = player_alias_id(player_uid);
     
-    // if its the victim, the victim always has an alias
-    if (player_uid==0)
-    {
-        i = game['victim']['play']['aliases'][0];
-    }
-    else
-    {   
-        // players do not always have an alias...
-        if (game['players'][player_uid]['play']['aliases'])
-        {
-            i = game['players'][player_uid]['play']['aliases'][0];
-        }
-    }  
-    
-    // if note is set, use note instead?
     if (i != undefined)
     {
-        var alias_t = cards['aliases'][i]['name'];
-        template = template.replace("_ALIAS",alias_t);
+        var alias_t = note_name('aliases', i);
+        template = template.replace("_ALIAS", alias_t);
     }  
 
     return template.replace("_NAME",player_name);
