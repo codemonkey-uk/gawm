@@ -808,16 +808,15 @@ function render_game(result)
             html += player_html(result.players[player],player);
     }
     
+    document.getElementById('invite').style.display= (game.act==0) ? "block" : "hidden";
     if (game.act==0)
     {
         var url_text = create_joinurl();
         var url_encoded = encodeURI(url_text);
         debug_html += '<span>[<a href="'+url_encoded+'&d=1">Add Player</a>]</span>';
-        html += "<div class='action'>";
-        html += "<div>Game id: <b>"+game_id+"</b>. Have other players use this URL to join in:</div>";
-        html += "<div><textarea style='width: 50%; margin: auto;'>"+url_encoded+"</textarea></div>";
-        html += "<div><a href='mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded)+"'><div class='button'>Email It</div></a></div>";
-        html += "</div>";
+        document.getElementById('game_id').innerHTML = game_id;
+        document.getElementById('invite_url_textarea').value = url_encoded;
+        document.getElementById('invite_url_a').href = "mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded);
     }
     else if (game.act>=5)
     {
