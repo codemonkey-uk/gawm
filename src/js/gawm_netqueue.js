@@ -94,7 +94,16 @@ function gawm_pumpRequestQueue()
                 // only refresh if we have focus, and nothing queued
                 if (requestInFlight==null && document.hasFocus())
                 {
-                    reload();
+                    if (document.activeElement.hasAttribute('contenteditable'))
+                    {
+                        // if the user is editing a note, just wait another refresh period
+                        gawm_pumpRequestQueue();
+                    }
+                    else
+                    {
+                        // request an update from the server
+                        reload();
+                    }
                 }
             }, 5000);
         }
