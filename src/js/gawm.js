@@ -389,7 +389,7 @@ function assign_token_html(type, menu)
         .replace(/_ALT/g, alt);
 }
 
-function render_unassigned_token(player,player_uid)
+function unassigned_html(player,player_uid)
 {
     var html = "<div class='hand'>";
     html += "<div class='hand_label'>ASSIGN</div>";
@@ -413,7 +413,7 @@ function render_unassigned_token(player,player_uid)
     return html;
 }
 
-function render_record_accused(player,player_uid)
+function record_accused_html(player,player_uid)
 {
     var html = "<div class='hand'>";
     html += "<div class='hand_label'>ACCUSE</div>";
@@ -448,7 +448,7 @@ function player_identity_txt(player_uid)
     return player_identity_template(player_uid,"_NAME (_ALIAS)").replace(' (_ALIAS)','');
 }
 
-function player_identity_div(player_uid)
+function player_identity_html(player_uid)
 {
     var template = "<div class='identity'>";
     template+="<span class='name' id='player_name"+player_uid+"'";
@@ -528,20 +528,20 @@ function player_border_colour(player)
     return (player.active || player.unassigned_token) ? '#be0712' : '#0e62bd';
 }
 
-function render_player(player,player_uid)
+function player_html(player,player_uid)
 {
     var c = player_border_colour(player);
     var html = "<div class='player' style='border-color: "+c+"'>";
 
-    html += player_identity_div(player_uid);
+    html += player_identity_html(player_uid);
 
     if (player.unassigned_token && player_uid==local_player_id)
     {
-        html += render_unassigned_token(player,player_uid);
+        html += unassigned_html(player,player_uid);
     }
     else if (game.most_innocent==player_uid && game.act==3 && player_uid==local_player_id)
     {
-        html += render_record_accused(player,player_uid);
+        html += record_accused_html(player,player_uid);
     }
     else if (show_hand(player,player_uid))
     {
@@ -794,18 +794,18 @@ function render_game(result)
     html += "<div class='header'>" + game_stage_txt() + "</div>";
     if (result.victim)
     {
-        html += render_player(result.victim,0,0);
+        html += player_html(result.victim,0,0);
     }
 
     if (result.players[local_player_id])
     {
-        html += render_player(result.players[local_player_id],local_player_id);
+        html += player_html(result.players[local_player_id],local_player_id);
     }
     
     for (var player in result.players)
     {
         if (player!=local_player_id)
-            html += render_player(result.players[player],player);
+            html += player_html(result.players[player],player);
     }
     
     if (game.act==0)
