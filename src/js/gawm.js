@@ -150,7 +150,7 @@ function editDetailName(div_id,detail_type,d_id)
         
     if (t.includes('<br>'))
     {
-        t = document.getElementById(div_id).innerText;
+        t = document.getElementById(div_id).innerText.replace('\n','').trim();
         document.getElementById(div_id).innerHTML = t.toHtmlEntities();
         saveDetailName(div_id,detail_type,d_id);
     }
@@ -1022,10 +1022,9 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     
         gawm_sendrequest(request);
         
-        // save note locally (prevents a DOM reset) 
-        if (!(detail_type in game['notes']))
-            game['notes'][detail_type] = [];
-        game['notes'][detail_type][detail] = note;
+        // notes can appear in the player identity, which appears in multiple locations
+        // thus we want a full DOM to refresh once the request is handled
+        // so local/predictive data write back here has been removed
     }
 }
 
@@ -1041,8 +1040,9 @@ function rename_player(game,player_id,player_name)
     
     gawm_sendrequest(request);
     
-    // save edit locally
-    game['players'][player_id].name = player_name;
+    // player name appears in multiple locations (embedded in notes)
+    // thus we want a full DOM to refresh once the request is handled
+    // so local/predictive data write back here has been removed
 }
 
 function add_player(id, player_name,onsucess)
