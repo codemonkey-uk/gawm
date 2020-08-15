@@ -55,23 +55,18 @@ function deck_is_token(deck)
     return deck=="guilt" || deck=='innocence';
 }
 
-function img_url(deck,i)
+function img_url(deck)
 {
     // redacted cards/tokens
-    if (i<0)
-    {
-        switch (deck){
-            case 'aliases': return 'assets/alias_back.png';
-            case 'motives': return 'assets/motive_back.png';
-            case 'objects': return 'assets/object_back.png';
-            case 'relationships': return 'assets/rel_back.png';
-            case 'wildcards': return 'assets/wild_back.png';
-            case 'guilt': return 'assets/guilt.png';
-            case 'innocence': return 'assets/innocence.png';
-        }
+    switch (deck){
+        case 'aliases': return 'assets/alias_back.png';
+        case 'motives': return 'assets/motive_back.png';
+        case 'objects': return 'assets/object_back.png';
+        case 'relationships': return 'assets/rel_back.png';
+        case 'wildcards': return 'assets/wild_back.png';
+        case 'guilt': return 'assets/guilt.png';
+        case 'innocence': return 'assets/innocence.png';
     }
-    
-    return 'assets/'+cards[deck][i]['img'];
 }
 
 function deck_order(deck)
@@ -284,8 +279,8 @@ function hand_html(hand,player_id,action,postfix,label)
                 {
                     // card backs use img path
                     var divclass = "cardback";
-                    var url = img_url(deck,i);
-                    var alt = img_alt(deck,i);
+                    var url = img_url(deck);
+                    var alt = img_alt(deck);
                     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
                     card_html += "<div class='"+divclass+"'>";
                     card_html += img;
