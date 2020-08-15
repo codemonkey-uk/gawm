@@ -4,7 +4,25 @@
 */
 
 var cards = null;
+var txt = null;
+
 function gawm_load_txt(oncomplete)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            txt = JSON.parse(this.responseText);
+
+            // lazy chaining
+            gawm_load_cards(oncomplete);
+        }
+    };
+
+    xmlhttp.open("GET", "assets/en_txt.json", true);
+    xmlhttp.send();
+}
+
+function gawm_load_cards(oncomplete)
 {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -51,51 +69,17 @@ function gawm_card_img_alt_txt(deck)
 
 function gawm_deckid_txt(deck)
 {
-    switch (deck)
-    {
-        case "aliases": return "Alias";
-        case "objects": return "Object";
-        case "relationships": return "Relationship";
-        case "wildcards": return "Wildcard";
-        case "motives": return "Motive";
-        case "murder_discovery": return "Murder Discovery";
-        case "murder_cause": return "Murder Cause";
-        
-        default: return deck;
-    }
+    return txt[deck];
 }
 
 function gawm_fate_txt(fate)
 {
-    switch(fate)
-    {
-        case "gawm": return "Got Away With Murder!";
-        case "got_caught": return "Got Caught";
-        case "got_it_right": return "Got It Right";
-        case "got_it_wrong": return "Got It Wrong";
-        case "got_framed": return "Got Framed";
-        case "got_out_alive": return "Got Out Alive";
-        default: return "Unknown fate id: "+fate;
-    }
+    return txt[fate];
 }
 
 function gawm_act_txt(act)
 {
-    switch (act)
-    {
-        case 0:
-            return "Setup: Add Players and Select Alias Details.";
-        case 1:
-            return "Act I: Introductions";
-        case 2:
-            return "Act II: Investigations";
-        case 3:
-            return "Act III: Incriminations";
-        case 4:
-            return "Epilogue";        
-        default: // 5+
-            return "FIN";
-    }
+    return txt["act"][act];
 }
 
 function gawm_button_action_giveto_txt(indentity)

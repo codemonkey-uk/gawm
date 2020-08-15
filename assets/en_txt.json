@@ -1,0 +1,25 @@
+{
+	"aliases": "Alias",
+	"objects": "Object",
+	"relationships": "Relationship",
+	"wildcards": "Wildcard",
+	"motives": "Motive",
+	"murder_discovery": "Murder Discovery",
+	"murder_cause": "Murder Cause",
+
+	"gawm": "Got Away With Murder!",
+	"got_caught": "Got Caught",
+	"got_it_right": "Got It Right",
+	"got_it_wrong": "Got It Wrong",
+	"got_framed": "Got Framed",
+	"got_out_alive": "Got Out Alive",
+	
+	"act": [
+		"Setup: Add Players and Select Alias Details.",
+		"Act I: Introductions",
+		"Act II: Investigations",
+		"Act III: Incriminations",
+		"Epilogue",
+		"FIN"
+	]
+}
