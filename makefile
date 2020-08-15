@@ -42,7 +42,8 @@ run_tests:
 copy_files: 
 	cp src/*.html build
 	cp -r libs/hashids-4.0.0/src build/api/Hashids
-	cp -r assets build/assets
+	@mkdir -p build/assets
+	cp assets/* build/assets
 
 .PHONY : setup_db
 setup_db:
