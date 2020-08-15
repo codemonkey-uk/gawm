@@ -1,15 +1,8 @@
 
 // put theses in a gawm object maybe? use modules maybe?
-var cards = null;
 var game = null;
 var game_id = 0;
 var local_player_id = 0;
-
-function default_note(detail_type,i)
-{
-    if (detail_type=='player') return "Player Note";
-    else return cards[detail_type][i]['desc'];
-}
 
 function note_part(detail_type, d_id, part)
 {
@@ -21,7 +14,7 @@ function note_part(detail_type, d_id, part)
     var pivot = note.indexOf("\n");
     var note_part = (part=='name') ? note.substr(0, pivot) : note.substr(pivot);
     if (note_part.length === 0)
-        note_part = cards[detail_type][d_id][part];
+        note_part = gawm_card_part_txt(detail_type,d_id,part);
 
     return note_part;
 }
@@ -34,20 +27,6 @@ function note_name(detail_type, d_id)
 function note_desc(detail_type, d_id)
 {
     return note_part(detail_type, d_id,'desc');
-}
-
-function load_cards(oncomplete)
-{
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            cards = JSON.parse(this.responseText);
-            oncomplete();
-        }
-    };
-
-    xmlhttp.open("GET", "assets/cards.json", true);
-    xmlhttp.send();
 }
 
 function deck_is_token(deck)
@@ -81,15 +60,6 @@ function deck_order(deck)
         default: return 99;
     }
 }
-    
-function img_alt(deck,i)
-{
-    // temp workaround, card json doesn't have guilt/innocence tokens
-    if (deck_is_token(deck) || i<0)
-        return deck;
-    
-    return cards[deck][i]['name']+" ("+cards[deck][i]['subtype']+'): '+cards[deck][i]['desc'];
-}
 
 var card_template = `<div class="halfcard _TYPE">
   <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
@@ -118,11 +88,11 @@ function editPlayerNote(div_id,player_id)
     {
         t = document.getElementById(div_id).innerText;
         document.getElementById(div_id).innerHTML = t.toHtmlEntities();
-        if (t!=default_note('player',player_id))
+        if (t!=gawm_default_note_txt('player',player_id))
             saveNote(div_id,'player',player_id);
     }
     
-    if (t!=default_note('player',player_id))
+    if (t!=gawm_default_note_txt('player',player_id))
         document.getElementById(div_id).style.opacity="1";
 }
 
@@ -280,7 +250,7 @@ function hand_html(hand,player_id,action,postfix,label)
                     // card backs use img path
                     var divclass = "cardback";
                     var url = img_url(deck);
-                    var alt = img_alt(deck);
+                    var alt = gawm_card_img_alt_txt(deck);
                     var img = "<img src=\"" +url+ "\" style='max-width: 100%;max-height: 100%;' alt=\""+alt+"\">";
                     card_html += "<div class='"+divclass+"'>";
                     card_html += img;
@@ -301,8 +271,9 @@ function hand_html(hand,player_id,action,postfix,label)
                     var note_name = note.substr(0, pivot);
                     var note_desc = note.substr(pivot);
                     
-                    var desc = note_desc.length > 0 ? note_desc : cards[deck][i]['desc'];
-                    var name = note_name.length > 0 ? note_name : cards[deck][i]['name'];
+                    var desc = note_desc.length > 0 ? note_desc : gawm_card_desc_txt(deck,i);
+                    var name = note_name.length > 0 ? note_name : gawm_card_name_txt(deck,i);
+                    var subtype = gawm_card_subtype_txt(deck,i);
                     
                     if (note_desc)
                     {
@@ -314,7 +285,7 @@ function hand_html(hand,player_id,action,postfix,label)
                         .replace(/_ID/g, i)
                         .replace(/_TYPE_TXT/g, gawm_deckid_txt(deck))
                         .replace(/_TYPE/g, deck)
-                        .replace(/_SUBTYPE/g, cards[deck][i]['subtype'])
+                        .replace(/_SUBTYPE/g, subtype.toHtmlEntities())
                         .replace(/_NAME/g, name.toHtmlEntities())
                         .replace(/_DESC/g, desc.toHtmlEntities())
                         .replace(/_CURSOR/g, cursor)
@@ -457,7 +428,7 @@ var tokenback_template = `
 function assign_token_html(type, menu)
 {
     var url = "assets/"+type+".png";
-    var alt = img_alt(type,-1);
+    var alt = gawm_card_img_alt_txt(type,-1);
     var cursor = menu.length > 0 ? "cursor: context-menu;" : "";
     return tokenback_template
         .replace(/_TYPE/g, type)
@@ -576,8 +547,8 @@ function player_identity_html(player_uid)
     note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
 
     var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
-    var note_content = note ? replace_playerids(note) : default_note('player',player_uid);
-    if (note==null || note_content==default_note('player',player_uid)) note_html += 'style="opacity: 0.5;"';
+    var note_content = note ? replace_playerids(note) : gawm_default_note_txt('player',player_uid);
+    if (note==null || note_content==gawm_default_note_txt('player',player_uid)) note_html += 'style="opacity: 0.5;"';
     note_html +=">"+note_content.toHtmlEntities()+"</span> ";
     note_html += "</span> ";
     template += note_html;
@@ -979,13 +950,14 @@ function detailaction_ex(gamestate,player_id,detail_type,detail,action,target_id
             note_target1 = target_id in game['notes']['player'] ? game['notes']['player'][target_id] : '';
             note_target2 = target_id2 in game['notes']['player'] ? game['notes']['player'][target_id2] : '';
         }
+        var r = gawm_card_name_txt('relationships',detail);
         edit_note(
             gamestate, player_id, 'player', target_id,
-            note_target1 + ' ' + cards['relationships'][detail].name + " with " + target_id2 + ". "
+            note_target1 + ' ' + r + " with " + target_id2 + ". "
         );
         edit_note(
             gamestate, player_id, 'player', target_id2,
-            note_target2 + ' ' + cards['relationships'][detail].name + " with " + target_id + ". "
+            note_target2 + ' ' + r + " with " + target_id + ". "
         );
     }
 }
@@ -996,7 +968,7 @@ function edit_note(gamestate,player_id,detail_type,detail,note)
     note = note.trim();
     
     // if the note matches the default note, blank to empty
-    if (note == default_note(detail_type,detail))
+    if (note == gawm_default_note_txt(detail_type,detail))
         note = '';
     
     // only send if the note is changed by the edit
