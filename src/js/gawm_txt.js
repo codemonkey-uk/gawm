@@ -84,10 +84,11 @@ function gawm_act_txt(act)
 
 function gawm_button_action_giveto_txt(indentity)
 {
-    return "Give to "+indentity;
+    //action_giveto
+    return txt["action_giveto"].replace("{ID}",indentity);
 }
 
 function gawm_lastbreak_scene_txt(indentity)
 {
-    return "Last Break: The Accusation - "+indentity+" - and The Guilty ...";
+    return txt["lastbreak_scene"].replace("{ID}",indentity);
  }   

@@ -21,5 +21,8 @@
 		"Act III: Incriminations",
 		"Epilogue",
 		"FIN"
-	]
+	],
+	
+	"action_giveto": "Give to {ID}",
+	"lastbreak_scene": "Last Break: The Accusation - {ID} - and The Guilty ..."
 }
