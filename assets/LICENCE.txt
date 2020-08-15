@@ -1,0 +1,5 @@
+(c) 2016-2020 Joseph Fowler & Thaddaeus Frogley.
+
+The GAWM assets are provided here for the purposes of of running this software only.
+
+All other rights reserved.
