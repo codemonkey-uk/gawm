@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
+
+<link rel="stylesheet" href="css/full-card.css">
+<link rel="stylesheet" href="css/pointer.css">
+<link rel="stylesheet" href="css/snackbar.css">
+
+<script src="js/gawm.js"></script>
+<script src="js/gawm_txt.js"></script>
+<script src="js/gawm_netqueue.js"></script>
+
+<title>GAWM</title>
+<style>
+
+.player > .identity 
+{
+    padding: 4px;
+    background-color: #BAD1CD;
+}
+.player > .identity .name
+{
+  font-size: 16px;
+  font-family: 'Nunito', sans-serif;
+}
+.player > .identity .name br 
+{
+    display: none
+}
+.player > .identity .alias
+{
+    padding-left: 8px;
+    font-size: 16px;
+    font-family: 'Special Elite', serif;  
+}
+.player > .identity .alias[contenteditable]:hover,
+.player > .identity .name[contenteditable]:hover
+{
+    background-color: #DAE7E4;
+}
+
+.alias::before
+{
+    content: "(";
+}
+.alias::after 
+{
+    content: ")";
+}
+
+.cardback {
+    margin-right:4px;
+    width: 64px; height: 90px;
+    display: inline-block;
+    z-index: 1;
+}
+
+#game_div
+{
+  background-color: #DAE7E4;
+  padding: 4px;
+  position: relative;
+}
+#loading_div
+{
+    display: none; position: fixed; top: 0; right: 0; pointer-events: none;
+    z-index: 99;
+}
+/* Style the header */
+.header {
+  background-color: #DAE7E4;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Special Elite', serif;
+}
+.footer {
+  background-color: #DAE7E4;
+  padding: 30px;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Nunito', sans-serif;
+}
+.action
+{
+  line-height: 30px;
+}
+.action .edit {
+	border: solid 1px;
+    background-color: #BAD1CD;
+    
+    padding: 4px;
+    margin: 4px;
+    height: 30px;
+}
+.action .button {
+    padding: 4px;
+    margin: 4px;
+    height: 30px;
+    width: 90px;
+
+    background-color: #BCBDC0;
+    border: 1px solid black; 
+    color: black;
+
+    cursor: pointer; /* Pointer/hand icon */
+    display: inline-block;
+}
+
+.action .button:hover {
+  background-color: white;
+}
+
+.about, .action {
+  background-color: #BAD1CD;
+  padding: 5px;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+}
+
+.about p { 
+    width: 75%; 
+    margin: 25px auto 25px auto;
+}
+
+</style>
+<script>
+
+var data = {
+	"act": 5,
+	"notes": [],
+	"scene": 0,
+	"players": {
+		"aliases": {
+			"name": "Alias Cards",
+			"hand": {
+				"aliases": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15, -1]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"relationships": {
+			"name": "Relationship Cards",
+			"hand": {
+				"relationships": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29, -1]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"objects": {
+			"name": "Object Cards",
+			"hand": {
+				"objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29, -1]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"motives": {
+			"name": "Motive Cards",
+			"play": {
+				"motives": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29, -1]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"wildcards": {
+			"name": "Wildcards",
+			"hand": {
+				"wildcards": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29, -1]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"murder": {
+			"name": "Murder Cards",
+			"hand": {
+				"murder_discovery": [0, 1, 2, 3, 4, 5],
+				"murder_cause": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+			},
+			"active": false,
+			"details_left_to_play": false
+		},
+		"token": {
+			"name": "Tokens",
+			"tokens": {
+				"guilt": [-1, 0, 1, 2, 3],
+				"innocence": [-1, 0, 1, 2, 3]
+			},
+			"active": false,
+			"details_left_to_play": false
+		}
+	}
+};
+
+function reset()
+{
+    var url = window.location.protocol + "//"
+        + window.location.hostname
+        + window.location.pathname.substr(0,window.location.pathname.lastIndexOf('/'));
+    window.location.replace(url);
+}
+
+function body_onload()
+{
+    gawm_load_txt(function() {
+        render_game(data);
+    });
+}
+
+</script>
+</head>
+
+<body onload="body_onload()">
+
+<div id="debug_div" style="display: none;"></div>
+
+<div id="loading_div">
+<img width=50 height=50 src="assets/loading.gif" alt="rotating circles to indicate network activity">
+</div>
+
+<div id="landing">
+</div>
+
+<div id="game_div"></div>
+
+<div id="invite" class='action' style="display: none;">
+<div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
+<div><textarea style='width: 50%; margin: auto;' id='invite_url_textarea'></textarea></div>
+<div><a id='invite_url_a'><div class='button'>Email It</div></a></div>
+</div>
+
+<div id="gameover" style="display: none;">
+<div class='action'>
+<div><h1>Ready To Play?</h1></div>
+<div class='button' onclick='reset()'>Begin!</div>
+</div></div>
+
+<div class="footer">Game Rules, Software and Content (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley.</div>
+<div id="snackbar"></div>
+
+</body>
+</html>

@@ -504,10 +504,13 @@ function player_alias_id(player_uid)
     }
     else
     {   
-        // players do not always have an alias...
-        if (game['players'][player_uid]['play']['aliases'])
+        // players do not always have an alias in play
+        if (game['players'][player_uid]['play'])
         {
-            i = game['players'][player_uid]['play']['aliases'][0];
+            if (game['players'][player_uid]['play']['aliases'])
+            {
+                i = game['players'][player_uid]['play']['aliases'][0];
+            }
         }
     }
     
