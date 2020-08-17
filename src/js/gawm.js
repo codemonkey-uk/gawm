@@ -292,6 +292,9 @@ function hand_html(hand,player_id,action,postfix,label)
                         .replace(/_DESC/g, desc.toHtmlEntities())
                         .replace(/_CURSOR/g, cursor)
                         .replace(/_ACTIONS/g, menu);
+                    // note editing disabled
+                    if (!game['notes']) 
+                        card_html = card_html.replace("contenteditable=\"true\"", "");
                 }
                 html += card_html;
             }
