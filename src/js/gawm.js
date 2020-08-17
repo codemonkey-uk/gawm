@@ -528,7 +528,7 @@ function player_identity_html(player_uid)
 {
     var template = "<div class='identity'>";
     template+="<span class='name' id='player_name"+player_uid+"'";
-    if (player_uid==local_player_id)
+    if (player_uid==local_player_id && game['notes'])
     {
         template += " contenteditable='true'";
         template += " oninput=\"editPlayerName('player_name"+player_uid+"','"+player_uid+"')\"";
@@ -536,7 +536,7 @@ function player_identity_html(player_uid)
     }
     template+=">_NAME</span> ";
     var alias = "<span class='alias' id='alias_name"+player_uid+"'";
-    if (player_uid==local_player_id && player_alias_id(player_uid)!=undefined)
+    if (player_uid==local_player_id && player_alias_id(player_uid)!=undefined && game['notes'])
     {
         alias += " contenteditable='true'";
         alias += " oninput=\"editDetailName('alias_name"+player_uid+"','aliases','"+player_alias_id(player_uid)+"')\"";
@@ -547,16 +547,20 @@ function player_identity_html(player_uid)
     template += alias;
 
     // saveNote(div_id,detail_type,d_id)
-    var note_html = " - <span class='name' id='player_note"+player_uid+"' contenteditable='true'"
-    note_html += " oninput=\"editPlayerNote('player_note"+player_uid+"','"+player_uid+"')\"";
-    note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
-
-    var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
-    var note_content = note ? replace_playerids(note) : gawm_default_note_txt('player',player_uid);
-    if (note==null || note_content==gawm_default_note_txt('player',player_uid)) note_html += 'style="opacity: 0.5;"';
-    note_html +=">"+note_content.toHtmlEntities()+"</span> ";
-    note_html += "</span> ";
-    template += note_html;
+    if (game['notes'])
+    {
+        var note_html = " - <span class='name' id='player_note"+player_uid+"'";
+        note_html += " contenteditable='true'";
+        note_html += " oninput=\"editPlayerNote('player_note"+player_uid+"','"+player_uid+"')\"";
+        note_html += " onblur=\"saveNote('player_note"+player_uid+"','player','"+player_uid+"')\"";
+    
+        var note = (game['notes'] && game['notes']['player']) ? game['notes']['player'][player_uid] : null;
+        var note_content = note ? replace_playerids(note) : gawm_default_note_txt('player',player_uid);
+        if (note==null || note_content==gawm_default_note_txt('player',player_uid)) note_html += 'style="opacity: 0.5;"';
+        note_html +=">"+note_content.toHtmlEntities()+"</span> ";
+        note_html += "</span> ";
+        template += note_html;
+    }
     
     template += "</div>";
     
