@@ -38,11 +38,11 @@ function img_url(deck)
 {
     // redacted cards/tokens
     switch (deck){
-        case 'aliases': return 'assets/alias_back.png';
-        case 'motives': return 'assets/motive_back.png';
-        case 'objects': return 'assets/object_back.png';
-        case 'relationships': return 'assets/rel_back.png';
-        case 'wildcards': return 'assets/wild_back.png';
+        case 'aliases': return 'assets/alias_back.svg';
+        case 'motives': return 'assets/motive_back.svg';
+        case 'objects': return 'assets/object_back.svg';
+        case 'relationships': return 'assets/rel_back.svg';
+        case 'wildcards': return 'assets/wild_back.svg';
         case 'guilt': return 'assets/guilt.png';
         case 'innocence': return 'assets/innocence.png';
     }
