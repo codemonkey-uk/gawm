@@ -45,6 +45,8 @@ function img_url(deck)
         case 'wildcards': return 'assets/wild_back.svg';
         case 'guilt': return 'assets/guilt.png';
         case 'innocence': return 'assets/innocence.png';
+        case 'murder_cause': return 'assets/mc_back.svg';
+        case 'murder_discovery': return 'assets/md_back.svg';
     }
 }
 

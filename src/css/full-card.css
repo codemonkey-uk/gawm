@@ -1,5 +1,6 @@
 
 @import 'https://fonts.googleapis.com/css?family=Special Elite';
+@import 'https://fonts.googleapis.com/css?family=Nunito';
 
 .aliases {
   background-color: #0a3b88;
@@ -75,7 +76,7 @@
   border-color: inherit;
 }
 
-.card, .halfcard  {
+.halfcard  {
   font-family: 'Special Elite', serif;
   text-align: center;
   border-style: solid;
@@ -84,50 +85,16 @@
   display: inline-block;
   position: relative;
 }
-.card div, .halfcard div {
+.halfcard div {
   background-color: white;
   display: block;
   padding: 0px;
 }
 
-.card {
-  border-width: 10px;
-  width: 250px;
-  height: 350px;
-}
-.card .header {
-	height: 66px;
-    border: 2px #8A8D91;
-}
-.card .title {
-	height: 28px;
-    line-height: 30px;
-    font-size: 20px;
-}
-.card .subtitle {
-	height: 34px;
-    line-height: 34px;
-    font-size: 14px;
-}
 .subtitle::before, .subtitle::after {
 	content: " ~ ";
 }
 
-.card .name {
-    margin-top: 10px;
-    border: 2px solid grey;
-	height: 87px;
-    line-height: 87px;
-    font-size: 22px;
-}
-.card .flavour {
-  margin-top: 10px;
-  border: 2px solid grey;
-  height: 164px;
-  line-height: 178px;
-  justify-content: center;
-  text-align: center;
-}
 .flavour p, .name p {
   line-height: 1.5;
   display: inline-block;
@@ -173,6 +140,7 @@
   line-height: 164px;
   justify-content: center;
   text-align: center;
+  font-family: 'Nunito', sans-serif;   
   cursor: text;
   position: absolute;
   z-index: 2;
@@ -199,12 +167,6 @@
 @keyframes fadeIn {
   from {opacity: 0;}
   to {opacity:1 ;}
-}
-
-.card .actions {
-  /* visibility: hidden; */
-  top: -359px;
-  left: 230px;
 }
 
 .guilt .actions,
