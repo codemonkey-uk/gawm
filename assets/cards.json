@@ -33,32 +33,32 @@
         {
             "name": "Mr/s. Wordsmith",
             "subtype": "The Writer",
-            "desc": "You are observant and astute. You like to write things down. You have a tendency to stick your nose where it doesn't belong. You are an adult but you still have the beauty of your youth. You might be a reporter, or perhaps a crime-fiction novelist."
+            "desc": "You are observant, astute, and like to write. You have a tendency to stick your nose where it doesn't belong. You dress conservatively, but are surprisingly attractive when you take off your thick glasses.You might be a reporter, or perhaps a crime-fiction novelist."
         },
         {
             "name": "Mr/s. X",
             "subtype": "The Rebel",
-            "desc": "You are young and hedonistic. You dress and speak loudly. You make dangerous decisions and want to rock the boat just to see what will happen. You don't care about nobody, because nobody cares about you. You probably play an instrument and don’t have a fixed job."
+            "desc": "You are young and hedonistic. You dress informally and play an instrument.  You'll rock the boat just to see what happens, and you don't care what these uptight establishment types think. You don't have a job, but you do have a plan - you're gonna blow this joint."
         },
         {
             "name": "Doctor / Nurse Nightingale",
             "subtype": "The Healer",
-            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged, and could be attractive. You may have started out working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals privately."
+            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged and could be attractive. You may have started out working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals privately."
         },
         {
             "name": "Professor Acumen",
             "subtype": "The Intellectual",
-            "desc": "You are both extremely smart and arrogant. You do not take kindly to being questioned but like to ask questions yourself. You are likely older, and have unusual features. You are possibly run a lab, or are a scientist in self-employ, or a working academic."
+            "desc": "You are both extremely smart and arrogant. You do not take kindly to being questioned but like to ask questions yourself. You are likely older and have unusual features. You possibly run a lab, are a scientist in self-employ, or a working academic."
         },
         {
             "name": "Sgt. Stripes",
             "subtype": "The Commander",
-            "desc": "You are used to command and being the one who directs proceedings. You are quick to anger, but you are not stupid. You are likely middle-aged and may show scars from your dangerous profession. You could be either military, police or private security."
+            "desc": "You are used to being the one who directs proceedings. You are quick to anger, but you are not stupid. You are likely middle-aged and may have scars from your dangerous profession. You could be either military, police or private security."
         },
         {
             "name": "The Butler / The Maid",
             "subtype": "The Staff",
-            "desc": "You are here to attend the needs of the guests and know the house well. You are often overlooked but never miss a beat yourself. Your appearance is nondescript. You were most likely hired by the owners of the mansion or another guest."
+            "desc": "You are here to attend to the needs of the guests and know the house well. You are often overlooked but never miss a beat yourself. Your appearance is nondescript. You were most likely hired by the owners of the mansion or another guest."
         },
         {
             "name": "The Great M",
@@ -68,12 +68,12 @@
         {
             "name": "Mr/s. Diligent",
             "subtype": "The Labourer",
-            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You've worked hard for what you have and are damn proud of it. You might work at the house, or a smallholding of your own, or perhaps you peddle your trade door-to-door."
+            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You've worked hard for what you have and are damn proud of it. You might work at the house, a smallholding of your own, or perhaps you peddle your trade door-to-door."
         },
         {
-            "name": "Mr/s. Sauve",
+            "name": "Mr/s. Suave",
             "subtype": "The Seducer",
-            "desc": "You enjoy the chase, and are good at it. You use hair dye or makeup to hide your real age and wear the most fashionable clothes. You've had countless lovers - maybe even ex-sposes - but you're always on the lookout for your next conquest."
+            "desc": "You enjoy the chase and are good at it. You use hair dye or makeup to hide your real age and wear the most fashionable clothes. You've had countless lovers - maybe even ex-spouses - but you're always on the lookout for your next conquest."
         },
         {
             "name": "Mr/s. Pioneer",
@@ -85,7 +85,7 @@
         {
             "name": "Erotica",
             "subtype": "Contraband",
-            "desc": "Given the personal nature of these photographs, they are clearly weren't intended to be made public."
+            "desc": "Given the personal nature of these photographs, they clearly weren't intended to be made public."
         },
         {
             "name": "Marijuana Cigarettes",
@@ -125,12 +125,12 @@
         {
             "name": "Rembrandt Painting",
             "subtype": "d'Art",
-            "desc": "Abraham's Sacrifice.\\nOil on Canvas, 1635."
+            "desc": "Abraham's Sacrifice. Oil on Canvas, 1635."
         },
         {
             "name": "Silver Locket",
             "subtype": "d'Art",
-            "desc": "A locket made of silver that is sealed from opening."
+            "desc": "An exquisite locket made of silver. It has been sealed shut."
         },
         {
             "name": "Land Title Deed",
@@ -155,7 +155,7 @@
         {
             "name": "Unsigned Confession",
             "subtype": "Document",
-            "desc": "An unsigned confession, typed on a typewriter."
+            "desc": "An unsigned confession, typed on headed paper."
         },
         {
             "name": "Scalpel",
@@ -178,7 +178,7 @@
             "desc": "Contains sterile dressings, bandages, iodine, pain-killers, surgical spirit etc. It's been opened."
         },
         {
-            "name": "Tire Iron",
+            "name": "Tyre Iron",
             "subtype": "Tool",
             "desc": "24\" of rugged forged steel with chrome plate finish."
         },
@@ -190,7 +190,7 @@
         {
             "name": "Broken Window",
             "subtype": "Evidence",
-            "desc": "If somebody broke in, the why is there glass on the outside?"
+            "desc": "If somebody broke in, then why is there glass on the outside?"
         },
         {
             "name": "Pile of Ash",
@@ -220,7 +220,7 @@
         {
             "name": "Poison",
             "subtype": "Weapon",
-            "desc": "~ XXXX ~\\n Rat Poison\\nKeep out of children's reach."
+            "desc": "~ XXXX ~  Rat Poison Keep out of children's reach."
         },
         {
             "name": "Revolver",
@@ -230,14 +230,14 @@
         {
             "name": "Silk Rope",
             "subtype": "Weapon",
-            "desc": "A length of Silk Rope, strong yet thin, and black in colour."
+            "desc": "A length of Silk Rope, strong yet thin and black in colour."
         }
     ],
     "relationships": [
         {
             "name": "Business Partners",
             "subtype": "Business",
-            "desc": "You entered into a amicable business arrangement many years ago."
+            "desc": "You entered into an amicable business arrangement many years ago."
         },
         {
             "name": "Business Rivals",
@@ -247,7 +247,7 @@
         {
             "name": "Colleagues",
             "subtype": "Business",
-            "desc": "You were or are both employed in the same venture, company or other workplace."
+            "desc": "You were (or are) both employed in the same venture, company, or other workplace."
         },
         {
             "name": "Customer & Provider",
@@ -257,7 +257,7 @@
         {
             "name": "Employee & Boss",
             "subtype": "Business",
-            "desc": "One of you is employed by the other. Or this was the case at some time in the past."
+            "desc": "One of you is employed by the other, or this was the case at some time in the past."
         },
         {
             "name": "Conman & Mark",
@@ -297,7 +297,7 @@
         {
             "name": "Married or Divorced",
             "subtype": "Family",
-            "desc": "Nothing says love like a binding contract."
+            "desc": "Nothing says love like a legally binding contract."
         },
         {
             "name": "Parent & Child",
@@ -342,7 +342,7 @@
         {
             "name": "Conspirators",
             "subtype": "Secret",
-            "desc": "A mutually beneficial arrangement that's best kept quiet."
+            "desc": "A mutually beneficial arrangement that is best kept quiet."
         },
         {
             "name": "Secret Enemies",
@@ -365,9 +365,9 @@
             "desc": "They know your secret and that gives them power over you."
         },
         {
-            "name": "Dom and Sub",
+            "name": "Dom & Sub",
             "subtype": "Unequal",
-            "desc": "One of you decides what to do, and the other ones does it. What's the safe word?"
+            "desc": "One of you decides what to do and the other ones does it. What's the safe word?"
         },
         {
             "name": "Elected Official & Civil Servant",
@@ -375,14 +375,14 @@
             "desc": "One of you is elected, the other appointed."
         },
         {
-            "name": "Famous and Fan",
+            "name": "Celebrity & Admirer",
             "subtype": "Unequal",
             "desc": "They know absolutely everything about you, including some stuff you have forgotten yourself. Creepy."
         },
         {
             "name": "Unrequited Love",
             "subtype": "Unequal",
-            "desc": "You say that it's not real, but I know how I feel!"
+            "desc": "You say that it isn't real, but I know how I feel!"
         }
     ],
     "wildcards": [
@@ -409,7 +409,7 @@
         {
             "name": "A Church",
             "subtype": "Flashback",
-            "desc": "The story flashes back to a small church, of hewn stone. It looks like 12th century construction. "
+            "desc": "The story flashes back to a small church of hewn stone. It looks like 12th century construction. "
         },
         {
             "name": "A Secret Hallway",
@@ -464,7 +464,7 @@
         {
             "name": "Cruel Architecture",
             "subtype": "Obstruction",
-            "desc": "Traps! Built in the very mansion itself."
+            "desc": "Traps! Built into the very mansion itself."
         },
         {
             "name": "Fire! Fire!",
@@ -474,7 +474,7 @@
         {
             "name": "Extreme Weather",
             "subtype": "Obstruction",
-            "desc": "A violent storm or huge snowfall. The weather is so severe, it's disrupting the investigation."
+            "desc": "A violent storm or huge snowfall. The weather is so severe that it's disrupting the investigation."
         },
         {
             "name": "Power Cut",
@@ -484,12 +484,12 @@
         {
             "name": "Locked-In",
             "subtype": "Obstruction",
-            "desc": "Somebody is locked in a room, trap or other confinement and must be rescued!"
+            "desc": "Somebody is locked in a room, trap, or other confinement, and must be rescued!"
         },
         {
             "name": "Phone Call",
             "subtype": "Privacy",
-            "desc": "A surprising phone call is received. Who are they trying to contact? And why?"
+            "desc": "A surprising phone call is received. Who are they trying to contact, and why?"
         },
         {
             "name": "Hidden In Plain Sight",
@@ -519,7 +519,7 @@
         {
             "name": "Forgery",
             "subtype": "Distraction",
-            "desc": "A completely identical copy of an existing clue."
+            "desc": "An almost identical copy of an existing clue."
         },
         {
             "name": "An Unexpected Visitor",
@@ -589,9 +589,9 @@
             "desc": "The devil made me do it."
         },
         {
-            "name": "Addicted to Luxury",
+            "name": "Addicted To Luxury",
             "subtype": "Money",
-            "desc": "You need money to maintain the lifestyle you're accustomed too."
+            "desc": "You need money to maintain the lifestyle you're accustomed to."
         },
         {
             "name": "Loan Shark",
@@ -604,14 +604,14 @@
             "desc": "You don't need the money, it's just pure greed."
         },
         {
-            "name": "Start-up Money",
+            "name": "Investment Money",
             "subtype": "Money",
             "desc": "You need money to get that business off the ground."
         },
         {
             "name": "That You Earned",
             "subtype": "Money",
-            "desc": "You want to get back money that you earned."
+            "desc": "You did the work and deserve the money. They shouldn't try to take what's yours."
         },
         {
             "name": "Cold Blooded",
@@ -629,7 +629,7 @@
             "desc": "After everything I did, you don't get to just walk away from this."
         },
         {
-            "name": "Tit for Tat",
+            "name": "Tit For Tat",
             "subtype": "Revenge",
             "desc": "They took what was yours."
         },
@@ -693,22 +693,22 @@
         {
             "name": "Public Murder",
             "subtype": "The Discovery",
-            "desc": "The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. (The poison was placed in advance, a power-cut takes out the lights etc.)"
+            "desc": "The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights."
         },
         {
             "name": "Group Finds Body",
             "subtype": "The Discovery",
-            "desc": "The victim dies between scenes and the body is found by the group (or most of it.) Which individual reactions stand out from the group? Panic? Morbid Curiosity? Is there a doctor in the house?"
+            "desc": "The victim dies between scenes and the body is found by the whole group. Which individual reactions stand out? Panic? Morbid Curiosity? Is there a doctor in the house?"
         },
         {
             "name": "Individual Finds Body",
             "subtype": "The Discovery",
-            "desc": "The body is found by one person alone. Decide at random. They may choose to fetch others after they find the body."
+            "desc": "The body is found by one person alone (decide who at random). They may choose to fetch others after they find the body."
         },
         {
             "name": "Proof Of Murder Only",
             "subtype": "The Discovery",
-            "desc": "News/proof of the murder is delivered without the group seeing the body. (Video evidence, a body part in a box. etc.)"
+            "desc": "News/proof of the murder is delivered without the group seeing the body. Perhaps a reel of film, or a body part in a box."
         },
         {
             "name": "On The Edge Of Death",
@@ -718,14 +718,19 @@
         {
             "name": "Preordained Murder",
             "subtype": "The Discovery",
-            "desc": "The murder is telegraphed in advance of the act. (Victim says that someone is after them. A note reading 'One will die...' etc.)"
+            "desc": "The murder is telegraphed in advance of the act. Perhaps the victim says that someone is after them, or a note is found reading: One will die..."
+        },
+        {
+            "name": "Somebody Is Missing",
+            "subtype": "The Discovery",
+            "desc": "The victim dies between scenes and the body is found by the group, bar one (decide who at random). Who's not there? Where did they go? How will they explain their absence?"
         }
     ],
     "murder_cause": [
         {
             "name": "Apparent Suicide",
             "subtype": "The Cause of Death",
-            "desc": "The victim appears to have taken their own life. At least that's what it looks like. But does it add up?"
+            "desc": "The victim appears to have taken their own life. At least that's what it looks like... but does it add up?"
         },
         {
             "name": "Blunt Force Trauma",
@@ -740,27 +745,27 @@
         {
             "name": "Knife Wound",
             "subtype": "The Cause of Death",
-            "desc": "Stabbed or Slit Throat"
+            "desc": "Stabbed or a slit throat."
         },
         {
-            "name": "None Obvious",
+            "name": "Nothing Obvious",
             "subtype": "The Cause of Death",
-            "desc": "This might easily be mistaken for natural causes. Or, despite the lack of a obvious cause, murder may still be clear."
+            "desc": "This might be mistaken for a natural death. While some of you think it's murder, others are going to take some persuading."
         },
         {
             "name": "Dismemberment",
             "subtype": "The Cause of Death",
-            "desc": "Dismemberment or Decapitation. Truly gruesome. "
+            "desc": "Dismemberment or decapitation. Truly gruesome."
         },
         {
             "name": "Elaborate",
             "subtype": "The Cause of Death",
-            "desc": "Obscure and/or Elaborate. Anything from a rare toxin to Rube Goldberg death machine."
+            "desc": "Obscure and/or elaborate. Anything from a rare toxin to Rube Goldberg death machine."
         },
         {
             "name": "Asphyxiation",
             "subtype": "The Cause of Death",
-            "desc": "Strangled with bare hands, Garrotted or Drowned. A man can drown in 2\" of water."
+            "desc": "Strangled with bare hands, garrotted, or drowned. A man can drown in 2\" of water."
         },
         {
             "name": "Assassinated",
@@ -770,7 +775,7 @@
         {
             "name": "Extreme Trauma",
             "subtype": "The Cause of Death",
-            "desc": "Immolated, Electrocuted, Dissolved in acid etc. The victim suffered."
+            "desc": "Immolated, electrocuted, dissolved in acid etc. The victim suffered."
         }
     ]
 }

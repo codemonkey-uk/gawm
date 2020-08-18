@@ -12,7 +12,7 @@ define('gawm_default_rules', [
         "objects" => range(0,29),
         "motives" => range(0,29),
         "wildcards" => range(0,29),
-        "murder_discovery" => range(0,5),
+        "murder_discovery" => range(0,6),
         "murder_cause" => range(0,9)
     ],
 
