@@ -167,7 +167,7 @@ var data = {
 		"murder": {
 			"name": "Murder Cards",
 			"hand": {
-				"murder_discovery": [0, 1, 2, 3, 4, 5, -1],
+				"murder_discovery": [0, 1, 2, 3, 4, 5, 6, -1],
 				"murder_cause": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]
 			},
 			"active": false,
@@ -196,6 +196,7 @@ function reset()
 function body_onload()
 {
     gawm_load_txt(function() {
+        game_stage_txt = function() {return "GAWM DETAIL CARDS";};
         render_game(data);
     });
 }
