@@ -793,7 +793,12 @@ function unassigned_token_msg()
     for (var player in game.players)
     {
         if (game.players[player].unassigned_token)
-            return "Waiting for " +player_identity_txt(player) + " to assign a " + game.players[player].unassigned_token + " token.";
+        {
+            return unassigned_token_txt(
+                player_identity_txt(player), 
+                game.players[player].unassigned_token
+            );
+        }
     }
     
     return null;

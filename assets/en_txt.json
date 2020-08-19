@@ -24,5 +24,6 @@
 	],
 	
 	"action_giveto": "Give to {ID}",
-	"lastbreak_scene": "Last Break: The Accusation - {ID} - and The Guilty ..."
+	"lastbreak_scene": "Last Break: The Accusation - {ID} - and The Guilty ...",
+	"unassigned_token": "Waiting for {ID} to assign the {TOKEN} token."
 }

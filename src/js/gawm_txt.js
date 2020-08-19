@@ -91,4 +91,12 @@ function gawm_button_action_giveto_txt(indentity)
 function gawm_lastbreak_scene_txt(indentity)
 {
     return txt["lastbreak_scene"].replace("{ID}",indentity);
- }   
+}
+
+function unassigned_token_txt(indentity,token)
+{
+    return txt["unassigned_token"]
+        .replace("{ID}",indentity)
+        .replace("{TOKEN}",token);
+}
+
