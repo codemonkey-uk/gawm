@@ -155,7 +155,21 @@ function savePlayerName(div_id,player_id)
 
 function toggle_show(container, className)
 {
-    container.querySelector('.'+className).classList.toggle("show");
+    var elem = container.querySelector('.'+className);
+    elem.classList.toggle("show");
+    
+    // pop up elements are positioned right in the css 
+    // but if this takes them outside the game div right bound,
+    // re-position them left of their parent 
+    var bodyRect = document.getElementById('game_div').getBoundingClientRect(), 
+        elemRect = elem.getBoundingClientRect(),
+        offset   = bodyRect.right - elemRect.right;
+
+    if (offset < 0)
+    {
+        var offset = -(elemRect.right-elemRect.left);
+        elem.style.left = offset + "px";
+    }
 }
 
 function isFunction(functionToCheck)
