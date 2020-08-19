@@ -88,6 +88,21 @@ function gawm_button_action_giveto_txt(indentity)
     return txt["action_giveto"].replace("{ID}",indentity);
 }
 
+function gawm_extrascene_scene_txt(indentity)
+{
+    return txt["extrascene_scene"].replace("{ID}",indentity);
+}
+
+function gawm_firstbreak_scene_txt()
+{
+    return txt["firstbreak_scene"];
+}
+
+function gawm_twist_scene_txt()
+{
+    return txt["twist_scene"];
+}
+
 function gawm_lastbreak_scene_txt(indentity)
 {
     return txt["lastbreak_scene"].replace("{ID}",indentity);

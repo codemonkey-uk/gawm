@@ -818,19 +818,26 @@ function unassigned_token_msg()
     return null;
 }
 
+function active_player()
+{
+    for (var player in game.players)
+        if (game.players[player].active)
+            return player;
+}
+
 function game_stage_txt()
 {
     var uatm = unassigned_token_msg();
     if (uatm) return uatm;
 
     if (is_extrascene())
-        return "Extra Scene: Introduce a new character.";
+        return gawm_extrascene_scene_txt( player_identity_txt(active_player()) );
 
     if (is_firstbreak())
-        return "First Break: The Murder.";
+        return gawm_firstbreak_scene_txt();
 
     if (is_twist())
-        return "Second Break: The Twist.";
+        return gawm_twist_scene_txt();
 
     if (is_lastbreak())
         return gawm_lastbreak_scene_txt( player_identity_txt(game.most_innocent) );
