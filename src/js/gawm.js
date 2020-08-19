@@ -2,7 +2,8 @@
 // put theses in a gawm object maybe? use modules maybe?
 var game = null;
 var game_id = 0;
-var local_player_id = 0;
+var local_player_id = '0';
+var victim_player_id = '0';
 
 function note_part(detail_type, d_id, part)
 {
@@ -517,7 +518,7 @@ function player_alias_id(player_uid)
     var i = undefined;
     
     // if its the victim, the victim always has an alias
-    if (player_uid==0)
+    if (player_uid==victim_player_id)
     {
         i = game['victim']['play']['aliases'][0];
     }
@@ -588,7 +589,7 @@ function player_identity_template(player_uid,template)
 {
     // Victim special case
     var player_name;
-    if (player_uid==0)
+    if (player_uid==victim_player_id)
     {
         var c = Object.keys(game.players).length;
         if (game.act==1 && game.scene==c)
@@ -680,12 +681,12 @@ function player_html(player,player_uid)
                     var can_give = player.active &&
                         (game.act >= 2 || deck!="motives") && 
                         (target_id==local_player_id || (deck!="wildcards" && deck!="aliases")) &&
-                        (target_id==0 || !deck.startsWith("murder_"));
+                        (target_id==victim_player_id || !deck.startsWith("murder_"));
                     
                     // cant give someone two motives
                     if (deck=="motives")
                     {
-                        if (target_id==0)
+                        if (target_id==victim_player_id)
                             can_give = false;
                         else if (game['players'][target_id]['play']['motives'])
                             can_give = false;
@@ -895,7 +896,7 @@ function render_game(result)
     html += "<div class='header'>" + game_stage_txt() + "</div>";
     if (result.victim)
     {
-        html += player_html(result.victim,0,0);
+        html += player_html(result.victim,victim_player_id);
     }
 
     if (result.players[local_player_id])
@@ -1108,6 +1109,12 @@ function replace_playerids(msg)
             {
                 var re = new RegExp(player, 'g');
                 msg = msg.replace(re, player_identity_txt(player));
+            }
+            
+            if (game['victim'])
+            {
+                var re = new RegExp(victim_player_id, 'g');
+                msg = msg.replace(re, player_identity_txt(victim_player_id));
             }
         }
     }

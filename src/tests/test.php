@@ -235,6 +235,31 @@ function test_setup_epilogue_order()
     test($data["epilogue_order"],[1,2,0],"Incorrect epilogue order for fates.");
 }
 
+function test_setup_extrascene()
+{
+    global $data;
+
+    $data = gawm_new_game();
+    $data["notes"] = ["player" => ["aa" => "note - bb", "bb" => "note - aa"]];
+    $data["players"] = [
+        "aa" => [
+            "play" => ["aliases" => [1]],
+            "hand" => [],
+            "tokens" => []
+        ],
+        "bb" => [
+            "play" => ["aliases" => [2]],
+            "hand" => [],
+            "tokens" => []
+        ]
+    ];
+    
+    setup_extrascene($data);
+    $o = ["aa"=>"bb","bb"=>"aa"];
+    $nv = $o[$data["victim"]["player_id"]];
+    test( $data["notes"]["player"][$nv], "note - 0", "expected non-victim note to refer to victim id, not old alias owner" );
+}
+
 function test_token_bias()
 {
     global $data;
@@ -250,6 +275,7 @@ function test_token_bias()
 echo "Testing... ";
 
 try{
+    test_setup_extrascene();
     test_setup_epilogue_order();
     test_innocence_and_guilt_ranking();
     test_tally_votes();

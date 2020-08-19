@@ -53,6 +53,12 @@ function setup_extrascene(&$data)
     {
         $data["notes"]["player"][gawm_player_id_victim] = $data["notes"]["player"][$player_id];
         unset($data["notes"]["player"][$player_id]);
+        
+        // change existing notes refering to the victim player
+        foreach($data["notes"]["player"] as &$note)
+        {
+            $note = str_replace( $player_id, gawm_player_id_victim, $note );
+        }
     }
 }
 
