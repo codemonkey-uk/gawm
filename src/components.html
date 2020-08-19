@@ -196,7 +196,7 @@ function reset()
 function body_onload()
 {
     gawm_load_txt(function() {
-        game_stage_txt = function() {return "GAWM DETAIL CARDS";};
+        game_stage_txt = function() {return "Components";};
         render_game(data);
     });
 }
@@ -217,11 +217,14 @@ function body_onload()
 
 <div id="game_div"></div>
 
-<div id="invite" class='action' style="display: none;">
-<div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
-<div><textarea style='width: 50%; margin: auto;' id='invite_url_textarea'></textarea></div>
-<div><a id='invite_url_a'><div class='button'>Email It</div></a></div>
-</div>
+<div id="invite" class='action' style="display: none;"></div>
+
+<!-- call to action, get the damn game -->
+<div>
+<div class='action'>
+<div><h1>Rule Book</h1></div>
+<a href=""><div class='button'>Get</div></a>
+</div></div>
 
 <div id="gameover" style="display: none;">
 <div class='action'>
