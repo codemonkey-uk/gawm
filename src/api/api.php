@@ -111,14 +111,15 @@ function _api_record_accused(&$data, $player_id, $detail)
     ]; 
 }
 
-function _api_get($game_id, $player_id)
+function _api_get($game_id, $player_id, $hashids)
 {
     return [
         'game' => redact_for_player(
             load_and_release($game_id), 
             $player_id
         ),
-        'player_id' => $player_id
+        'player_id' => $player_id,
+        'game_id' => $hashids->encode($game_id),
     ]; 
 }
 

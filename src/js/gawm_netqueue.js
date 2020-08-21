@@ -5,7 +5,7 @@ var refreshTimeout = undefined;
 
 // reload on gain focus
 window.addEventListener("focus", function(event) {
-    if (refreshTimeout==undefined) { reload(); }
+    if (refreshTimeout==undefined) { reload(local_player_id,game_id); }
 }, false);
 
 function http_response_handler()
@@ -25,7 +25,7 @@ function http_response_handler()
                 force_rebuild = true;
             }
 
-            if (result.player_id && result.player_id!=0 && result.player_id!=local_player_id)
+            if (result.player_id && result.player_id!=victim_player_id && result.player_id!=local_player_id)
             {
                 local_player_id = result.player_id;
                 console.log("New Player Id:" + result.player_id);
@@ -102,7 +102,7 @@ function gawm_pumpRequestQueue()
                     else
                     {
                         // request an update from the server
-                        reload();
+                        reload(local_player_id,game_id);
                     }
                 }
             }, 5000);

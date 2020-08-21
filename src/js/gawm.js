@@ -849,7 +849,7 @@ function game_stage_txt()
         var c = Object.keys(game.players).length;
         if (game.act==3)
             c = c*2;
-        act_scene += ", Scene " + (game.scene+1) + " of " + c;
+        act_scene += ", Scene " + (game.scene+1) + " of " + c + " - " + player_identity_txt(active_player());
     }   
     return act_scene;
 }
@@ -888,7 +888,7 @@ function render_game(result)
     for (var player in game.players)
     {
         if (player==local_player_id) debug_html+="<b>";
-        debug_html += "<span onclick='reload(\""+player+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
+        debug_html += "<span onclick='reload(\""+player+"\",\""+game_id+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
         if (player==local_player_id) debug_html+="</b>";
     }
     debug_html += '<input type="button" onclick="next(game)" value="Next"/>';
@@ -1079,21 +1079,18 @@ function next(gamestate)
 
 function reload(player_id,newgame_id)
 {    
-    // player view switching debug hax
-    if (player_id)
-        local_player_id = player_id;
-    if (newgame_id)
-        game_id = newgame_id;
-    
     // there is no game zero, do not try to load it
-    if (game_id==0)
+    if (newgame_id==0)
         return;
+
+    if (player_id==null)
+        player_id=victim_player_id;
         
     // build request json
     var request = {};
     request.action = 'get';
-    request.game_id = game_id;
-    request.player_id = local_player_id;
+    request.game_id = newgame_id;
+    request.player_id = player_id;
 
     gawm_sendrequest(request);
 }
