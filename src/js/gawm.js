@@ -3,7 +3,7 @@
 var game = null;
 var game_id = 0;
 var local_player_id = '0';
-var victim_player_id = '0';
+var victim_player_id = 'deadbeef';
 
 function note_part(detail_type, d_id, part)
 {
@@ -385,7 +385,7 @@ function show_hand(player,player_uid)
     // victim can have details but not vote
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
-        (game.act < 4 && player_uid!=0) ||
+        (game.act < 4 && player_uid!=victim_player_id) ||
         (player_uid==0 && is_firstbreak()) ||
         player.active ||
         player.fate;
@@ -473,7 +473,7 @@ function unassigned_html(player,player_uid)
         }
     }
 
-    var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \"0\")";
+    var click = "givetoken(game, \""+player_uid+"\", \""+player.unassigned_token+"\", \""+victim_player_id+"\")";
     actions += "<button onclick='"+click+"'>Discard</button>";
     
     html += assign_token_html(player.unassigned_token, actions);
@@ -713,8 +713,8 @@ function player_html(player,player_uid)
                 
                 var result = "";
                 result += fn(local_player_id);
-                if (is_firstbreak())
-                    result += fn(0);
+                if (is_firstbreak() && local_player_id!=victim_player_id)
+                    result += fn(victim_player_id);
                 for (var p in game.players)
                     if (local_player_id!=p) result += fn(p);
                     

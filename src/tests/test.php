@@ -257,7 +257,7 @@ function test_setup_extrascene()
     setup_extrascene($data);
     $o = ["aa"=>"bb","bb"=>"aa"];
     $nv = $o[$data["victim"]["player_id"]];
-    test( $data["notes"]["player"][$nv], "note - 0", "expected non-victim note to refer to victim id, not old alias owner" );
+    test( $data["notes"]["player"][$nv], ("note - ".gawm_player_id_victim), "expected non-victim note to refer to victim id, not old alias owner" );
 }
 
 function test_token_bias()

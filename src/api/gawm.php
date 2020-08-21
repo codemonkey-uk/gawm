@@ -1,6 +1,6 @@
 <?php
 
-define( 'gawm_player_id_victim', '0' );
+define( 'gawm_player_id_victim', 'deadbeef' );
 define( 'gawm_vote_guilty', '1' );
 define( 'gawm_vote_innocent', '2' );
 define( 'gawm_allow_active_player_unilatteral_voting', false );
