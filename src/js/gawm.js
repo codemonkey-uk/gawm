@@ -384,7 +384,7 @@ function show_hand(player,player_uid)
     // players can vote when they have no details
     return (player.hand && Object.keys(player.hand).length>0) ||
         (game.act < 4 && player_uid!=victim_player_id) ||
-        (player_uid==0 && is_firstbreak()) ||
+        (player_uid==victim_player_id && is_firstbreak()) ||
         player.active ||
         player.fate;
 }
@@ -636,7 +636,7 @@ function player_html(player,player_uid)
         // other actions, local player or victim
         var pfn = 
             (player_uid==local_player_id || 
-            (player_uid==0 && is_firstbreak() && !unassigned_token_msg())) ?
+            (player_uid==victim_player_id && is_firstbreak() && !unassigned_token_msg())) ?
             function(){
                 var html = "";
                 // you can vote as the active player AFTER you've played your details
