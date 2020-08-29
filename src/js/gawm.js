@@ -44,8 +44,6 @@ function img_url(deck)
         case 'objects': return 'assets/object_back.svg';
         case 'relationships': return 'assets/rel_back.svg';
         case 'wildcards': return 'assets/wild_back.svg';
-        case 'guilt': return 'assets/guilt.png';
-        case 'innocence': return 'assets/innocence.png';
         case 'murder_cause': return 'assets/mc_back.svg';
         case 'murder_discovery': return 'assets/md_back.svg';
     }
@@ -207,8 +205,8 @@ function token_html(type, i, click)
     }
     else
     {
-        result += "<img src='assets/"+type+".png'>";
-        result += "<p>"+type+"</p>";
+        result += "<img src='assets/"+type+".svg'>";
+        result += "<p>"+type.toUpperCase()+"</p>";
     }
     result += "</div>";
     result += "</div>";
@@ -393,7 +391,7 @@ function show_hand(player,player_uid)
 
 var accused_template =`
 <div class="pointer"><div class="frame">
-<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/cuffs.png" alt="hand cuffs graphic"/>
+<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/accuse.svg" alt="accuse graphic"/>
 <p>ACCUSED</p>
 </div></div>
 `;
