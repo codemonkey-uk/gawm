@@ -64,12 +64,12 @@ function gawm_default_note_txt(detail_type,i)
 
 function gawm_card_img_alt_txt(deck)
 {
-    return gawm_deckid_txt(deck) + " Card";
+    return gawm_component_txt(deck) + " Card";
 }
 
-function gawm_deckid_txt(deck)
+function gawm_component_txt(deck)
 {
-    return txt[deck];
+    return txt["component"][deck];
 }
 
 function gawm_fate_txt(fate)

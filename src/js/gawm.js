@@ -206,7 +206,7 @@ function token_html(type, i, click)
     else
     {
         result += "<img src='assets/"+type+".svg'>";
-        result += "<p>"+type.toUpperCase()+"</p>";
+        result += "<p>"+gawm_component_txt(type)+"</p>";
     }
     result += "</div>";
     result += "</div>";
@@ -298,7 +298,7 @@ function hand_html(hand,player_id,action,postfix,label)
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                     card_html = card_template
                         .replace(/_ID/g, i)
-                        .replace(/_TYPE_TXT/g, gawm_deckid_txt(deck))
+                        .replace(/_TYPE_TXT/g, gawm_component_txt(deck))
                         .replace(/_TYPE/g, deck)
                         .replace(/_SUBTYPE/g, subtype.toHtmlEntities())
                         .replace(/_NAME/g, name.toHtmlEntities())
@@ -404,7 +404,7 @@ function accused_html()
 var pointer1_template =`
 <div class="pointer" style="cursor: pointer" onclick="_ACTION">
 <div class="frame">
-<img src="assets/pointer.png" alt="pointing finger graphic"/>
+<img src="assets/arrow.svg" alt="arrow icon"/>
 <p>_TEXT</p></div>
 </div>
 `;
@@ -419,7 +419,7 @@ function pointer1_html(text, action)
 var pointer_template =`
 <div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'actions')">
 <div class="frame">
-<img src="assets/pointer.png" alt="pointing finger graphic"/>
+<img src="assets/arrow.svg" alt="arrow icon"/>
 <p>_TEXT</p></div>
 <div class="actions">_ACTIONS</div>
 </div>
@@ -445,7 +445,7 @@ var tokenback_template = `
 
 function assign_token_html(type, menu)
 {
-    var url = "assets/"+type+".png";
+    var url = "assets/"+type+".svg";
     var alt = gawm_card_img_alt_txt(type,-1);
     var cursor = menu.length > 0 ? "cursor: context-menu;" : "";
     return tokenback_template

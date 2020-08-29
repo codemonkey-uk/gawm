@@ -1,12 +1,16 @@
 {
-	"aliases": "Alias",
-	"objects": "Object",
-	"relationships": "Relationship",
-	"wildcards": "Wildcard",
-	"motives": "Motive",
-	"murder_discovery": "Murder Discovery",
-	"murder_cause": "Murder Cause",
-
+    "component": {
+        "aliases": "Alias",
+        "objects": "Object",
+        "relationships": "Relationship",
+        "wildcards": "Wildcard",
+        "motives": "Motive",
+        "murder_discovery": "Murder Discovery",
+        "murder_cause": "Murder Cause",
+        "guilt": "Guilt",
+        "accuse": "Accuse",
+        "innocence": "Innocence"
+    },
 	"gawm": "Got Away With Murder!",
 	"got_caught": "Got Caught",
 	"got_it_right": "Got It Right",
