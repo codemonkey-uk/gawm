@@ -391,7 +391,7 @@ function show_hand(player,player_uid)
 
 var accused_template =`
 <div class="pointer"><div class="frame">
-<img style="margin-top: 6px; margin-bottom: 1px;" src="assets/accuse.svg" alt="accuse graphic"/>
+<img style="margin-top: 0px; margin-bottom: 1px;" src="assets/accuse.svg" alt="accuse graphic"/>
 <p>ACCUSED</p>
 </div></div>
 `;
