@@ -62,7 +62,7 @@ function deck_order(deck)
     }
 }
 
-var card_template = `<div class="halfcard _TYPE">
+var card_template = `<div class="halfcard _TYPE" id="_TYPE_ID">
   <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
   <div class="title">_TYPE_TXT</div>
   <div class="subtitle">_SUBTYPE</div>  
@@ -294,9 +294,11 @@ function hand_html(hand,player_id,action,postfix,label)
                     {
                         note_name += "*";
                     }
-                
+                    var anchor_id = player_id+deck+i+'-anchor';
+                    card_html = '<div id="'+anchor_id+'"" style="display: block; width: 125px; height: 90px;"></div>';
+                    
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
-                    card_html = card_template
+                    face_html = card_template
                         .replace(/_ID/g, i)
                         .replace(/_TYPE_TXT/g, gawm_component_txt(deck))
                         .replace(/_TYPE/g, deck)
@@ -308,6 +310,21 @@ function hand_html(hand,player_id,action,postfix,label)
                     // note editing disabled
                     if (!game['notes']) 
                         card_html = card_html.replace("contenteditable=\"true\"", "");
+
+                    // animated shenanigans:
+                    var faceid = player_id+deck+i+"-cardface";
+                    var face = document.getElementById(faceid);
+                    if (!face)
+                    {
+                        face = document.createElement("div");
+                        face.id = faceid;
+                        face.style.position = 'absolute';
+                        face.style.display = 'none';
+                        face.style.top = '0px';
+                        face.style.left = '0px';
+                        document.getElementById("cardface_container").appendChild(face);
+                    }
+                    face.innerHTML = face_html;
                 }
                 html += card_html;
             }
@@ -321,6 +338,51 @@ function hand_html(hand,player_id,action,postfix,label)
     html += '</div>';
     
     return html;
+}
+
+function gawm_animateCardFaces() 
+{
+    var div = document.getElementById("cardface_container"); 
+    var children = div.childNodes; 
+
+    for (var i=0; i<children.length; i++) 
+    { 
+        var face = children[i]; 
+        var anchor_id = face.id.replace("-cardface","-anchor");
+        var anchor = document.getElementById(anchor_id);
+        if (anchor)
+        {
+            var f = 0.2;
+            if (face.style.display == 'none')
+            {
+                face.style.display = 'block';
+                f = 1;
+            }
+            
+            var r1 = face.getBoundingClientRect();
+            var y1 = r1.top;
+            var x1 = r1.left;
+            var r2 = anchor.getBoundingClientRect();
+            var y2 = r2.top;
+            var x2 = r2.left;
+            var dy = y2-y1;
+            var dx = x2-x1;
+            var d = Math.sqrt(dy*dy + dx*dx);
+    
+            // snap pixel perfect at last step
+            if (d*f <= 1)
+                f = 1;
+            
+            var t = parseInt(face.style.top, 10);
+            var l = parseInt(face.style.left, 10);
+            face.style.top = Math.round(t + dy*f) + 'px'; 
+            face.style.left = Math.round(l + dx*f) + 'px';
+        }
+        else
+        {
+            face.style.display = 'none';
+        }
+    }
 }
 
 function is_twist()
