@@ -233,6 +233,7 @@
 .guilt p, 
 .innocence p {
   font-size: 70px;
+  height: 70px;
   border: 0px;
   padding-top: 22px;
   margin-block-start:0; 
@@ -248,6 +249,7 @@
 .innocence img + p
 {
   font-size: 16px; 
+  height: 16px;  
   border: 0px;
   margin: 0px;
   padding: 0px;
