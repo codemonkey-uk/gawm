@@ -4,7 +4,8 @@ var game = null;
 var game_id = 0;
 var local_player_id = '0';
 var victim_player_id = 'deadbeef';
-
+var animationInterval = null;
+    
 function note_part(detail_type, d_id, part)
 {
     // notes support store a name and a description
@@ -344,7 +345,8 @@ function gawm_animateCardFaces()
 {
     var div = document.getElementById("cardface_container"); 
     var children = div.childNodes; 
-
+    var stillMoving = 0;
+    
     for (var i=0; i<children.length; i++) 
     { 
         var face = children[i]; 
@@ -369,19 +371,32 @@ function gawm_animateCardFaces()
             var dx = x2-x1;
             var d = Math.sqrt(dy*dy + dx*dx);
     
-            // snap pixel perfect at last step
-            if (d*f <= 1)
-                f = 1;
+            if (d>0)
+            {
+                // snap pixel perfect at last step
+                if (d*f <= 1)
+                    f = 1;
+                else
+                    stillMoving++;
             
-            var t = parseInt(face.style.top, 10);
-            var l = parseInt(face.style.left, 10);
-            face.style.top = Math.round(t + dy*f) + 'px'; 
-            face.style.left = Math.round(l + dx*f) + 'px';
+                var t = parseInt(face.style.top, 10);
+                var l = parseInt(face.style.left, 10);
+                face.style.top = Math.round(t + dy*f) + 'px'; 
+                face.style.left = Math.round(l + dx*f) + 'px';
+            }
         }
         else
         {
             face.style.display = 'none';
         }
+    }
+    
+    // once everything is in place, stop animating
+    // respect client cpu, save energy
+    if (stillMoving==0)
+    {
+        clearInterval(animationInterval);
+        animationInterval = null;
     }
 }
 
@@ -987,6 +1002,12 @@ function render_game(result)
 
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
+    
+    // animate faces into place
+    if (animationInterval==null)
+    {
+        animationInterval = setInterval(gawm_animateCardFaces, 5);
+    }
 }
 
 function givetoken(gamestate,player_id,value,target_id)

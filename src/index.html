@@ -178,9 +178,6 @@ function body_onload()
 
     var d = getParameterByName('d');
     if (d) document.getElementById('debug_div').style.display="block";
-
-    // todo, better init
-    var interval = setInterval(gawm_animateCardFaces, 5);
     
     gawm_load_txt(function() {
         var action = getParameterByName('a');  
