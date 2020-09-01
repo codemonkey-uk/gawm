@@ -374,10 +374,21 @@ function gawm_animateCardFaces()
             if (d>0)
             {
                 // snap pixel perfect at last step
-                if (d*f <= 1)
+                var v = d*f;
+                if (v <= 1)
+                {
                     f = 1;
-                else
+                }
+                else if (f<1)
+                {
                     stillMoving++;
+                    var maxVelocity = 16;
+                    if (v>maxVelocity)
+                    {
+                        dy = dy / d * maxVelocity / f;
+                        dx = dx / d * maxVelocity / f;
+                    }
+                }
             
                 var t = parseInt(face.style.top, 10);
                 var l = parseInt(face.style.left, 10);
