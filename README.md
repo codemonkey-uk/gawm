@@ -1,6 +1,5 @@
-# gawm
-
-Getting Away With Murder is a co-operative role-play game where your group will bring to life a darkly comedic murder mystery.
+# Getting Away With Murder
+_A co-operative role-play game of drama, wit and mystery.__
 
 ![CI](https://github.com/codemonkey-uk/gawm/workflows/CI/badge.svg?branch=master)
 

@@ -605,7 +605,7 @@ function record_accused_html(player,player_uid)
     var label = 'ACCUSE';
     if (game.the_accused)
     {
-        actions += "<button onclick='next(game)'>End Scene</button>";
+        actions += "<button onclick='next()'>End Scene</button>";
         label = 'NEXT';
     }
     
@@ -768,11 +768,11 @@ function player_html(player,player_uid)
                 {
                     if (game.act==0)
                     {
-                        html += pointer1_html('BEGIN','next(game)');
+                        html += pointer1_html('BEGIN','next()');
                     }
                     else
                     {
-                        html += pointer1_html('NEXT','next(game)');
+                        html += pointer1_html('NEXT','next()');
                     }
                 }
                 
@@ -1010,7 +1010,7 @@ function render_game(result)
         debug_html += "<span onclick='reload(\""+player+"\",\""+game_id+"\");' style='cursor: pointer;'> ["+game.players[player].name+"] </span>";
         if (player==local_player_id) debug_html+="</b>";
     }
-    debug_html += '<input type="button" onclick="next(game)" value="Next"/>';
+    debug_html += '<input type="button" onclick="next())" value="Next"/>';
 
     html += "<div class='header'>" + game_stage_txt() + "</div>";
     if (result.victim)
@@ -1190,15 +1190,18 @@ function add_player(id, player_name,onsucess)
     gawm_sendrequest(request,onsucess);
 }
 
-function next(gamestate)
+function next()
 {
-    // build request json
-    var request = {};
-    request.action = 'next';
-    request.game_id = game_id;
-    request.player_id = local_player_id;
+    if (game_id)
+    {
+        // build request json
+        var request = {};
+        request.action = 'next';
+        request.game_id = game_id;
+        request.player_id = local_player_id;
 
-    gawm_sendrequest(request);
+        gawm_sendrequest(request);
+    }
 }
 
 function reload(player_id,newgame_id)
