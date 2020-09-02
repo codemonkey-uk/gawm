@@ -345,7 +345,7 @@ function anchor_animatedElement_html(id, width, height, html)
     face.innerHTML = html;
     
     var anchor_id = id+'-anchor';
-    var result = '<div id="'+anchor_id+'"" style="display: block; width: 125px; height: 90px;"></div>';
+    var result = '<div id="'+anchor_id+'"" style="display: block; width: '+width+'px; height: '+height+'px;"></div>';
     
     return result;
 }
