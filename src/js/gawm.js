@@ -295,8 +295,6 @@ function hand_html(hand,player_id,action,postfix,label)
                     {
                         note_name += "*";
                     }
-                    var anchor_id = player_id+deck+i+'-anchor';
-                    card_html = '<div id="'+anchor_id+'"" style="display: block; width: 125px; height: 90px;"></div>';
                     
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
                     face_html = card_template
@@ -308,24 +306,12 @@ function hand_html(hand,player_id,action,postfix,label)
                         .replace(/_DESC/g, desc.toHtmlEntities())
                         .replace(/_CURSOR/g, cursor)
                         .replace(/_ACTIONS/g, menu);
+
                     // note editing disabled
                     if (!game['notes']) 
-                        card_html = card_html.replace("contenteditable=\"true\"", "");
+                        face_html = face_html.replace("contenteditable=\"true\"", "");
 
-                    // animated shenanigans:
-                    var faceid = player_id+deck+i+"-cardface";
-                    var face = document.getElementById(faceid);
-                    if (!face)
-                    {
-                        face = document.createElement("div");
-                        face.id = faceid;
-                        face.style.position = 'absolute';
-                        face.style.display = 'none';
-                        face.style.top = '0px';
-                        face.style.left = '0px';
-                        document.getElementById("cardface_container").appendChild(face);
-                    }
-                    face.innerHTML = face_html;
+                    card_html = anchor_animatedElement_html(player_id+deck+i, 125, 90, face_html);
                 }
                 html += card_html;
             }
@@ -339,6 +325,29 @@ function hand_html(hand,player_id,action,postfix,label)
     html += '</div>';
     
     return html;
+}
+
+function anchor_animatedElement_html(id, width, height, html)
+{    
+    // animated shenanigans:
+    var faceid = id+"-cardface";
+    var face = document.getElementById(faceid);
+    if (!face)
+    {
+        face = document.createElement("div");
+        face.id = faceid;
+        face.style.position = 'absolute';
+        face.style.display = 'none';
+        face.style.top = '0px';
+        face.style.left = '0px';
+        document.getElementById("cardface_container").appendChild(face);
+    }
+    face.innerHTML = html;
+    
+    var anchor_id = id+'-anchor';
+    var result = '<div id="'+anchor_id+'"" style="display: block; width: 125px; height: 90px;"></div>';
+    
+    return result;
 }
 
 function gawm_animateCardFaces() 
@@ -732,9 +741,19 @@ function player_html(player,player_uid)
                 if (game_stage_voting() && (player.active==false || player.details_left_to_play==false))
                 {
                     if (typeof player.vote == "undefined" || player.vote == 1)
-                        html += votebutton_html(player_uid,2);
+                    {
+                        html += anchor_animatedElement_html(
+                            player_uid+"-vote-"+2,90,90,
+                            votebutton_html(player_uid,2)
+                        );
+                    }
                     if (typeof player.vote == "undefined" || player.vote == 2)
-                        html += votebutton_html(player_uid,1);
+                    {
+                        html += anchor_animatedElement_html(
+                            player_uid+"-vote-"+1,90,90,
+                            votebutton_html(player_uid,1)
+                        );
+                    }
                 }
                 if (player.active && player.details_left_to_play==false)
                 {
@@ -834,7 +853,12 @@ function player_html(player,player_uid)
             function(){
                 var html = "";
                 if (typeof player.vote != "undefined")
-                    html += votediv_html(player_uid,player.vote,"");
+                {
+                    html += anchor_animatedElement_html(
+                        player_uid+"-vote-"+player.vote,90,90,
+                        votediv_html(player_uid,player.vote,"")
+                    );
+                }
                 return html;
             },
             "IN PLAY"
