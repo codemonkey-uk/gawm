@@ -350,6 +350,15 @@ function anchor_animatedElement_html(id, width, height, html)
     return result;
 }
 
+function refreshAnimationTimer()
+{
+    // animate card faces into place
+    if (animationInterval==null)
+    {
+        animationInterval = setInterval(gawm_animateCardFaces, 5);
+    }
+}
+
 function gawm_animateCardFaces() 
 {
     var div = document.getElementById("cardface_container"); 
@@ -1038,11 +1047,10 @@ function render_game(result)
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
     
-    // animate faces into place
-    if (animationInterval==null)
-    {
-        animationInterval = setInterval(gawm_animateCardFaces, 5);
-    }
+    refreshAnimationTimer();
+    window.onresize = function(event) {
+        refreshAnimationTimer();
+    };
 }
 
 function givetoken(gamestate,player_id,value,target_id)
