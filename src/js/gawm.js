@@ -63,7 +63,7 @@ function deck_order(deck)
     }
 }
 
-var card_template = `<div class="halfcard _TYPE" id="_TYPE_ID">
+var card_template = `<div class="halfcard _TYPE">
   <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
   <div class="title">_TYPE_TXT</div>
   <div class="subtitle">_SUBTYPE</div>  
