@@ -4,7 +4,8 @@ var game = null;
 var game_id = 0;
 var local_player_id = '0';
 var victim_player_id = 'deadbeef';
-
+var animationInterval = null;
+    
 function note_part(detail_type, d_id, part)
 {
     // notes support store a name and a description
@@ -294,9 +295,9 @@ function hand_html(hand,player_id,action,postfix,label)
                     {
                         note_name += "*";
                     }
-                
+                    
                     cursor = menu.length > 0 ? "cursor: context-menu;" : "";
-                    card_html = card_template
+                    face_html = card_template
                         .replace(/_ID/g, i)
                         .replace(/_TYPE_TXT/g, gawm_component_txt(deck))
                         .replace(/_TYPE/g, deck)
@@ -305,9 +306,12 @@ function hand_html(hand,player_id,action,postfix,label)
                         .replace(/_DESC/g, desc.toHtmlEntities())
                         .replace(/_CURSOR/g, cursor)
                         .replace(/_ACTIONS/g, menu);
+
                     // note editing disabled
                     if (!game['notes']) 
-                        card_html = card_html.replace("contenteditable=\"true\"", "");
+                        face_html = face_html.replace("contenteditable=\"true\"", "");
+
+                    card_html = anchor_animatedElement_html(player_id+deck+i, 125, 90, face_html);
                 }
                 html += card_html;
             }
@@ -321,6 +325,108 @@ function hand_html(hand,player_id,action,postfix,label)
     html += '</div>';
     
     return html;
+}
+
+function anchor_animatedElement_html(id, width, height, html)
+{    
+    // animated shenanigans:
+    var faceid = id+"-cardface";
+    var face = document.getElementById(faceid);
+    if (!face)
+    {
+        face = document.createElement("div");
+        face.id = faceid;
+        face.style.position = 'absolute';
+        face.style.display = 'none';
+        face.style.top = '0px';
+        face.style.left = '0px';
+        document.getElementById("cardface_container").appendChild(face);
+    }
+    face.innerHTML = html;
+    
+    var anchor_id = id+'-anchor';
+    var result = '<div id="'+anchor_id+'"" style="display: block; width: '+width+'px; height: '+height+'px;"></div>';
+    
+    return result;
+}
+
+function refreshAnimationTimer()
+{
+    // animate card faces into place
+    if (animationInterval==null)
+    {
+        animationInterval = setInterval(gawm_animateCardFaces, 5);
+    }
+}
+
+function gawm_animateCardFaces() 
+{
+    var div = document.getElementById("cardface_container"); 
+    var children = div.childNodes; 
+    var stillMoving = 0;
+    
+    for (var i=0; i<children.length; i++) 
+    { 
+        var face = children[i]; 
+        var anchor_id = face.id.replace("-cardface","-anchor");
+        var anchor = document.getElementById(anchor_id);
+        if (anchor)
+        {
+            var f = 0.2;
+            if (face.style.display == 'none')
+            {
+                face.style.display = 'block';
+                f = 1;
+            }
+            
+            var r1 = face.getBoundingClientRect();
+            var y1 = r1.top;
+            var x1 = r1.left;
+            var r2 = anchor.getBoundingClientRect();
+            var y2 = r2.top;
+            var x2 = r2.left;
+            var dy = y2-y1;
+            var dx = x2-x1;
+            var d = Math.sqrt(dy*dy + dx*dx);
+    
+            if (d>0)
+            {
+                // snap pixel perfect at last step
+                var v = d*f;
+                if (v <= 1)
+                {
+                    f = 1;
+                }
+                else if (f<1)
+                {
+                    stillMoving++;
+                    var maxVelocity = 16;
+                    if (v>maxVelocity)
+                    {
+                        dy = dy / d * maxVelocity / f;
+                        dx = dx / d * maxVelocity / f;
+                    }
+                }
+            
+                var t = parseInt(face.style.top, 10);
+                var l = parseInt(face.style.left, 10);
+                face.style.top = Math.round(t + dy*f) + 'px'; 
+                face.style.left = Math.round(l + dx*f) + 'px';
+            }
+        }
+        else
+        {
+            face.style.display = 'none';
+        }
+    }
+    
+    // once everything is in place, stop animating
+    // respect client cpu, save energy
+    if (stillMoving==0)
+    {
+        clearInterval(animationInterval);
+        animationInterval = null;
+    }
 }
 
 function is_twist()
@@ -644,9 +750,19 @@ function player_html(player,player_uid)
                 if (game_stage_voting() && (player.active==false || player.details_left_to_play==false))
                 {
                     if (typeof player.vote == "undefined" || player.vote == 1)
-                        html += votebutton_html(player_uid,2);
+                    {
+                        html += anchor_animatedElement_html(
+                            player_uid+"-vote-"+2,90,90,
+                            votebutton_html(player_uid,2)
+                        );
+                    }
                     if (typeof player.vote == "undefined" || player.vote == 2)
-                        html += votebutton_html(player_uid,1);
+                    {
+                        html += anchor_animatedElement_html(
+                            player_uid+"-vote-"+1,90,90,
+                            votebutton_html(player_uid,1)
+                        );
+                    }
                 }
                 if (player.active && player.details_left_to_play==false)
                 {
@@ -746,7 +862,12 @@ function player_html(player,player_uid)
             function(){
                 var html = "";
                 if (typeof player.vote != "undefined")
-                    html += votediv_html(player_uid,player.vote,"");
+                {
+                    html += anchor_animatedElement_html(
+                        player_uid+"-vote-"+player.vote,90,90,
+                        votediv_html(player_uid,player.vote,"")
+                    );
+                }
                 return html;
             },
             "IN PLAY"
@@ -925,6 +1046,11 @@ function render_game(result)
 
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
+    
+    refreshAnimationTimer();
+    window.onresize = function(event) {
+        refreshAnimationTimer();
+    };
 }
 
 function givetoken(gamestate,player_id,value,target_id)

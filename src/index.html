@@ -55,12 +55,19 @@
   padding: 4px;
   position: relative;
 }
+
 #loading_div
 {
     display: none; position: fixed; top: 0; right: 0; pointer-events: none;
     padding: 4px;
     z-index: 99;
 }
+
+#cardface_container
+{
+    z-index: 1;
+}
+
 /* Style the header */
 .header {
   background-color: #DAE7E4;
@@ -171,8 +178,7 @@ function body_onload()
 
     var d = getParameterByName('d');
     if (d) document.getElementById('debug_div').style.display="block";
-
-
+    
     gawm_load_txt(function() {
         var action = getParameterByName('a');  
         if (action == 'join_game') join();
@@ -223,6 +229,7 @@ function body_onload()
 </div>
 
 <div id="game_div"></div>
+<div id="cardface_container"></div>
 
 <div id="invite" class='action' style="display: none;">
 <div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
