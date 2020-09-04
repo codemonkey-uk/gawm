@@ -1247,17 +1247,19 @@ function replace_playerids(msg)
 
 function error_popup(msg) 
 {
+    msg = replace_playerids(msg);
+    console.log(msg);
     // Get the snackbar DIV
     var x = document.getElementById("snackbar");
+    if (x)
+    {    
+        // Add the "show" class to DIV
+        x.className = "show";
+        x.innerHTML = msg
 
-    msg = replace_playerids(msg);
-    
-    // Add the "show" class to DIV
-    x.className = "show";
-    x.innerHTML = msg
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
 }
 
 function new_game(player_name)
