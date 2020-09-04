@@ -373,7 +373,7 @@ function gawm_animateCardFaces()
         if (anchor)
         {
             var f = 0.2;
-            if (face.style.display == 'none')
+            if (face.style.display == 'none' || snapMovement)
             {
                 face.style.display = 'block';
                 f = 1;
@@ -426,6 +426,7 @@ function gawm_animateCardFaces()
     {
         clearInterval(animationInterval);
         animationInterval = null;
+        snapMovement = false;
     }
 }
 
@@ -1049,6 +1050,7 @@ function render_game(result)
     
     refreshAnimationTimer();
     window.onresize = function(event) {
+        snapMovement=true;
         refreshAnimationTimer();
     };
 }
