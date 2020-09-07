@@ -3,134 +3,13 @@
 <head>
 <meta charset="UTF-8">
 
-<link rel="stylesheet" href="css/full-card.css">
-<link rel="stylesheet" href="css/pointer.css">
-<link rel="stylesheet" href="css/snackbar.css">
+<link rel="stylesheet" href="css/gawm.css">
 
 <script src="js/gawm.js"></script>
 <script src="js/gawm_txt.js"></script>
 <script src="js/gawm_netqueue.js"></script>
 
 <title>GAWM</title>
-<style>
-
-body {
-  position: relative;
-  overflow-x: hidden;
-}
-
-.player > .identity 
-{
-    padding: 4px;
-    background-color: #BAD1CD;
-}
-.player > .identity .name
-{
-  font-size: 16px;
-  font-family: 'Nunito', sans-serif;
-}
-.player > .identity .name br 
-{
-    display: none
-}
-.player > .identity .alias
-{
-    padding-left: 8px;
-    font-size: 16px;
-    font-family: 'Special Elite', serif;  
-}
-.player > .identity .alias[contenteditable]:hover,
-.player > .identity .name[contenteditable]:hover
-{
-    background-color: #DAE7E4;
-}
-
-.alias::before
-{
-    content: "(";
-}
-.alias::after 
-{
-    content: ")";
-}
-
-#game_div
-{
-  background-color: #DAE7E4;
-  padding: 4px;
-  position: relative;
-}
-
-#loading_div
-{
-    display: none; position: fixed; top: 0; right: 0; pointer-events: none;
-    padding: 4px;
-    z-index: 99;
-}
-
-#cardface_container
-{
-    z-index: 1;
-}
-
-/* Style the header */
-.header {
-  background-color: #DAE7E4;
-  padding: 30px;
-  text-align: center;
-  font-size: 35px;
-  font-family: 'Special Elite', serif;
-}
-.footer {
-  background-color: #DAE7E4;
-  padding: 30px;
-  text-align: center;
-  font-size: 12px;
-  font-family: 'Nunito', sans-serif;
-}
-.action
-{
-  line-height: 30px;
-}
-.action .edit {
-	border: solid 1px;
-    background-color: #BAD1CD;
-    
-    padding: 4px;
-    margin: 4px;
-    height: 30px;
-}
-.action .button {
-    padding: 4px;
-    margin: 4px;
-    height: 30px;
-    min-width: 90px;
-
-    background-color: #BCBDC0;
-    border: 1px solid black; 
-    color: black;
-
-    cursor: pointer; /* Pointer/hand icon */
-    display: inline-block;
-}
-
-.action .button:hover {
-  background-color: white;
-}
-
-.about, .action {
-  background-color: #BAD1CD;
-  padding: 5px;
-  text-align: center;
-  font-family: 'Nunito', sans-serif;
-}
-
-.about p { 
-    width: 75%; 
-    margin: 25px auto 25px auto;
-}
-
-</style>
 <script>
 
 function start()
