@@ -184,7 +184,7 @@
   border-bottom: none; /* Prevent double borders */
 }
 
-.guilt, .innocence, .pointer
+.token
 { 
   width: 100px;
   height: 100px;
@@ -196,9 +196,7 @@
   display: inline-block;
   position: relative;
 }
-.guilt .frame,
-.innocence .frame,
-.pointer .frame
+.token .frame
 {
   display: block;
   margin: 2px;
@@ -216,8 +214,7 @@
   margin-block-start: 0;
   margin-block-end: 0;
 }
-.guilt img,
-.innocence img,
+.token img
 {
   border: 0px;
 }
@@ -232,9 +229,7 @@
   margin-top: 12px;
   margin-bottom: 9px;
 }
-.guilt img + p,
-.innocence img + p,
-.pointer img + p
+.token img + p
 {
   font-size: 16px;
   height: 16px;

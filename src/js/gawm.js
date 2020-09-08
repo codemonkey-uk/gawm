@@ -192,7 +192,7 @@ function is_hand_redacted(hand)
 
 function token_html(type, i, click)
 {
-    var result = "<div class='"+type+"'";
+    var result = "<div class='token "+type+"'";
     if (click)
     {
         result += "onclick='"+click+"'";
@@ -497,7 +497,7 @@ function show_hand(player,player_uid)
 }
 
 var accused_template =`
-<div class="pointer"><div class="frame">
+<div class="token pointer"><div class="frame">
 <img style="margin-top: 0px; margin-bottom: 1px;" src="assets/accuse.svg" alt="accuse graphic"/>
 <p>ACCUSED</p>
 </div></div>
@@ -509,7 +509,7 @@ function accused_html()
 }
 
 var pointer1_template =`
-<div class="pointer" style="cursor: pointer" onclick="_ACTION">
+<div class="token pointer" style="cursor: pointer" onclick="_ACTION">
 <div class="frame">
 <img src="assets/arrow.svg" alt="arrow icon"/>
 <p>_TEXT</p></div>
@@ -524,7 +524,7 @@ function pointer1_html(text, action)
 }
 
 var pointer_template =`
-<div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
+<div class="token pointer" style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
 <div class="frame">
 <img src="assets/arrow.svg" alt="arrow icon"/>
 <p>_TEXT</p></div>
@@ -542,7 +542,7 @@ function pointer_html(text, menu)
 }
 
 var tokenback_template = `
-<div class='_TYPE' style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
+<div class='token _TYPE' style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
 <div class="frame">
 <img src="_IMGURL" alt="_ALT"><p>_TYPE</p>
 </div>
