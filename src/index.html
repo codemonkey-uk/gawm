@@ -103,15 +103,15 @@ function body_onload()
    <span>Enter your name, </span><span id="user_name" class="edit" contenteditable="true">Player_1</span><span> and:</span>
    </div>
    <div>
-   <div id="new_game" class="button" onclick="start()">Create</div> a 
+   <button id="new_game" onclick="start()">Create</button> a 
    <!-- <span id="player_count" class="edit" contenteditable="true">4</span> player -->
    game, </div>
    <div>
-   <div id="join_game" class="button" onclick="join()">Join</div> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
+   <button id="join_game" onclick="join()">Join</button> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
   </div>
   <div class="row">
-   <a href=''><div class='button' width=>How To Play</div></a>
-   <a href='components.html'><div class='button'>Take a Look</div></a> at the components.
+   <a href='' class="button" role="button">How To Play</a>
+   <a href='components.html' class="button" role="button">Take a Look</a> at the components.
   </div>   
   </div>
 </div>
@@ -122,13 +122,13 @@ function body_onload()
 <div id="invite" class='action' style="display: none;">
 <div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
 <div><textarea style='width: 50%; margin: auto;' id='invite_url_textarea'></textarea></div>
-<div><a id='invite_url_a'><div class='button'>Email It</div></a></div>
+<div><a id='invite_url_a' class="button" role="button">Email It</a></div>
 </div>
 
 <div id="gameover" style="display: none;">
 <div class='action'>
 <div><h1>Thanks for Playing!</h1></div>
-<div class='button' onclick='reset()'>Start Again</div>
+<button onclick='reset()'>Start Again</button>
 </div></div>
 
 <div class="footer">
