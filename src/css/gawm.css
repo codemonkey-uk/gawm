@@ -5,11 +5,51 @@
 @import 'pointer.css';
 @import 'snackbar.css';
 
-body {
+body 
+{
   position: relative;
   overflow-x: hidden;
 }
 
+#loading_div
+{
+    display: none; position: fixed; top: 0; right: 0; pointer-events: none;
+    padding: 4px;
+    z-index: 99;
+}
+
+#cardface_container
+{
+    z-index: 1;
+}
+
+/* game_div contains a .header, and N .player divs */
+#game_div
+{
+  background-color: #DAE7E4;
+  padding: 4px;
+  position: relative;
+}
+
+/* header class is used in both game_div and landing page */
+.header 
+{
+  background-color: #DAE7E4;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Special Elite', serif;
+}
+
+/* the player divs contain an .identity, and N 'hands' of cards */
+.player 
+{
+  border: 2px solid;
+  border-radius: 5px;
+  margin: 2px;
+}
+
+/* styling for the player identity: their name, alias and notes */
 .player > .identity 
 {
     padding: 4px;
@@ -35,7 +75,6 @@ body {
 {
     background-color: #DAE7E4;
 }
-
 .alias::before
 {
     content: "(";
@@ -45,40 +84,61 @@ body {
     content: ")";
 }
 
-#game_div
-{
-  background-color: #DAE7E4;
-  padding: 4px;
+/* hand of cards, made up of a big label and a grid of components */
+.hand {
   position: relative;
 }
-
-#loading_div
-{
-    display: none; position: fixed; top: 0; right: 0; pointer-events: none;
-    padding: 4px;
-    z-index: 99;
-}
-
-#cardface_container
-{
-    z-index: 1;
-}
-
-/* Style the header */
-.header {
-  background-color: #DAE7E4;
-  padding: 30px;
+.hand_label {
+  width: 100%;
+  height: 120px;
   text-align: center;
-  font-size: 35px;
   font-family: 'Special Elite', serif;
+  font-size: 60px;
+  padding-top: 30px;
+  position: absolute;
+  top: 0px;
+  pointer-events: none;
+  color: #62938B;
 }
-.footer {
-  background-color: #DAE7E4;
-  padding: 30px;
+.hand_grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-columns: minmax(64px, 260px);
+  grid-auto-rows: 100px; /* minmax(100px, 360px); */
+  
+  grid-gap: 4px;
+  padding: 4px;
+  min-height: 100px;
+}
+.hand:nth-child(even)
+{
+  background-color: #BAD1CD;
+}
+.hand:nth-child(odd)
+{
+  background-color: #A9C6C1;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: inherit;
+}
+
+/* landing page div has header, about and (call to) action blocks 
+    note: header styled above with game_div styling
+*/
+.about, .action 
+{
+  background-color: #BAD1CD;
+  padding: 5px;
   text-align: center;
-  font-size: 12px;
   font-family: 'Nunito', sans-serif;
 }
+
+.about p 
+{ 
+    width: 75%; 
+    margin: 25px auto 25px auto;
+}
+
 .action
 {
   line-height: 30px;
@@ -102,6 +162,7 @@ body {
     display: inline-block;
 }
 
+/* buttons styling, also used by cardmenu */
 a.button,
 button {
   cursor: pointer;  
@@ -119,14 +180,12 @@ button:hover {
   background-color: white;
 }
 
-.about, .action {
-  background-color: #BAD1CD;
-  padding: 5px;
+/* Style the footer (copyright, etc) */
+.footer {
+  background-color: #DAE7E4;
+  padding: 30px;
   text-align: center;
+  font-size: 12px;
   font-family: 'Nunito', sans-serif;
 }
 
-.about p { 
-    width: 75%; 
-    margin: 25px auto 25px auto;
-}
