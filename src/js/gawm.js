@@ -1259,8 +1259,8 @@ function error_popup(msg)
         x.className = "show";
         x.innerHTML = msg
 
-        // After 3 seconds, remove the show class from DIV
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        // After 5 seconds, remove the show class from DIV
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5500);
     }
 }
 
