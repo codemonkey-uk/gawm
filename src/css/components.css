@@ -1,0 +1,249 @@
+
+.aliases
+{
+  background-color: #0a3b88;
+  border-color: #0a3b88;
+}
+.motives
+{
+  background-color: #493500;
+  border-color: #493500;
+}
+.objects
+{
+  background-color: #054921;
+  border-color: #054921;
+}
+.relationships
+{
+  background-color: #820a0a;
+  border-color: #820a0a;
+}
+.wildcards
+{
+  background-color: #680a85;
+  border-color: #680a85;
+}
+.murder_cause,
+.murder_discovery
+{
+  background-color: #3B3C3F;
+  border-color: #3B3C3F;
+}
+.guilt
+{
+  background-color: #be0712;
+}
+.innocence
+{ 
+  background-color: #0e62bd;
+}
+.pointer
+{
+  background-color: white;
+}
+
+.halfcard
+{
+  font-family: 'Special Elite', serif;
+  text-align: center;
+  border-style: solid;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  position: relative;
+}
+.halfcard div
+{
+  background-color: white;
+  display: block;
+  padding: 0px;
+}
+
+.subtitle::before, .subtitle::after
+{
+  content: " ~ ";
+}
+
+.flavour p, .name p
+{
+  line-height: 1.5;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: normal;
+  margin-block-start:0; margin-block-end:0;
+}
+
+.halfcard
+{
+  border-width: 5px;
+  width: 125px;
+  height: 90px;
+}
+.halfcard .header
+{
+  height: 31px;
+  border: 2px solid grey;
+  padding-top: 2px;
+}
+.halfcard .title
+{
+  height: 12px;
+  line-height: 12px;
+  font-size: 12px;
+  padding-top: 2px;
+}
+.halfcard .subtitle
+{
+  height: 17px;
+  line-height: 19px;
+  font-size: 8px;
+}
+.halfcard .name
+{
+  margin-top: 5px;
+  border: 2px solid grey;
+  height: 43px;
+  line-height: 43px;
+  font-size: 12px;
+  cursor: zoom-in;
+}
+.halfcard .flavour
+{
+  visibility: hidden;
+  margin-top: 10px;
+  border: 2px solid grey;
+  width: 230px;
+  line-height: 164px;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;   
+  cursor: text;
+  position: absolute;
+  z-index: 2;
+  top: -80px;
+  left: 125px;
+  margin-left: 0px;
+}
+
+/* Toggle "show" in this div class list to hide and show an element */
+.guilt .show,
+.innocence .show,
+.halfcard .show,
+.pointer .show
+{
+  visibility: visible;
+  -webkit-animation: fadeIn 0.25s;
+  animation: fadeIn 0.25s;
+}
+@-webkit-keyframes fadeIn
+{
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@keyframes fadeIn
+{
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+.cardmenu
+{
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  width: 220px;
+  border: 0px;
+  top: 0px;  
+}
+
+.guilt .cardmenu,
+.innocence .cardmenu,
+.pointer .cardmenu
+{
+  left: 100px;
+}
+.halfcard .cardmenu
+{
+  left: 125px;
+}
+
+.cardmenu button
+{
+  padding: 8px;
+  margin: 0px;
+  font-size: 14px;
+  width: 220px;
+  z-index: 2;
+  
+  display: block; /* Make the menu buttons appear below each other */
+}
+
+.cardmenu button:not(:last-child)
+{
+  border-bottom: none; /* Prevent double borders */
+}
+
+.token
+{ 
+  width: 100px;
+  height: 100px;
+  font-family: 'Special Elite', serif;
+  text-align: center;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  position: relative;
+}
+.token .frame
+{
+  display: block;
+  margin: 2px;
+  border: solid black 2px; 
+  border-radius: 2px; 
+  position: relative;
+}
+.guilt p,
+.innocence p
+{
+  font-size: 70px;
+  height: 70px;
+  border: 0px;
+  padding-top: 22px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+.token img
+{
+  border: 0px;
+}
+.guilt img,
+.innocence img,
+{
+  margin-top: 1px;
+  margin-bottom: 0px;
+}
+.pointer img
+{
+  margin-top: 12px;
+  margin-bottom: 9px;
+}
+.token img + p
+{
+  font-size: 16px;
+  height: 16px;
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  margin-block-start:0; 
+  margin-block-end:0;
+  text-transform: uppercase;
+}
+
+.cardback
+{
+  margin-right:4px;
+  display: inline-block;
+  z-index: 1;
+}
