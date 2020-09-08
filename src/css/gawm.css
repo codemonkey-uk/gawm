@@ -85,10 +85,12 @@ body
 }
 
 /* hand of cards, made up of a big label and a grid of components */
-.hand {
+.hand
+{
   position: relative;
 }
-.hand_label {
+.hand_label
+{
   width: 100%;
   height: 120px;
   text-align: center;
@@ -100,7 +102,8 @@ body
   pointer-events: none;
   color: #62938B;
 }
-.hand_grid {
+.hand_grid
+{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-auto-columns: minmax(64px, 260px);
@@ -143,7 +146,8 @@ body
 {
   line-height: 30px;
 }
-.action .edit {
+.action .edit
+{
 	border: solid 1px;
     background-color: #BAD1CD;
     
@@ -153,7 +157,8 @@ body
 }
 
 .action a.button,
-.action button {
+.action button
+{
     padding: 4px;
     margin: 4px;
     font-size: 16px;
@@ -164,7 +169,8 @@ body
 
 /* buttons styling, also used by cardmenu */
 a.button,
-button {
+button
+{
   cursor: pointer;  
   color: black;
   border: 1px solid black; 
@@ -176,12 +182,14 @@ button {
 }
 
 a.button:hover,
-button:hover {
+button:hover
+{
   background-color: white;
 }
 
 /* Style the footer (copyright, etc) */
-.footer {
+.footer
+{
   background-color: #DAE7E4;
   padding: 30px;
   text-align: center;

@@ -1,39 +1,46 @@
 
-@import 'https://fonts.googleapis.com/css?family=Special Elite';
-@import 'https://fonts.googleapis.com/css?family=Nunito';
-
-.aliases {
+.aliases
+{
   background-color: #0a3b88;
   border-color: #0a3b88;
 }
-.motives {
+.motives
+{
   background-color: #493500;
   border-color: #493500;
 }
-.objects {
+.objects
+{
   background-color: #054921;
   border-color: #054921;
 }
-.relationships {
+.relationships
+{
   background-color: #820a0a;
   border-color: #820a0a;
 }
-.wildcards {
+.wildcards
+{
   background-color: #680a85;
   border-color: #680a85;
 }
-.murder_cause, .murder_discovery {
+.murder_cause,
+.murder_discovery
+{
   background-color: #3B3C3F;
   border-color: #3B3C3F;
 }
-.guilt {
-  background-color: #be0712; /* 185 7 18 */ 
+.guilt
+{
+  background-color: #be0712;
 }
-.innocence  { 
-  background-color: #0e62bd; /*14 98 189;*/
+.innocence
+{ 
+  background-color: #0e62bd;
 }
 
-.halfcard  {
+.halfcard
+{
   font-family: 'Special Elite', serif;
   text-align: center;
   border-style: solid;
@@ -42,17 +49,20 @@
   display: inline-block;
   position: relative;
 }
-.halfcard div {
+.halfcard div
+{
   background-color: white;
   display: block;
   padding: 0px;
 }
 
-.subtitle::before, .subtitle::after {
-	content: " ~ ";
+.subtitle::before, .subtitle::after
+{
+  content: " ~ ";
 }
 
-.flavour p, .name p {
+.flavour p, .name p
+{
   line-height: 1.5;
   display: inline-block;
   vertical-align: middle;
@@ -60,36 +70,42 @@
   margin-block-start:0; margin-block-end:0;
 }
 
-.halfcard {
+.halfcard
+{
   border-width: 5px;
   width: 125px;
   height: 90px;
 }
-.halfcard .header {
-	height: 31px;
-    border: 2px solid grey;
-    padding-top: 2px;
+.halfcard .header
+{
+  height: 31px;
+  border: 2px solid grey;
+  padding-top: 2px;
 }
-.halfcard .title {
-	height: 12px;
-    line-height: 12px;
-    font-size: 12px;
-    padding-top: 2px;
+.halfcard .title
+{
+  height: 12px;
+  line-height: 12px;
+  font-size: 12px;
+  padding-top: 2px;
 }
-.halfcard .subtitle {
-	height: 17px;
-    line-height: 19px;
-    font-size: 8px;
+.halfcard .subtitle
+{
+  height: 17px;
+  line-height: 19px;
+  font-size: 8px;
 }
-.halfcard .name {
-    margin-top: 5px;
-    border: 2px solid grey;
-	height: 43px;
-    line-height: 43px;
-    font-size: 12px;
-    cursor: zoom-in;
+.halfcard .name
+{
+  margin-top: 5px;
+  border: 2px solid grey;
+  height: 43px;
+  line-height: 43px;
+  font-size: 12px;
+  cursor: zoom-in;
 }
-.halfcard .flavour {
+.halfcard .flavour
+{
   visibility: hidden;
   margin-top: 10px;
   border: 2px solid grey;
@@ -106,48 +122,49 @@
   margin-left: 0px;
 }
 
-/* Toggle this class - hide and show the popup */
-.guilt .show, 
+/* Toggle "show" in this div class list to hide and show an element */
+.guilt .show,
 .innocence .show,
-.halfcard .show, 
-.pointer .show {
+.halfcard .show,
+.pointer .show
+{
   visibility: visible;
   -webkit-animation: fadeIn 0.25s;
   animation: fadeIn 0.25s;
 }
-/* Add animation (fade in the popup) */
-@-webkit-keyframes fadeIn {
+@-webkit-keyframes fadeIn
+{
   from {opacity: 0;}
   to {opacity: 1;}
 }
-
-@keyframes fadeIn {
+@keyframes fadeIn
+{
   from {opacity: 0;}
   to {opacity:1 ;}
 }
 
-.guilt .cardmenu,
-.innocence .cardmenu {
-  /* visibility: hidden; */
-  top: 0px;
-  left: 100px;
-}
-
-.halfcard .cardmenu {
-  /* visibility: hidden; */
-  top: 0px;
-  left: 125px;
-}
-
-.cardmenu {
+.cardmenu
+{
   visibility: hidden;
   position: absolute;
   z-index: 1;
   width: 220px;
   border: 0px;
+  top: 0px;  
 }
 
-.cardmenu button {
+.guilt .cardmenu,
+.innocence .cardmenu
+{
+  left: 100px;
+}
+.halfcard .cardmenu
+{
+  left: 125px;
+}
+
+.cardmenu button
+{
   padding: 8px;
   margin: 0px;
   font-size: 14px;
@@ -157,11 +174,13 @@
   display: block; /* Make the menu buttons appear below each other */
 }
 
-.cardmenu button:not(:last-child) {
+.cardmenu button:not(:last-child)
+{
   border-bottom: none; /* Prevent double borders */
 }
 
-.guilt, .innocence  { 
+.guilt, .innocence
+{ 
   width: 100px;
   height: 100px;
   font-family: 'Special Elite', serif;
@@ -171,16 +190,18 @@
   display: inline-block;
   position: relative;
 }
-.guilt .frame, 
-.innocence .frame{
+.guilt .frame,
+.innocence .frame
+{
   display: block;
   margin: 2px;
   border: solid black 2px; 
   border-radius: 2px; 
   position: relative;
 }
-.guilt p, 
-.innocence p {
+.guilt p,
+.innocence p
+{
   font-size: 70px;
   height: 70px;
   border: 0px;
@@ -189,7 +210,8 @@
   margin-block-end:0;
 }
 .guilt img,
-.innocence img {
+.innocence img
+{
   border: 0px;
   margin-top: 1px;
   margin-bottom: 0px;
@@ -197,8 +219,8 @@
 .guilt img + p,
 .innocence img + p
 {
-  font-size: 16px; 
-  height: 16px;  
+  font-size: 16px;
+  height: 16px;
   border: 0px;
   margin: 0px;
   padding: 0px;
@@ -207,8 +229,9 @@
   text-transform: uppercase;
 }
 
-.cardback {
-    margin-right:4px;
-    display: inline-block;
-    z-index: 1;
+.cardback
+{
+  margin-right:4px;
+  display: inline-block;
+  z-index: 1;
 }
