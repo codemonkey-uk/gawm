@@ -169,20 +169,20 @@
   to {opacity:1 ;}
 }
 
-.guilt .actions,
-.innocence .actions {
+.guilt .cardmenu,
+.innocence .cardmenu {
   /* visibility: hidden; */
   top: 0px;
   left: 100px;
 }
 
-.halfcard .actions {
+.halfcard .cardmenu {
   /* visibility: hidden; */
   top: 0px;
   left: 125px;
 }
 
-.actions {
+.cardmenu {
   visibility: hidden;
   position: absolute;
   z-index: 1;
@@ -190,16 +190,17 @@
   border: 0px;
 }
 
-.actions button {
-  padding: 10px 24px; /* Some padding */
+.cardmenu button {
+  padding: 8px;
   margin: 0px;
+  font-size: 14px;
   width: 220px;
   z-index: 2;
   
   display: block; /* Make the menu buttons appear below each other */
 }
 
-.actions button:not(:last-child) {
+.cardmenu button:not(:last-child) {
   border-bottom: none; /* Prevent double borders */
 }
 

@@ -64,12 +64,12 @@ function deck_order(deck)
 }
 
 var card_template = `<div class="halfcard _TYPE">
-  <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'actions')">
+  <div class="header" style="_CURSOR" onclick="toggle_show(this.parentElement,'cardmenu')">
   <div class="title">_TYPE_TXT</div>
   <div class="subtitle">_SUBTYPE</div>  
   </div>
   <div class="name" onclick="toggle_show(this.parentElement, 'flavour')"><p>_NAME</p></div>
-  <div class="actions">_ACTIONS</div>
+  <div class="cardmenu">_ACTIONS</div>
   <div class="flavour">
   <p id='flavour-_ID_editp' contenteditable="true" onblur="saveNote('flavour-_ID_editp','_TYPE','_ID')">_DESC</p>
   </div>
@@ -524,11 +524,11 @@ function pointer1_html(text, action)
 }
 
 var pointer_template =`
-<div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'actions')">
+<div class="pointer" style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
 <div class="frame">
 <img src="assets/arrow.svg" alt="arrow icon"/>
 <p>_TEXT</p></div>
-<div class="actions">_ACTIONS</div>
+<div class="cardmenu">_ACTIONS</div>
 </div>
 `;
 
@@ -542,11 +542,11 @@ function pointer_html(text, menu)
 }
 
 var tokenback_template = `
-<div class='_TYPE' style="_CURSOR" onclick="toggle_show(this, 'actions')">
+<div class='_TYPE' style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
 <div class="frame">
 <img src="_IMGURL" alt="_ALT"><p>_TYPE</p>
 </div>
-<div class="actions">_ACTIONS</div>
+<div class="cardmenu">_ACTIONS</div>
 </div>
 `;
 
