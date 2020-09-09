@@ -718,6 +718,7 @@ function player_identity_template(player_uid,template)
     return template.replace("_NAME",player_name);
 }
 
+// returns true if other people are waiting for this player
 function waiting_for_player(player,player_uid)
 {
     // player has an unassigned token
@@ -882,19 +883,35 @@ function player_html(player,player_uid)
             // vote buttons
             function(){
                 var html = "";
-                if (typeof player.vote != "undefined")
+                if (player_uid==local_player_id)
                 {
-                    html += anchor_animatedElement_html(
-                        player_uid+"-vote-"+player.vote,90,90,
-                        votediv_html(player_uid,player.vote,"")
-                    );
-                }
-                if (player_uid==local_player_id && waiting_for_player(player,player_uid)==false)
-                {
-                    html += pointer1_html(
-                        "WAITING",
-                        'next()'
-                    );
+                    // if the player has voted, show their vote
+                    if (typeof player.vote != "undefined")
+                    {
+                        html += anchor_animatedElement_html(
+                            player_uid+"-vote-"+player.vote,90,90,
+                            votediv_html(player_uid,player.vote,"")
+                        );
+                    }
+                    // if the player has voted, 
+                    // or there is no need to vote,
+                    // or someone has an unassigned token ...
+                    if (!game_stage_voting() || (typeof player.vote != "undefined") || unassigned_token_msg())
+                    {
+                        // everyone is psudo-active during first break, 
+                        // so supress waiting status icon during that phase
+                        if (is_firstbreak()==false)
+                        {
+                            if (waiting_for_player(player,player_uid)==false)
+                            {
+                                // show the "waiting" indicator
+                                html += pointer1_html(
+                                    "WAITING",
+                                    ''
+                                );
+                            }
+                        }
+                    }
                 }
                 return html;
             },
