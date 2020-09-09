@@ -718,14 +718,36 @@ function player_identity_template(player_uid,template)
     return template.replace("_NAME",player_name);
 }
 
-function player_border_colour(player)
+function waiting_for_player(player,player_uid)
 {
-    return (player.active || player.unassigned_token) ? '#be0712' : '#0e62bd';
+    // player has an unassigned token
+    if (player.unassigned_token)
+    {
+        return true;
+    }
+
+    // player is active this turn...
+    if (player.active)
+    {
+        // ... but as already indicated they are ready
+        if (game.next && game.next.includes(player_uid))
+            return false;
+
+        return true;
+    }
+
+    // not active, no unassigned token    
+    return false;
+}
+
+function player_border_colour(player,player_uid)
+{
+    return waiting_for_player(player,player_uid) ? '#be0712' : '#0e62bd';
 }
 
 function player_html(player,player_uid)
 {
-    var c = player_border_colour(player);
+    var c = player_border_colour(player,player_uid);
     var html = "<div class='player' style='border-color: "+c+"'>";
 
     html += player_identity_html(player_uid);
@@ -765,18 +787,16 @@ function player_html(player,player_uid)
                         );
                     }
                 }
-                if (player.active && player.details_left_to_play==false)
+                if (player.details_left_to_play==false)
                 {
-                    if (game.act==0)
+                    if (waiting_for_player(player,player_uid))
                     {
-                        html += pointer1_html('BEGIN','next()');
-                    }
-                    else
-                    {
-                        html += pointer1_html('NEXT','next()');
+                        html += pointer1_html(
+                            gawm_next_scene_txt(game.act,game.scene),
+                            'next()'
+                        );
                     }
                 }
-                
                 return html;
             } : null;
             
@@ -867,6 +887,13 @@ function player_html(player,player_uid)
                     html += anchor_animatedElement_html(
                         player_uid+"-vote-"+player.vote,90,90,
                         votediv_html(player_uid,player.vote,"")
+                    );
+                }
+                if (player_uid==local_player_id && waiting_for_player(player,player_uid)==false)
+                {
+                    html += pointer1_html(
+                        "WAITING",
+                        'next()'
                     );
                 }
                 return html;

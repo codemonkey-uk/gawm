@@ -82,6 +82,11 @@ function gawm_act_txt(act)
     return txt["act"][act];
 }
 
+function gawm_next_scene_txt(act,scene)
+{
+    return act==0?"BEGIN":"NEXT";
+}
+
 function gawm_button_action_giveto_txt(indentity)
 {
     //action_giveto
