@@ -905,7 +905,7 @@ function player_html(player,player_uid)
                             if (waiting_for_player(player,player_uid)==false)
                             {
                                 // show the "waiting" indicator
-                                html += pointer1_html(
+                                html += pointer_html(
                                     "WAITING",
                                     ''
                                 );
