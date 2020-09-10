@@ -72,7 +72,7 @@ function gawm_component_txt(deck)
     return txt["component"][deck];
 }
 
-function gawm_fate_txt(fate)
+function gawm_txt(fate)
 {
     return txt[fate];
 }

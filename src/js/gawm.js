@@ -857,7 +857,10 @@ function player_html(player,player_uid)
                 return result;
             };
             
-        var banner = (player.fate) ? gawm_fate_txt(player.fate) : "HELD";
+        var banner = gawm_txt(
+            player.fate ? player.fate : "player-hand-label"
+        );
+            
         html += hand_html(player.hand,player_uid,detail_action,pfn,banner);
     }
     if (player.play)
@@ -898,15 +901,15 @@ function player_html(player,player_uid)
                     // or someone has an unassigned token ...
                     if (!game_stage_voting() || (typeof player.vote != "undefined") || unassigned_token_msg())
                     {
-                        // everyone is psudo-active during first break, 
-                        // so supress waiting status icon during that phase
+                        // everyone is pseudo-active during first break, 
+                        // so suppress waiting status icon during that phase
                         if (is_firstbreak()==false)
                         {
                             if (waiting_for_player(player,player_uid)==false)
                             {
                                 // show the "waiting" indicator
                                 html += pointer_html(
-                                    "WAITING",
+                                    gawm_txt("waiting"),
                                     ''
                                 );
                             }
@@ -915,7 +918,7 @@ function player_html(player,player_uid)
                 }
                 return html;
             },
-            "IN PLAY"
+            gawm_txt("player-play-label")
         );
     }
     if (player.tokens)
@@ -927,7 +930,7 @@ function player_html(player,player_uid)
                     html += accused_html();
                 return html;
             },
-            "TOKENS"
+            gawm_txt("player-tokens-label")
         );
     }
     html += '</div>';

@@ -17,7 +17,10 @@
 	"got_it_wrong": "Got It Wrong",
 	"got_framed": "Got Framed",
 	"got_out_alive": "Got Out Alive",
-	
+	"waiting": "Waiting",
+	"player-tokens-label": "Tokens",
+	"player-play-label": "In Play",
+	"player-hand-label": "Held",
 	"act": [
 		"Setup: Add Players and Select Alias Details.",
 		"Act I: Introductions",
