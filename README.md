@@ -1,5 +1,5 @@
 # Getting Away With Murder
-_A co-operative role-play game of drama, wit and mystery._
+_A co-operative role-play game of drama, wit, and mystery._
 
 ## GAWM on github
 This repo contains an api & browser UI to facilitate remote-play of Getting Away With Murder.
