@@ -1047,7 +1047,8 @@ function render_game(result)
 
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
-    
+    document.getElementById('game_div').style.display= "block";
+
     refreshAnimationTimer();
     window.onresize = function(event) {
         snapMovement=true;

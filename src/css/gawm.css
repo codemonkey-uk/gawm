@@ -28,6 +28,7 @@ body
   background-color: #DAE7E4;
   padding: 4px;
   position: relative;
+  display: none;
 }
 
 /* header class is used in both game_div and landing page */
@@ -46,6 +47,7 @@ body
   border: 2px solid;
   border-radius: 5px;
   margin: 2px;
+  overflow: hidden;
 }
 
 /* styling for the player identity: their name, alias and notes */
@@ -145,6 +147,11 @@ body
 {
   line-height: 30px;
 }
+
+#landing > .action 
+{
+  padding-bottom: 25px;
+}
 .action .edit
 {
 	border: solid 1px;
@@ -186,11 +193,24 @@ button:hover
   background-color: white;
 }
 
+#invite
+{
+    background-color: #DAE7E4;
+    padding: 4px 6px 4px 6px;
+    display: none;
+}
+
+#invite > .action
+{
+  border: 2px solid;
+  border-radius: 5px;
+}
+
 /* Style the footer (copyright, etc) */
 .footer
 {
   background-color: #DAE7E4;
-  padding: 30px;
+  padding: 25px;
   text-align: center;
   font-size: 12px;
   font-family: 'Nunito', sans-serif;
