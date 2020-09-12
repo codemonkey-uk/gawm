@@ -541,6 +541,19 @@ function pointer_html(text, menu)
         .replace(/_TEXT/g, text);
 }
 
+var waiting_template =`
+<div class="token pointer"">
+<div class="frame">
+<img src="assets/hourglass_sand.svg" alt="hourglass icon" style="margin:1px 0px 0px 0px"/>
+<p>_TEXT</p></div>
+</div>
+`;
+
+function waiting_html()
+{
+    return waiting_template.replace(/_TEXT/g, gawm_txt("waiting"));
+}
+
 var tokenback_template = `
 <div class='token _TYPE' style="_CURSOR" onclick="toggle_show(this, 'cardmenu')">
 <div class="frame">
@@ -908,10 +921,7 @@ function player_html(player,player_uid)
                             if (waiting_for_player(player,player_uid)==false)
                             {
                                 // show the "waiting" indicator
-                                html += pointer_html(
-                                    gawm_txt("waiting"),
-                                    ''
-                                );
+                                html += waiting_html();
                             }
                         }
                     }
