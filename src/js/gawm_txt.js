@@ -72,7 +72,7 @@ function gawm_component_txt(deck)
     return txt["component"][deck];
 }
 
-function gawm_fate_txt(fate)
+function gawm_txt(fate)
 {
     return txt[fate];
 }
@@ -80,6 +80,11 @@ function gawm_fate_txt(fate)
 function gawm_act_txt(act)
 {
     return txt["act"][act];
+}
+
+function gawm_next_scene_txt(act,scene)
+{
+    return act==0?"BEGIN":"NEXT";
 }
 
 function gawm_button_action_giveto_txt(indentity)
