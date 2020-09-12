@@ -311,7 +311,7 @@ function hand_html(hand,player_id,action,postfix,label)
                     if (!game['notes']) 
                         face_html = face_html.replace("contenteditable=\"true\"", "");
 
-                    card_html = anchor_animatedElement_html(player_id+deck+i, 125, 90, face_html);
+                    card_html = anchor_animatedElement_html(player_id+deck+i, 135, 100, face_html);
                 }
                 html += card_html;
             }

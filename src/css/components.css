@@ -48,6 +48,8 @@
   font-family: 'Special Elite', serif;
   text-align: center;
   border-style: solid;
+  border-width: 5px;
+  border-radius: 5px;
   padding: 0;
   margin: 0;
   display: inline-block;
@@ -76,14 +78,13 @@
 
 .halfcard
 {
-  border-width: 5px;
   width: 125px;
   height: 90px;
 }
 .halfcard .header
 {
   height: 31px;
-  border: 2px solid grey;
+  border: 2px solid white;
   padding-top: 2px;
 }
 .halfcard .title
@@ -102,7 +103,7 @@
 .halfcard .name
 {
   margin-top: 5px;
-  border: 2px solid grey;
+  border: 2px solid white;
   height: 43px;
   line-height: 43px;
   font-size: 12px;
@@ -112,7 +113,7 @@
 {
   visibility: hidden;
   margin-top: 10px;
-  border: 2px solid grey;
+  border: 2px solid white;
   width: 230px;
   line-height: 164px;
   justify-content: center;
