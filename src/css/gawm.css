@@ -71,8 +71,11 @@ body
     font-size: 16px;
     font-family: 'Special Elite', serif;  
 }
+.edit[contenteditable]:hover, .edit[contenteditable]:focus,
 .player > .identity .alias[contenteditable]:hover,
-.player > .identity .name[contenteditable]:hover
+.player > .identity .alias[contenteditable]:focus,
+.player > .identity .name[contenteditable]:hover,
+.player > .identity .name[contenteditable]:focus
 {
     background-color: #DAE7E4;
 }
