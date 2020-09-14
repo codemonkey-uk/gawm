@@ -113,7 +113,8 @@
 {
   visibility: hidden;
   margin-top: 10px;
-  border: 2px solid white;
+  border: 2px solid black;
+  padding: 2px;
   width: 230px;
   line-height: 164px;
   justify-content: center;
