@@ -37,8 +37,25 @@ body
   background-color: #DAE7E4;
   padding: 30px;
   text-align: center;
-  font-size: 35px;
+
+}
+
+h1 
+{
+  font-size: 39px;
   font-family: 'Special Elite', serif;
+  text-transform: uppercase;  
+}
+h1 span:nth-of-type(2)
+{
+  color: #A80810;
+  font-size: 100px;    
+}
+
+h2
+{
+  font-size: 28px;
+  font-family: 'Tw Cen MT Condensed', 'Nunito', sans-serif;
 }
 
 /* the player divs contain an .identity, and N 'hands' of cards */
@@ -141,7 +158,7 @@ body
   font-family: 'Nunito', sans-serif;
 }
 
-.about p 
+.about p
 { 
     width: 75%; 
     margin: 25px auto 25px auto;
