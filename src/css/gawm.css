@@ -2,6 +2,7 @@
 @import 'https://fonts.googleapis.com/css?family=Special Elite';
 @import 'https://fonts.googleapis.com/css?family=Nunito';
 @import 'components.css';
+@import 'landing.css';
 @import 'snackbar.css';
 
 body 
@@ -58,6 +59,15 @@ h2
 {
   font-size: 28px;
   font-family: 'Tw Cen MT Condensed', 'Nunito', sans-serif;
+}
+
+h3
+{
+  font-size: 18px;
+  font-family: 'Special Elite', serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: inline;
 }
 
 /* the player divs contain an .identity, and N 'hands' of cards */
@@ -149,51 +159,25 @@ h2
   border-color: inherit;
 }
 
-/* landing page div has header, about and (call to) action blocks 
-    note: header styled above with game_div styling
-*/
-.about, .action 
-{
-  background-color: #BAD1CD;
-  padding: 5px;
-  text-align: center;
-  font-family: 'Nunito', sans-serif;
-}
-
-.about p
-{ 
-    width: 75%; 
-    margin: 25px auto 25px auto;
-}
-
-.action
-{
-  line-height: 30px;
-}
-
-#landing > .action 
-{
-  padding-bottom: 25px;
-}
 .action .edit
 {
-	border: solid 1px;
-    background-color: #BAD1CD;
+  border: solid 1px;
+  background-color: #BAD1CD;
     
-    padding: 4px;
-    margin: 4px;
-    height: 30px;
+  padding: 4px;
+  margin: 4px;
+  height: 30px;
 }
 
 .action a.button,
 .action button
 {
-    padding: 4px;
-    margin: 4px;
-    font-size: 16px;
-    min-width: 90px;
+  padding: 4px;
+  margin: 4px;
+  font-size: 16px;
+  min-width: 90px;
 
-    display: inline-block;
+  display: inline-block;
 }
 
 /* buttons styling, also used by cardmenu */
@@ -218,21 +202,24 @@ button:hover
 
 #invite
 {
-    background-color: #DAE7E4;
-    padding: 4px 6px 4px 6px;
-    display: none;
+  text-align: center;
+  background-color: #DAE7E4;
+  padding: 4px 6px 4px 6px;
+  display: none;
 }
 
 #invite > .action
 {
   border: 2px solid;
   border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;  
 }
 
 /* Style the footer (copyright, etc) */
 .footer
 {
-  background-color: #DAE7E4;
   padding: 25px;
   text-align: center;
   font-size: 12px;

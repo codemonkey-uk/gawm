@@ -86,35 +86,56 @@ function body_onload()
 <img width=50 height=50 src="assets/loading.gif" alt="rotating circles to indicate network activity">
 </div>
 
+
 <div id="landing">
   <div class="header">
     <h1><span>Getting Away With</span><br><span>Murder</span></h1>
     <h2>A co-operative role-play game of drama, wit, and mystery.</h2>
   </div>
-  <div class="about"><p>
-  GAWM is not a video game. It is a story telling game played with a deck of cards around a table.</p>
-  <p>This website replaces that pack of cards so you can play with your friends around the world from the safely of your home. 
-  It is not a matchmaking service. GAWM is a 4-6 player game. You will need to organise with your friends.</p><p>
-  This website doesn't provide VOIP or Video chat. You'll need to use some other service. There are lots out there.
-  <a href="https://discord.gg/d2uMBST">We use discord</a>. </p><p> Got your friends? Let's go:
-  </p></div>
+  
+  <div class="about">
+  <h3>Getting Away With Murder</h3> is a co-operative role-play game where your group will bring to life a darkly comedic murder mystery. A game can be set up and ready to play in minutes. There's no game-master, no dice and no abilities to keep track of. The entire story is told in one sitting.
+  <p>Can you get away with murder?</p>
+  </div>
+  
+  <div class="feat"><h3>Features</h3>
+  <ul>
+  <li> Supports between 4 and 6 players </li>
+  <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
+  <li> 153 detail cards to help you create the mystery, including 16 characters and 30 motives. </li>
+  <li> More than 5 Octillion murders to solve! </li>
+  <li> Multiple ways to play: <ul> <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
+  <li> Player <a href="https://discord.gg/d2uMBST">community discord</a>. Join for news on the latest developments.
+  </ul>
+  </div>
+  
+  <div class="buy"><h3>You decide the price</h3>
+  <p><a href="#">Buy the game</a> for whatever cost you feel is fair. You'll recieve PDFs of the rule book and the Print and Play resources.</p><p>If you had fun, please consider coming back to increase your donation.</p>
+  </div>
+  
+  <div class="cover"><img src="http://thad.frogley.info/gawm/assets/cover_5-3.png"></div>
+  
+  <div class="playnow"><h3>Play Online Now</h3>
   <div class="action">
+  <br>
   <div class="row">
-   <span>Enter your name, </span><span id="user_name" class="edit" contenteditable="true">Player_1</span><span> and:</span>
+   <span>Enter your name, </span><span id="user_name" class="edit" contenteditable="true">Player</span><span> and:</span>
    </div>
    <div>
    <button id="new_game" onclick="start()">Create</button> a 
-   <!-- <span id="player_count" class="edit" contenteditable="true">4</span> player -->
    game, </div>
    <div>
    <button id="join_game" onclick="join()">Join</button> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
-  </div>
-  <div class="row">
-   <a href='' class="button" role="button">How To Play</a>
-   <a href='components.html' class="button" role="button">Take a Look</a> at the components.
-  </div>   
-  </div>
+  </div>  
+  </div></div>
+  
+  <div class="menu"><h3>Other ways to play</h3>
+  <ul> <li> TTS </li>
+       <li> Print N Play </li>
+  </ul></div>
 </div>
+
+
 <div id="game_div"></div>
 <div id="cardface_container"></div>
 
