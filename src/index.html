@@ -21,15 +21,18 @@ function start()
 function join()
 {
     var ugc = get_contenteditable('user_game_code');
-    add_player(
-        ugc, 
-        get_contenteditable('user_name'),
-        function(){
-            document.getElementById('landing').style.display = "none";
-            document.title = "GAWM #"+ugc;
-            history.pushState(game_id,document.title,create_loadnurl());
-        }
-    );
+    if (ugc!='0000')
+    {
+        add_player(
+            ugc, 
+            get_contenteditable('user_name'),
+            function(){
+                document.getElementById('landing').style.display = "none";
+                document.title = "GAWM #"+ugc;
+                history.pushState(game_id,document.title,create_loadnurl());
+            }
+        );
+    }
 }
 
 function getParameterByName(name, url) 
@@ -103,7 +106,7 @@ function body_onload()
   <li> Supports between 4 and 6 players </li>
   <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
   <li> 153 detail cards to help you create the mystery, including 16 characters and 30 motives. </li>
-  <li> More than 5 Octillion murders to solve! </li>
+  <li> More than four tredecillion murders to solve! </li>
   <li> Multiple ways to play: <ul> <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
   <li> Player <a href="https://discord.gg/d2uMBST">community discord</a>. Join for news on the latest developments.
   </ul>
@@ -122,8 +125,7 @@ function body_onload()
    <span>Enter your name, </span><span id="user_name" class="edit" contenteditable="true">Player</span><span> and:</span>
    </div>
    <div>
-   <button id="new_game" onclick="start()">Create</button> a 
-   game, </div>
+   <button id="new_game" onclick="start()">Create</button> a game, or</div>
    <div>
    <button id="join_game" onclick="join()">Join</button> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
   </div>  

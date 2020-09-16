@@ -47,18 +47,22 @@ h1
 {
   font-size: 39px;
   font-family: 'Special Elite', serif;
-  text-transform: uppercase;  
+  text-transform: uppercase;
+  margin-block-start: 0;
+  margin-block-end: 0; 
 }
 h1 span:nth-of-type(2)
 {
   color: #A80810;
-  font-size: 100px;    
+  font-size: 100px;
 }
 
 h2
 {
   font-size: 28px;
   font-family: 'Tw Cen MT Condensed', 'Nunito', sans-serif;
+  margin-block-start: 0;
+  margin-block-end: 0;  
 }
 
 h3

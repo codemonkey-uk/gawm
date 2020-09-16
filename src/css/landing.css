@@ -48,11 +48,6 @@
   }
 }
 */
-#landing > div
-{
-  padding: 20px 0;
-  font-size: 30px;
-}
 
 #landing > .header 
 {
@@ -69,7 +64,7 @@
 #landing > .buy
 {
   background-color: #BAD1CD;
-  padding: 6px;
+  padding: 12px 30px;
   font-size: 18px;
   text-align: left;
   font-family: 'Nunito', sans-serif;
