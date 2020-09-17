@@ -1,0 +1,81 @@
+#landing > .header { grid-area: header; }
+#landing > .about { grid-area: about; }
+#landing > .feat { grid-area: feat; }
+#landing > .menu { grid-area: menu; }
+#landing > .cover { grid-area: cover; }
+#landing > .playnow { grid-area: play; }
+#landing > .buy { grid-area: buy; }
+#landing > .discord { grid-area: discord; }
+
+#landing
+{
+  display: grid;
+  grid-template-areas:
+    'header header header header header'
+    'about about about about about'
+    'feat feat feat feat cover'
+    'buy buy buy buy discord'
+    'play play play menu menu';
+  grid-gap: 0px;
+  background-color: white;
+  max-width: 1000px;
+  margin: auto;
+}
+
+@media (max-width: 600px)
+{
+  #landing
+  {
+      grid-template-areas:
+        'header'
+        'about'
+        'cover'
+        'feat'
+        'buy'
+        'discord'
+        'play'
+        'menu';
+  }
+}
+
+#landing > .header
+{
+  background-color: #DAE7E4;
+  padding: 30px;
+  text-align: center;
+}
+
+#landing > .about,
+#landing > .feat,
+#landing > .menu,
+#landing > .cover,
+#landing > .playnow,
+#landing > .buy,
+#landing > .discord
+{
+  background-color: #BAD1CD;
+  padding: 12px 30px;
+  font-size: 18px;
+  text-align: left;
+  font-family: 'Nunito', sans-serif;
+}
+#landing > .cover
+{
+    text-align: center;
+    position: relative;
+    min-width: 224px;
+    min-height: 300px;
+}
+#landing > .buy a {
+    font-weight: bold;
+}
+.cover > img
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    filter: drop-shadow(4px 4px 4px #222);
+}

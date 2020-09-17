@@ -794,14 +794,14 @@ function player_html(player,player_uid)
                     if (typeof player.vote == "undefined" || player.vote == 1)
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+2,90,90,
+                            player_uid+"-vote-"+2,100,100,
                             votebutton_html(player_uid,2)
                         );
                     }
                     if (typeof player.vote == "undefined" || player.vote == 2)
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+1,90,90,
+                            player_uid+"-vote-"+1,100,100,
                             votebutton_html(player_uid,1)
                         );
                     }
@@ -910,7 +910,7 @@ function player_html(player,player_uid)
                     if (typeof player.vote != "undefined")
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+player.vote,90,90,
+                            player_uid+"-vote-"+player.vote,100,100,
                             votediv_html(player_uid,player.vote,"")
                         );
                     }
@@ -1092,7 +1092,7 @@ function render_game(result)
             html += player_html(result.players[player],player);
     }
     
-    document.getElementById('invite').style.display= (game.act==0) ? "block" : "hidden";
+    document.getElementById('invite').style.display = (game.act==0) ? "block" : "none";
     if (game.act==0)
     {
         var url_text = create_joinurl();
@@ -1109,7 +1109,7 @@ function render_game(result)
 
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
-    document.getElementById('game_div').style.display= "block";
+    document.getElementById('game_div').style.display = "block";
 
     refreshAnimationTimer();
     window.onresize = function(event) {
