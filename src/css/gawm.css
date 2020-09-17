@@ -9,9 +9,9 @@ body
 {
   position: relative;
   overflow-x: hidden;
-  background: url(../../assets/backdrop.jpg);
-background-position: center;
-background-size: cover;
+  background: url(../assets/backdrop.jpg);
+  background-position: center;
+  background-size: cover;
 }
 
 #loading_div
