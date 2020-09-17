@@ -24,7 +24,7 @@ function join()
     if (ugc!='0000')
     {
         add_player(
-            ugc, 
+            ugc,
             get_contenteditable('user_name'),
             function(){
                 document.getElementById('landing').style.display = "none";
@@ -35,7 +35,7 @@ function join()
     }
 }
 
-function getParameterByName(name, url) 
+function getParameterByName(name, url)
 {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -65,9 +65,9 @@ function body_onload()
 
     var d = getParameterByName('d');
     if (d) document.getElementById('debug_div').style.display="block";
-    
+
     gawm_load_txt(function() {
-        var action = getParameterByName('a');  
+        var action = getParameterByName('a');
         if (action == 'join_game') join();
 
         if (action == 'load_game')
@@ -95,29 +95,33 @@ function body_onload()
     <h1><span>Getting Away With</span><br><span>Murder</span></h1>
     <h2>A co-operative role-play game of drama, wit, and mystery.</h2>
   </div>
-  
+
   <div class="about">
   <h3>Getting Away With Murder</h3> is a co-operative role-play game where your group will bring to life a darkly comedic murder mystery. A game can be set up and ready to play in minutes. There's no game-master, no dice and no abilities to keep track of. The entire story is told in one sitting.
   <p>Can you get away with murder?</p>
   </div>
-  
+
   <div class="feat"><h3>Features</h3>
   <ul>
-  <li> Supports between 4 and 6 players </li>
+  <li> Supports 4 to 6 players. </li>
   <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
   <li> 153 detail cards to help you create the mystery, including 16 characters and 30 motives. </li>
   <li> More than four tredecillion murders to solve! </li>
   <li> Multiple ways to play: <ul> <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
-  <li> Player <a href="https://discord.gg/d2uMBST">community discord</a>. Join for news on the latest developments.
   </ul>
   </div>
-  
+
   <div class="buy"><h3>You decide the price</h3>
   <p><a href="#">Buy the game</a> for whatever cost you feel is fair. You'll recieve PDFs of the rule book and the Print and Play resources.</p><p>If you had fun, please consider coming back to increase your donation.</p>
   </div>
-  
+
+  <div class="discord"><h3>Community Discord</h3>
+  <p>Looking for a group to play with? Want to hear the latest news and developments?</p>
+  <p>Join the <a href="https://discord.gg/d2uMBST">community discord</a>.</p>
+  </div>
+
   <div class="cover"><img src="http://thad.frogley.info/gawm/assets/cover_5-3.png"></div>
-  
+
   <div class="playnow"><h3>Play Online Now</h3>
   <div class="action">
   <br>
@@ -128,9 +132,9 @@ function body_onload()
    <button id="new_game" onclick="start()">Create</button> a game, or</div>
    <div>
    <button id="join_game" onclick="join()">Join</button> using a game id <span id="user_game_code" class="edit" contenteditable="true">0000</span>.
-  </div>  
+  </div>
   </div></div>
-  
+
   <div class="menu"><h3>Other ways to play</h3>
   <ul> <li> TTS </li>
        <li> Print N Play </li>
@@ -142,7 +146,7 @@ function body_onload()
 <div id="cardface_container"></div>
 
 <div id="invite">
-    <div  class='action'">
+    <div class="action">
     <div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
     <div><textarea style='width: 50%; margin: auto;' id='invite_url_textarea'></textarea></div>
     <div><a id='invite_url_a' class="button" role="button">Email It</a></div>
@@ -156,7 +160,7 @@ function body_onload()
 </div></div>
 
 <div class="footer">
-Game Rules, Software and Content (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley.<br>
+Game Rules, Software and Content (c) 2016-2020 Joseph Fowler &amp; Thaddaeus Frogley.<br>
 The source code for this website is hosted on <a href="https://github.com/codemonkey-uk/gawm">github</a>.
 </div>
 
