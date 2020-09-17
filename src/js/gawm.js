@@ -1038,12 +1038,13 @@ function game_stage_txt()
 
 function create_joinurl()
 {
-    var url = window.location.protocol + "//"
+    var str = window.location.protocol + "//"
         + window.location.hostname
-        + window.location.pathname
-        + "?ugc="+game_id
-        + "&a=join_game";
-        
+        + window.location.pathname;
+
+    var url = str.substring(0, str.lastIndexOf("/"))
+        + "/"+game_id;
+
     return url;
 }
 
