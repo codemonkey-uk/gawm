@@ -789,14 +789,14 @@ function player_html(player,player_uid)
                     if (typeof player.vote == "undefined" || player.vote == 1)
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+2,90,90,
+                            player_uid+"-vote-"+2,100,100,
                             votebutton_html(player_uid,2)
                         );
                     }
                     if (typeof player.vote == "undefined" || player.vote == 2)
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+1,90,90,
+                            player_uid+"-vote-"+1,100,100,
                             votebutton_html(player_uid,1)
                         );
                     }
@@ -905,7 +905,7 @@ function player_html(player,player_uid)
                     if (typeof player.vote != "undefined")
                     {
                         html += anchor_animatedElement_html(
-                            player_uid+"-vote-"+player.vote,90,90,
+                            player_uid+"-vote-"+player.vote,100,100,
                             votediv_html(player_uid,player.vote,"")
                         );
                     }
