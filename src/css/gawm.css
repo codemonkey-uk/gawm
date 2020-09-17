@@ -204,6 +204,7 @@ button:hover
   background-color: white;
 }
 
+#gameover,
 #invite
 {
   text-align: center;
