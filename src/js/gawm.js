@@ -452,7 +452,12 @@ function is_extrascene()
 {
     var c = Object.keys(game.players).length;
     return (game.act==1 && game.scene==c)
- }
+}
+
+function is_gameover()
+{
+    return game.act>=5;
+}
  
 function votediv_html(player_id,value,action)
 {
@@ -1097,7 +1102,7 @@ function render_game(result)
         document.getElementById('invite_url_textarea').value = url_encoded;
         document.getElementById('invite_url_a').href = "mailto:?subject=GAWM%20join%20game%20url&body="+encodeURIComponent(url_encoded);
     }
-    else if (game.act>=5)
+    else if (is_gameover())
     {
         document.getElementById('gameover').style.display="block";
     }

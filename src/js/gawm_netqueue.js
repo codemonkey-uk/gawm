@@ -88,24 +88,28 @@ function gawm_pumpRequestQueue()
         // if we dont already have a timer running
         if (refreshTimeout==undefined)
         {
-            // set a timer to refresh in 5s
-            refreshTimeout = setTimeout(function(){
-                refreshTimeout = undefined;
-                // only refresh if we have focus, and nothing queued
-                if (requestInFlight==null && document.hasFocus())
-                {
-                    if (document.activeElement.hasAttribute('contenteditable'))
+            // stop polling after the game is finished
+            if (!is_gameover())
+            {
+                // set a timer to refresh in 5s
+                refreshTimeout = setTimeout(function(){
+                    refreshTimeout = undefined;
+                    // only refresh if we have focus, and nothing queued
+                    if (requestInFlight==null && document.hasFocus())
                     {
-                        // if the user is editing a note, just wait another refresh period
-                        gawm_pumpRequestQueue();
+                        if (document.activeElement.hasAttribute('contenteditable'))
+                        {
+                            // if the user is editing a note, just wait another refresh period
+                            gawm_pumpRequestQueue();
+                        }
+                        else
+                        {
+                            // request an update from the server
+                            reload(local_player_id,game_id);
+                        }
                     }
-                    else
-                    {
-                        // request an update from the server
-                        reload(local_player_id,game_id);
-                    }
-                }
-            }, 5000);
+                }, 5000);
+            }
         }
     }
 }
