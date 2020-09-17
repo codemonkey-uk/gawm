@@ -35,19 +35,6 @@
         'menu';
   }
 }
-/*
-@media (min-width: 1000px) 
-{
-  #landing 
-  {
-      grid-template-areas:
-        'header header header'
-        'about feat cover'
-        'buy buy buy'
-        'play menu  cover';
-  }
-}
-*/
 
 #landing > .header 
 {

@@ -1087,7 +1087,7 @@ function render_game(result)
             html += player_html(result.players[player],player);
     }
     
-    document.getElementById('invite').style.display= (game.act==0) ? "block" : "hidden";
+    document.getElementById('invite').style.display = (game.act==0) ? "block" : "none";
     if (game.act==0)
     {
         var url_text = create_joinurl();
@@ -1104,7 +1104,7 @@ function render_game(result)
 
     document.getElementById('debug_div').innerHTML = debug_html;
     document.getElementById('game_div').innerHTML = html;
-    document.getElementById('game_div').style.display= "block";
+    document.getElementById('game_div').style.display = "block";
 
     refreshAnimationTimer();
     window.onresize = function(event) {
