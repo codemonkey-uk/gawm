@@ -232,4 +232,10 @@ button:hover
   text-align: center;
   font-size: 12px;
   font-family: 'Nunito', sans-serif;
+  color: white;
 }
+.footer a 
+{
+  color: white;
+}
+
