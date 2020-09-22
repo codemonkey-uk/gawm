@@ -168,7 +168,7 @@ function body_onload()
   </div></div>
 
   <div class="menu"><h3>Other ways to play</h3>
-  <ul> <li> TTS </li>
+  <ul> <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>)</li>
        <li> Print N Play </li>
   </ul></div>
 </div>
