@@ -22,9 +22,9 @@
 <meta property="og:description" content="A co-operative role-play game of drama, wit, and mystery.">
 
 <?php
-    // social media schenanigans 
-    if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']),"facebookexternalhit")!==false) ||
-        (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),"twitterbot")!==false))
+    // social media schenanigans
+    if ((stripos($_SERVER['HTTP_USER_AGENT'],"facebookexternalhit")!==false) ||
+        (stripos($_SERVER['HTTP_USER_AGENT'],"twitterbot")!==false))
     {
 ?>
 <meta property="og:image" content="http://gawm.link/assets/fb-image.jpg">
