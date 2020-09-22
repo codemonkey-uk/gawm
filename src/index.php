@@ -22,23 +22,15 @@
 <meta property="og:description" content="A co-operative role-play game of drama, wit, and mystery.">
 
 <?php
-    // social media schenanigans
-    if ((stripos($_SERVER['HTTP_USER_AGENT'],"facebookexternalhit")!==false) ||
-        (stripos($_SERVER['HTTP_USER_AGENT'],"twitterbot")!==false))
-    {
-?>
-<meta property="og:image" content="http://gawm.link/assets/fb-image.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<?php
-    }
-    else
-    {
-?>
-<meta property="og:image" content="http://gawm.link/assets/og-image.jpg">
-<meta name="twitter:card" content="summary">
-<?php
-    }
-?>
+// social media schenanigans
+if ((stripos($_SERVER['HTTP_USER_AGENT'],"facebookexternalhit")!==false) ||
+    (stripos($_SERVER['HTTP_USER_AGENT'],"twitterbot")!==false)): ?>
+        <meta property="og:image" content="http://gawm.link/assets/fb-image.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+<?php else: ?>
+        <meta property="og:image" content="http://gawm.link/assets/og-image.jpg">
+        <meta name="twitter:card" content="summary">
+<?php endif; ?>
 
 <meta property="og:image:alt" content="The words Getting Away With Murder appear large over a back and white photo of a mansion, subtitled A co-operative role-play game of drama, wit, and mystery.">
 
