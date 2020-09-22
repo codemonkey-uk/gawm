@@ -1,9 +1,4 @@
-Options -Indexes
 RewriteEngine On
-
-RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|visionutils|Facebot [NC]
-RewriteRule ^assets/og-image.jpg$ assets/fb-image.jpg [L]
-
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([a-zA-Z0-9]+) api/join.php?ugc=$1 [QSA,L]

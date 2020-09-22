@@ -41,6 +41,7 @@ run_tests:
 .PHONY : copy_files
 copy_files: 
 	cp src/*.html build
+	cp src/*.php build	
 	cp src/.htaccess build
 	cp -r libs/hashids-4.0.0/src build/api/Hashids
 	@mkdir -p build/assets

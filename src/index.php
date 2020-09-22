@@ -20,10 +20,27 @@
 <meta property="og:title" content="Getting Away With Murder">
 <meta property="og:site_name" content="Getting Away With Murder">
 <meta property="og:description" content="A co-operative role-play game of drama, wit, and mystery.">
-<meta property="og:image" content="http://gawm.link/assets/og-image.jpg">
-<meta property="og:image:alt" content="The words Getting Away With Murder appear large over a back and white photo of a mansion, subtitled A co-operative role-play game of drama, wit, and mystery.">
-<meta name="twitter:card" content="summary">
 
+<?php
+    // social media schenanigans 
+    if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']),"facebookexternalhit")!==false) ||
+        (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),"twitterbot")!==false))
+    {
+?>
+<meta property="og:image" content="http://gawm.link/assets/fb-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<?php
+    }
+    else
+    {
+?>
+<meta property="og:image" content="http://gawm.link/assets/og-image.jpg">
+<meta name="twitter:card" content="summary">
+<?php
+    }
+?>
+
+<meta property="og:image:alt" content="The words Getting Away With Murder appear large over a back and white photo of a mansion, subtitled A co-operative role-play game of drama, wit, and mystery.">
 
 
 <script>
