@@ -172,7 +172,7 @@ function body_onload()
 <div id="invite">
     <div class="action">
     <div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
-    <div><textarea style='width: 50%; margin: auto;' id='invite_url_textarea'></textarea></div>
+    <div><textarea id='invite_url_textarea'></textarea></div>
     <div><a id='invite_url_a' class="button" role="button">Email It</a></div>
     </div>
 </div>
