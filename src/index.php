@@ -102,6 +102,13 @@ function body_onload()
     });
 }
 
+function copy_game_link(textarea)
+{
+    textarea.select();
+    document.execCommand("copy");
+    error_popup("Invite link copied to clipboard!");
+}
+
 </script>
 </head>
 
@@ -172,7 +179,7 @@ function body_onload()
 <div id="invite">
     <div class="action">
     <div>Game id: <b><span id='game_id'></span></b>. Have other players use this URL to join in:</div>
-    <div><textarea id='invite_url_textarea'></textarea></div>
+    <div><textarea id='invite_url_textarea' onclick="copy_game_link(this);"></textarea></div>
     <div><a id='invite_url_a' class="button" role="button">Email It</a></div>
     </div>
 </div>
