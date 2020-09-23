@@ -9,6 +9,22 @@ This repo contains an api & browser UI to facilitate remote-play of Getting Away
 
 Player community discord: https://discord.gg/d2uMBST
 
+## Privacy
+
+GAWM does not have user accounts, there is no log in, and it does not use cookies. It is our aim to protect the players privacy by design.
+
+When you create a game, you are given an id for that game. When a player joins a game they are also given an id.
+
+The game id and player id are used to communicate player actions to the server. The server stores and sends back the current state of the game.
+
+The actions taken, and any notes written are wiped by an automated process after 2 weeks of inactivity on any game.
+
+Aggregated anonymous statistics about what detail cards are played and discarded are kept so the developers can make informed balance changes to improve the game.
+
+IP addresses are stored temporarily to help prevent misuse of the servers. These are also cleared out automatically after 2 weeks.
+
+The source code can be freely examined here, and you can run the software on your own servers.
+
 ## License
 
 The content provided with this project (found in the `/assets/` folder) is (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley, and may be distributed as part of the software only, for the purposes of of running the software. All other rights reserved.
