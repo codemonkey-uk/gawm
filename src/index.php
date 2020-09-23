@@ -129,7 +129,7 @@ function body_onload()
   <ul>
   <li> Supports 4 to 6 players. </li>
   <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
-  <li> 153 detail cards to help you create the mystery, including 16 characters and 30 motives. </li>
+  <li> <a href="components.html">153 detail cards</a> to help you create the mystery, including 16 characters and 30 motives. </li>
   <li> More than four tredecillion murders to solve! </li>
   <li> Multiple ways to play: <ul> <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
   </ul>
