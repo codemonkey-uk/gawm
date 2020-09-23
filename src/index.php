@@ -185,7 +185,7 @@ function body_onload()
 
 <div class="footer">
 Game Rules, Software and Content (c) 2016-2020 Joseph Fowler &amp; Thaddaeus Frogley.<br>
-The source code for this website is hosted on <a href="https://github.com/codemonkey-uk/gawm">github</a>.
+The <a href="https://github.com/codemonkey-uk/gawm">source code and privacy statement</a> for this website are hosted on github.
 </div>
 
 <div id="snackbar"></div>
