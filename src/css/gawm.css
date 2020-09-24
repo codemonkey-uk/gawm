@@ -225,6 +225,13 @@ button:hover
   font-family: 'Nunito', sans-serif;
 }
 
+#invite_url_textarea {
+  width: 360px;
+  height: 2em;
+  margin: auto;
+  font-size: 133%;
+}
+
 /* Style the footer (copyright, etc) */
 .footer
 {
@@ -234,8 +241,7 @@ button:hover
   font-family: 'Nunito', sans-serif;
   color: white;
 }
-.footer a 
+.footer a
 {
   color: white;
 }
-
