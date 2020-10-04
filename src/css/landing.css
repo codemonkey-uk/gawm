@@ -6,17 +6,19 @@
 #landing > .playnow { grid-area: play; }
 #landing > .buy { grid-area: buy; }
 #landing > .discord { grid-area: discord; }
+#landing > .icons { grid-area: icons; }
 
 #landing
 {
   display: grid;
   grid-template-areas:
-    'header header header header header'
-    'about about about about about'
-    'feat feat feat feat cover'
-    'buy buy buy buy icons'
-    'buy buy buy buy discord'
-    'play play play menu menu';
+    'header header header header'
+    'about  about  about  about'
+    'feat   feat   cover   cover'
+    'buy   buy icons icons'
+    'buy    buy play   play'
+    'discord  discord menu  menu';
+    
   grid-gap: 0px;
   background-color: white;
   max-width: 1000px;
@@ -77,7 +79,7 @@
 {
     font-weight: bold;
 }
-.icons > img
+.icons img
 {
     width: 64px;
     height: 64px;
