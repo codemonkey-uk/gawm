@@ -1,3 +1,11 @@
+<?php
+// Quick and dirty cachebusting
+function cb($fn)
+{
+    return $fn."?".filemtime($fn);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +15,11 @@
 <link rel="icon" href="../assets/favicon.png" type="image/png">
 <link rel="apple-touch-icon-precomposed" href="../assets/favicon.png">
 
-<link rel="stylesheet" href="css/gawm.css">
+<link rel="stylesheet" href="<?php echo cb("css/gawm.css"); ?>">
 
-<script src="js/gawm.js"></script>
-<script src="js/gawm_txt.js"></script>
-<script src="js/gawm_netqueue.js"></script>
+<script src="<?php echo cb("js/gawm.js"); ?>"></script>
+<script src="<?php echo cb("js/gawm_txt.js"); ?>"></script>
+<script src="<?php echo cb("js/gawm_netqueue.js"); ?>"></script>
 
 <title>Getting Away With Murder</title>
 
