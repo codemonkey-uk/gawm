@@ -14,6 +14,7 @@
     'header header header header header'
     'about about about about about'
     'feat feat feat feat cover'
+    'buy buy buy buy icons'
     'buy buy buy buy discord'
     'play play play menu menu';
   grid-gap: 0px;
@@ -30,6 +31,7 @@
         'header'
         'about'
         'cover'
+        'icons'
         'feat'
         'buy'
         'discord'
@@ -51,13 +53,18 @@
 #landing > .cover,
 #landing > .playnow,
 #landing > .buy,
-#landing > .discord
+#landing > .discord,
+#landing > .icons
 {
   background-color: #BAD1CD;
   padding: 12px 30px;
   font-size: 18px;
   text-align: left;
   font-family: 'Nunito', sans-serif;
+}
+#landing > .icons
+{
+    text-align: center;
 }
 #landing > .cover
 {
@@ -66,8 +73,14 @@
     min-width: 224px;
     min-height: 300px;
 }
-#landing > .buy a {
+#landing > .buy a 
+{
     font-weight: bold;
+}
+.icons > img
+{
+    width: 64px;
+    height: 64px;
 }
 .cover > img
 {

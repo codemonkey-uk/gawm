@@ -128,13 +128,16 @@ function copy_game_link(textarea)
   </div>
 
   <div class="about">
-  <h3>Getting Away With Murder</h3> is a co-operative role-play game where your group will bring to life a darkly comedic murder mystery. A game can be set up and ready to play in minutes. There's no game-master, no dice and no abilities to keep track of. The entire story is told in one sitting.
+  <h3>Getting Away With Murder</h3> is a co-operative role-play game where your group will bring to life a darkly comedic murder mystery. 
+  A game can be set up and ready to play in minutes. 
+  There's no game-master, no dice and no abilities to keep track of. 
+  The entire story is told in one 2-4h sitting.
   <p>Can you get away with murder?</p>
   </div>
 
   <div class="feat"><h3>Features</h3>
   <ul>
-  <li> Supports 4 to 6 players. </li>
+  <li> Supports 4 to 6 players, ages 12+. </li>
   <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
   <li> <a href="components.html">153 detail cards</a> to help you create the mystery, including 16 characters and 30 motives. </li>
   <li> More than four tredecillion murders to solve! </li>
@@ -151,7 +154,16 @@ function copy_game_link(textarea)
   <p>Join the <a href="https://discord.gg/d2uMBST">community discord</a>.</p>
   </div>
 
-  <div class="cover"><img src="assets/cover_5-3.png" alt="Book Cover"></div>
+  <div class="icons">
+  <img src="assets/time-icon.svg" alt="2-4 hours play time">
+  <img src="assets/players-icon.svg" alt="4-6 players">
+  <img src="assets/age-icon.svg" alt="suitable for ages 12+">
+  </div>
+
+
+  <div class="cover">
+  <img src="assets/cover_5-3.png" alt="Book Cover">
+  </div>
 
   <div class="playnow"><h3>Play Online Now</h3>
   <div class="action">
