@@ -1,3 +1,11 @@
+<?php
+// Quick and dirty cachebusting
+function cb($fn)
+{
+    return $fn."?".filemtime($fn);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +15,11 @@
 <link rel="icon" href="../assets/favicon.png" type="image/png">
 <link rel="apple-touch-icon-precomposed" href="../assets/favicon.png">
 
-<link rel="stylesheet" href="css/gawm.css">
+<link rel="stylesheet" href="<?php echo cb("css/gawm.css"); ?>">
 
-<script src="js/gawm.js"></script>
-<script src="js/gawm_txt.js"></script>
-<script src="js/gawm_netqueue.js"></script>
+<script src="<?php echo cb("js/gawm.js"); ?>"></script>
+<script src="<?php echo cb("js/gawm_txt.js"); ?>"></script>
+<script src="<?php echo cb("js/gawm_netqueue.js"); ?>"></script>
 
 <title>Getting Away With Murder</title>
 
@@ -145,8 +153,16 @@ function copy_game_link(textarea)
   </ul>
   </div>
 
-  <div class="buy"><h3>You decide the price</h3>
+  <div class="buy">
+  <!--
+  <h3>You decide the price</h3>
   <p><a href="#">Buy the game</a> for whatever cost you feel is fair. You'll recieve PDFs of the rule book and the Print and Play resources.</p><p>If you had fun, please consider coming back to increase your donation.</p>
+  -->
+  <h3>Coming Soon</h3>
+  <ul><li>You decide the price.</li>
+  <li>Digital rule book <em>coming soon</em> as at whatever cost you feel is fair.</li>
+  <li>You'll recieve PDFs of the rule book and the Print and Play resources.</li>
+  </ul>
   </div>
 
   <div class="discord"><h3>Community Discord</h3>
@@ -155,11 +171,10 @@ function copy_game_link(textarea)
   </div>
 
   <div class="icons">
-  <img src="assets/time-icon.svg" alt="2-4 hours play time">
-  <img src="assets/players-icon.svg" alt="4-6 players">
-  <img src="assets/age-icon.svg" alt="suitable for ages 12+">
+  <img src="assets/time-icon.svg" title="2-4 hours play time" alt="2-4 hours">
+  <img src="assets/players-icon.svg" title="4-6 players" alt="4-6 players">
+  <img src="assets/age-icon.svg" title="suitable for ages 12+" alt="players 12+">
   </div>
-
 
   <div class="cover">
   <img src="assets/cover_5-3.png" alt="Book Cover">
@@ -180,7 +195,7 @@ function copy_game_link(textarea)
 
   <div class="menu"><h3>Other ways to play</h3>
   <ul> <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>)</li>
-       <li> Print N Play </li>
+       <li>Print N Play, Coming Soon!</li>
   </ul></div>
 </div>
 
