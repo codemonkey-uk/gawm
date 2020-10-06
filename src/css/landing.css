@@ -19,7 +19,7 @@
     'buy   buy play play'
     'buy    buy play   play'
     'discord  discord menu  menu';
-    
+
   grid-gap: 0px;
   background-color: white;
   max-width: 1000px;
@@ -28,6 +28,12 @@
 
 @media (max-width: 600px)
 {
+  body {
+      margin: 0;
+      /* Prevent loading background when it can't be seen*/
+      background: black !important;
+  }
+
   #landing
   {
       grid-template-areas:
@@ -40,6 +46,7 @@
         'discord'
         'play'
         'menu';
+    margin: 0;
   }
 }
 
