@@ -13,9 +13,10 @@
   display: grid;
   grid-template-areas:
     'header header header header'
-    'about  about  about  about'
-    'feat   feat   cover   cover'
-    'buy   buy icons icons'
+    'about  about  cover  cover'
+    'feat  feat  cover  cover'
+    'feat   feat   icons   icons'
+    'buy   buy play play'
     'buy    buy play   play'
     'discord  discord menu  menu';
     
