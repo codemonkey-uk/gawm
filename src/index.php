@@ -221,6 +221,12 @@ function copy_game_link(textarea)
 <div class="footer">
 Game Rules, Software and Content (c) 2016-2020 Joseph Fowler &amp; Thaddaeus Frogley.<br>
 The <a href="https://github.com/codemonkey-uk/gawm">source code and privacy statement</a> for this website are hosted on github.
+
+<?php
+if( file_exists('press') ): ?>
+A press factsheet and media pack is available here: <a href="/press/">/press/</a>.
+<?php endif; ?>
+
 </div>
 
 <div id="snackbar"></div>
