@@ -178,7 +178,7 @@ function copy_game_link(textarea)
   </div>
 
   <div class="cover">
-  <img src="assets/cover_5-3.png" alt="Book Cover">
+  <img src="assets/cover_5-3b.png" alt="Book Cover">
   </div>
 
   <div class="playnow"><h3>Play Online Now</h3>
