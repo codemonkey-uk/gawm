@@ -8,7 +8,7 @@
         {
             "name": "Mr/s. Big",
             "subtype": "The Gangster",
-            "desc": "You've got nothing to hide, as you are a completely legitimate business-person. You speak softly but are not afraid to threaten. Your stylish clothing is in stark contrast to the abuse your features took during your youth. You probably smoke. You have a fancy job title, but nobody knows what it means."
+            "desc": "You've got nothing to hide, as you are a completely legitimate business-person. You speak softly but are not afraid to threaten. Your stylish clothing is in stark contrast to the abuse your features have taken. You probably smoke. You have a fancy job title, but nobody knows what it means."
         },
         {
             "name": "Mr/s. Drab",
@@ -28,7 +28,7 @@
         {
             "name": "Mr/s. White",
             "subtype": "The Innocent",
-            "desc": "You are cleaner than clean and smell of roses. Your word is almost beyond dispute. You are likely retired and gently spoken. You might work with charities or the church. You could have a disability, or be simply frail."
+            "desc": "You are cleaner than clean and smell of roses. Your word is almost beyond dispute. You are likely retired and gently spoken. You might work with charities or the church. You could have a disability, or simply be frail."
         },
         {
             "name": "Mr/s. Wordsmith",
@@ -38,12 +38,12 @@
         {
             "name": "Mr/s. X",
             "subtype": "The Rebel",
-            "desc": "You are young and hedonistic. You dress informally and play an instrument.  You'll rock the boat just to see what happens, and you don't care what these uptight establishment types think. You don't have a job, but you do have a plan - you're gonna blow this joint."
+            "desc": "You are young and hedonistic. You dress informally and play an instrument. You'll rock the boat just to see what happens, and you don't care what these uptight establishment types think. You don't have a job, but you do have a plan - you're gonna blow this joint."
         },
         {
             "name": "Doctor / Nurse Nightingale",
             "subtype": "The Healer",
-            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged and could be attractive. You may have started out working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals privately."
+            "desc": "You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged and could be attractive. You may be working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals."
         },
         {
             "name": "Professor Acumen",
@@ -63,12 +63,12 @@
         {
             "name": "The Great M",
             "subtype": "The Fraud",
-            "desc": "Using your deep connection to the spirit world, you saw all this coming and the doom ahead too! Your good looks and quick thinking are perfect for parting people from their money. You might practice reading palms, the tarot and other parlor tricks. Or maybe you have been employed to exorcise evil spirits from the house."
+            "desc": "Using your connection to the spirit world, you saw all this coming and the doom ahead! Your good looks and quick thinking are perfect for parting people from their money. You might practice palm reading, tarot and other parlor tricks. Maybe you've been employed to exorcise evil spirits from the house."
         },
         {
             "name": "Mr/s. Diligent",
             "subtype": "The Labourer",
-            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You've worked hard for what you have and are damn proud of it. You might work at the house, a smallholding of your own, or perhaps you peddle your trade door-to-door."
+            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You've worked hard for what you have and are damn proud of it. You might work at the house, a smallholding of your own, or peddle your trade door-to-door."
         },
         {
             "name": "Mr/s. Suave",
@@ -78,7 +78,7 @@
         {
             "name": "Mr/s. Pioneer",
             "subtype": "The Adventurer",
-            "desc": "You've travelled the world and seen everything from mountains to endless deserts. Now you're back home and it's all a little bland. You may sport a tan or wear something from a distant culture. You might make a living retrieving lost objects or maybe you have a fat bank account and a case of wanderlust."
+            "desc": "You've travelled the world and seen everything from mountains to endless deserts. Now you're back home and it's all a little bland. You may wear something from a distant culture. You could make a living retrieving lost objects or maybe you have a fat bank account and a case of wanderlust."
         }
     ],
     "objects": [
@@ -178,7 +178,7 @@
             "desc": "Contains sterile dressings, bandages, iodine, pain-killers, surgical spirit etc. It's been opened."
         },
         {
-            "name": "Tyre Iron",
+            "name": "Wrench",
             "subtype": "Tool",
             "desc": "24\" of rugged forged steel with chrome plate finish."
         },
@@ -708,7 +708,7 @@
         {
             "name": "Proof Of Murder Only",
             "subtype": "The Discovery",
-            "desc": "News/proof of the murder is delivered without the group seeing the body. Perhaps a reel of film, or a body part in a box."
+            "desc": "News/proof of the murder is delivered without the group seeing the body. Perhaps a photo, or a body part in a box."
         },
         {
             "name": "On The Edge Of Death",
