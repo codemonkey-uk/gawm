@@ -126,7 +126,7 @@ function copy_game_link(textarea)
 <div id="debug_div" style="display: none;"></div>
 
 <div id="loading_div">
-<img width=50 height=50 src="assets/loading.gif" alt="rotating circles to indicate network activity">
+<img width=50 height=50 src="assets/loading.gif" alt="ringing telephone icon to indicate network activity">
 </div>
 
 
@@ -220,6 +220,7 @@ function copy_game_link(textarea)
 </div></div>
 
 <div class="footer">
+<a href="http://gawm.link/">Getting Away With Murder</a>
 Game Rules, Software and Content (c) 2016-2020 Joseph Fowler &amp; Thaddaeus Frogley.<br>
 The <a href="https://github.com/codemonkey-uk/gawm">source code and privacy statement</a> for this website are hosted on github.
 
