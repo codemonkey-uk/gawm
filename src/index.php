@@ -196,8 +196,9 @@ function copy_game_link(textarea)
   </div></div>
 
   <div class="menu"><h3>Other ways to play</h3>
-  <ul> <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>)</li>
-       <li>Print N Play, Coming Soon!</li>
+  <ul> 
+    <li>Print N Play (<a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>).</li>
+    <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>) <em>launching November 9th</em>.</li>
   </ul></div>
 </div>
 
