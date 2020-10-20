@@ -1,3 +1,3 @@
 <?php
-header('Location: ./?ugc='.$_GET["ugc"].'&a=join_game');
+header('Location: /?ugc='.$_GET["ugc"].'&a=join_game');
 ?>
