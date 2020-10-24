@@ -159,11 +159,11 @@ function copy_game_link(textarea)
   <h3>You decide the price</h3>
   <p><a href="#">Buy the game</a> for whatever cost you feel is fair. You'll recieve PDFs of the rule book and the Print and Play resources.</p><p>If you had fun, please consider coming back to increase your donation.</p>
   -->
-  <h3>Coming Soon</h3>
+  <h3>Buy</h3>
   <ul>
-  <li>Digital rule book and card pack <em>coming soon</em> at $7 on <a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>.</li>
+  <li>Digital rule book and card pack <em>out now</em> at $7 on <a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>.</li>
   <li>You'll recieve PDFs of the rule book and the Print and Play resources.</li>
-  <li>Or Pay What You Want in the limited time <i>you decide the price</i> launch-week sale!</li>
+  <!-- <li>Or Pay What You Want in the limited time <i>you decide the price</i> launch-week sale!</li> -->
   </ul>
   </div>
 
@@ -198,7 +198,7 @@ function copy_game_link(textarea)
   <div class="menu"><h3>Other ways to play</h3>
   <ul> 
     <li>Print N Play (<a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>).</li>
-    <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>) <em>launching November 9th</em>.</li>
+    <li>Tabletop Simulator (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2231637672">Steam Workshop</a>).</li>
   </ul></div>
 </div>
 
