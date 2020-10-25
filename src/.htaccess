@@ -1,3 +1,14 @@
+ErrorDocument 401 "Error"
+ErrorDocument 403 "Error"
+
+# DreamHost stats
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/(stats|failed_auth\.html).*$ [NC]
+RewriteRule . - [L]
+</IfModule> 
+
 Options -Indexes
 
 RewriteEngine On
