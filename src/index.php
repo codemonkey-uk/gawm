@@ -155,15 +155,10 @@ function copy_game_link(textarea)
   </div>
 
   <div class="buy">
-  <!--
-  <h3>You decide the price</h3>
-  <p><a href="#">Buy the game</a> for whatever cost you feel is fair. You'll recieve PDFs of the rule book and the Print and Play resources.</p><p>If you had fun, please consider coming back to increase your donation.</p>
-  -->
   <h3>Buy</h3>
   <ul>
-  <li>Digital rule book and card pack <em>out now</em> at $7 on <a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>.</li>
-  <li>You'll recieve PDFs of the rule book and the Print and Play resources.</li>
-  <!-- <li>Or Pay What You Want in the limited time <i>you decide the price</i> launch-week sale!</li> -->
+  <li>For just $7 you'll recieve PDFs of the rule book and the Print and Play resources, so you can play online or at home.</li>
+  <li>Download the game today from <a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>.</li>
   </ul>
   </div>
 
