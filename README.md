@@ -35,7 +35,7 @@ Any libraries included as part of this project (found in `/libs/` folder) are in
 
 ### Fonts
 
-Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI). All rights reserved. Available under the Apache 2.0 licence. http://www.apache.org/licenses/LICENSE-2.0.html
+Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI). All rights reserved. Available under the [Apache 2.0 licence](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Nunito - Copyright 2014 The Nunito Project Authors. Available under the SIL [Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
+Nunito - Copyright 2014 The Nunito Project Authors. Available under the [SIL Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
 
