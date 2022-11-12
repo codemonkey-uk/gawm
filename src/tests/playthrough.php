@@ -64,7 +64,7 @@ function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
             $token = $data["players"][$player_id]["unassigned_token"];
             $discard_bias = ($token == "innocence") ? $guilt_bias_pc : 100-$guilt_bias_pc;
             if (random_int(0,99)<$discard_bias)
-                $v=0;
+                $v=gawm_player_id_victim;
             else
                 $v=$other_players[ array_rand($other_players) ];
                 
