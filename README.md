@@ -33,7 +33,7 @@ The source code (found in the `/src/` folder) is licensed under [AGPL-3.0-or-lat
 
 Any libraries included as part of this project (found in `/libs/` folder) are included with their original licences intact.
 
-### Fonts
+### Fonts
 
 Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI). All rights reserved. Available under the [Apache 2.0 licence](http://www.apache.org/licenses/LICENSE-2.0.html).
 
