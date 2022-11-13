@@ -25,11 +25,17 @@ IP addresses are stored temporarily to help prevent misuse of the servers. These
 
 The source code can be freely examined here, and you can run the software on your own servers.
 
-## License
+## License and Copyright
 
 The content provided with this project (found in the `/assets/` folder) is (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley, and may be distributed as part of the software only, for the purposes of of running the software. All other rights reserved.
 
 The source code (found in the `/src/` folder) is licensed under [AGPL-3.0-or-later](src/LICENSE.txt).
 
 Any libraries included as part of this project (found in `/libs/` folder) are included with their original licences intact.
+
+### Fonts
+
+Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI). All rights reserved. Available under the [Apache 2.0 licence](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+Nunito - Copyright 2014 The Nunito Project Authors. Available under the [SIL Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
 

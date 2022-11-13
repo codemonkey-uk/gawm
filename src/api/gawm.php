@@ -184,7 +184,7 @@ function gawm_give_token(&$data, $player_id, $token, $target_id)
             throw new Exception('A player cannot award themself the free token');
 
         if (!array_key_exists($target_id,$data["players"]))
-            throw new Exception('Invalid Target Id: '.$target_id);
+            throw new Exception('Invalid Target Id: '.$target_id.' not exists in'.json_encode(array_keys($data["players"])));
 
         $target = &$data["players"][$target_id];
 

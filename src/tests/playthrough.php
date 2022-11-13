@@ -63,12 +63,18 @@ function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
             // with 100% guilt bias, discard innocence tokens 100% of the time
             $token = $data["players"][$player_id]["unassigned_token"];
             $discard_bias = ($token == "innocence") ? $guilt_bias_pc : 100-$guilt_bias_pc;
+
+            $target_id=-1;
             if (random_int(0,99)<$discard_bias)
-                $v=0;
+            {
+                $target_id=gawm_player_id_victim;
+            }
             else
-                $v=$other_players[ array_rand($other_players) ];
-                
-            gawm_give_token($data, $player_id, $token, $v);
+            {
+                $target_id=$other_players[ array_rand($other_players) ];
+            }
+            
+            gawm_give_token($data, $player_id, $token, $target_id);
             
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
         }
@@ -154,7 +160,7 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     vote_scene($data, $guilt_bias_pc);
     gawm_request_next_scene($data,$active_player);
     $token = $data["players"][$active_player]["unassigned_token"];
-    gawm_give_token($data,$active_player,$token,0);
+    gawm_give_token($data,$active_player,$token,gawm_player_id_victim);
 
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
