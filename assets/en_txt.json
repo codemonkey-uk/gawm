@@ -33,7 +33,7 @@
 	"action_giveto": "Give to {ID}",
 	"extrascene_scene": "Extra Scene: {ID} to introduce a new character.",
 	"firstbreak_scene": "First Break: The Murder.",
-	"twist_scene": "Second Break: The Twist.",
+	"twist_scene": "Second Break: The Twist - Discard details to redraw.",
 
 	"lastbreak_scene": "Last Break: The Accusation - {ID} - and The Guilty ...",
 	"unassigned_token": "Waiting for {ID} to assign the {TOKEN} token."
