@@ -142,7 +142,7 @@ function complete_setup(&$data)
         }
     }
 
-    // every player has 1 alias
+    // give players detail cards
     foreach( $data["players"] as &$player )
     {
         // draw any other details needed for Act I
@@ -154,5 +154,11 @@ function complete_setup(&$data)
 
     $data["act"] = 1;
     $data["scene"] = 0;
+
+    // the murder victim
+    // (this is redacted for clients until the extrascene)
+    // create victim object, and record which player it was
+    $data["victim"]=array();
+    $data["victim"]["player_id"]=array_rand($data["players"]);  
 }
 ?>

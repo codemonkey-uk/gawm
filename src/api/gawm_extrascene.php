@@ -17,13 +17,8 @@ function gawm_is_extrascene(&$data)
 
 function setup_extrascene(&$data)
 {
-    // select victim
-    $player_id = array_rand($data["players"]);
+    $player_id = $data["victim"]["player_id"];
     $player = &$data["players"][$player_id];
-
-    // create victim object, and record which player it was
-    $data["victim"]=array();
-    $data["victim"]["player_id"]=$player_id;
 
     // move all played details from the player to the victim container
     $data["victim"]["play"]=$player["play"];

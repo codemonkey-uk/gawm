@@ -774,6 +774,12 @@ function redact_for_player($data, $player_id)
     // how the tokens got shuffled?
     unset($data["tokens"]);
     
+    // the victim is revealed in the last scene of act 1
+    if ($data["act"]<2 && !gawm_is_extrascene($data))
+    {
+        unset($data['victim']);
+    }
+
     // suplementals for victim
     if (isset($data['victim']))
     {
