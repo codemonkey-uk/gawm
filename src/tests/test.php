@@ -116,6 +116,11 @@ function test_redact()
     }
     
     complete_setup($data);
+    
+    // override murder victim to be player 4
+    // since if p1 or p2 are selected, it breaks the redact testcase
+    // by clearing their tokens
+    $data["victim"]["player_id"]=$player_ids[3];    
 
     // give everyone some out-of-sequence innocence and guilt tokens
     foreach( $player_ids as $player_id )
