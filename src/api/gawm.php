@@ -188,7 +188,11 @@ function gawm_give_token(&$data, $player_id, $token, $target_id)
 
         $target = &$data["players"][$target_id];
 
-        array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
+        // dont give tokens if they've run out
+        if (count($data["tokens"][$token]))
+        {
+            array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
+        }
     }
 
     unset($player["unassigned_token"]);
@@ -342,7 +346,12 @@ function complete_normalscene(&$data)
     // draw a token of the type according the the vote
     $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
         "innocence" : "guilt";
-    array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+
+    // only give tokens if they are still available
+    if (count($data["tokens"][$token]))
+    {
+        array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+    }
 
     global $gawm_opposites;
     $player["unassigned_token"]=$gawm_opposites[$token];
