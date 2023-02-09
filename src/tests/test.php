@@ -116,7 +116,7 @@ function test_redact()
     }
     
     complete_setup($data);
-    
+
     // override murder victim to be player 4
     // since if p1 or p2 are selected, it breaks the redact testcase
     // by clearing their tokens
@@ -337,6 +337,8 @@ try{
     test_playthrough(5, gawm_default_rules, $random_accusation);
     test_playthrough(6, gawm_default_rules, $random_accusation);
     
+    test_playthrough_guilt_token_edgecase(4, gawm_default_rules, $random_accusation);
+
     echo "Passed ".$test_count." tests.\n";
 }
 catch (Exception $e) {
