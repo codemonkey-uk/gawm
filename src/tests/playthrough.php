@@ -298,20 +298,20 @@ function test_playthrough_guilt_token_edgecase($c, $rules, $accusation_fn)
     // except in act 1 the to-be-murder victim gets an innocent token
     $vote_fn = function($data) 
     {
-        echo( "act ".$data["act"]." scene ".$data["scene"]."\n" );
-        echo( "table: ".json_encode($data["tokens"])."\n" );
+        //echo( "act ".$data["act"]." scene ".$data["scene"]."\n" );
+        //echo( "table: ".json_encode($data["tokens"])."\n" );
         $v=$data["victim"]["player_id"];
-        echo( $v.": ".json_encode($data["players"][$v]["tokens"])."\n" );
+        //echo( $v.": ".json_encode($data["players"][$v]["tokens"])."\n" );
         if ($data['act']==1 && !gawm_is_extrascene($data))
         {
-            if (active_player_id($data)==$data["victim"]["player_id"])
+            if (active_player_id($data)==$v)
             {  
-                echo("vote to give innocent to ".active_player_id($data)."\n" );
+                //echo("vote to give innocent to ".active_player_id($data)."\n" );
                 return gawm_vote_innocent;
             }
         }
 
-        echo("vote to give guilt to ".active_player_id($data)."\n" );
+        //echo("vote to give guilt to ".active_player_id($data)."\n" );
         return gawm_vote_guilty;
     };
 
@@ -322,10 +322,10 @@ function test_playthrough_guilt_token_edgecase($c, $rules, $accusation_fn)
             if ($data['act']==1 && !gawm_is_extrascene($data))
             {   
                 $result = $data["victim"]["player_id"];
-                echo("gift ".$token." to ".$result."\n" );
+                //echo("gift ".$token." to ".$result."\n" );
                 return $result;
             }
-            echo("discard ".$token."\n" );
+            //echo("discard ".$token."\n" );
             return gawm_player_id_victim;
         }
 
@@ -337,17 +337,24 @@ function test_playthrough_guilt_token_edgecase($c, $rules, $accusation_fn)
         );
         $result = $other_players[ array_rand($other_players) ];
 
-        echo("gift ".$token." to ".$result."\n" );
+        //echo("gift ".$token." to ".$result."\n" );
         return $result;
     };
 
     test_playthrough_fn($c, $rules, $accusation_fn, $vote_fn, $gift_fn);
     
     foreach($data["players"] as $player)
-        foreach($player["tokens"] as $token)
-            test(in_array($token, $rules["new_player_tokens"]),true,"only valid tokens at end of game");
-
-    echo( json_encode($data) );
+    {
+        foreach($player["tokens"] as $token_type)
+        {
+            foreach($token_type as $token)
+            {
+                // note: strict mode needed to differentiate null from 0
+                test(in_array($token, $rules["new_player_tokens"], true),true,"Unexpected token '".json_encode($token)."' found at end of game.");
+            }
+        }
+    }
+    // echo( json_encode($data) );
 }
 
 ?>
