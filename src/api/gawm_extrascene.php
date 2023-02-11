@@ -18,6 +18,15 @@ function gawm_is_extrascene(&$data)
 function setup_extrascene(&$data)
 {
     $player_id = $data["victim"]["player_id"];
+
+    // IDK why this happened in a "real" game but not in tests but we can fix it...
+    if (!array_key_exists($player_id,$data["players"]))
+    {
+        $player_id = array_rand($data["players"]);
+        $data["victim"]["player_id"] = $player_id;
+        // throw new Exception('Victim id '.$player_id.' does not match any known player:'.json_encode(array_keys($data["players"])) );
+    }
+
     $player = &$data["players"][$player_id];
 
     // move all played details from the player to the victim container

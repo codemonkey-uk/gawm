@@ -783,21 +783,6 @@ function redact_for_player($data, $player_id)
     // how the tokens got shuffled?
     unset($data["tokens"]);
     
-    // until "play" is setup on victim (in setup_extrascene), 
-    // redact the victim object
-    // (the victim is revealed in the last scene of act 1)
-    if (!isset($data['victim']['play']))
-    {
-        unset($data['victim']);
-    }
-
-    // suplementals for victim
-    if (isset($data['victim']))
-    {
-        $data['victim']['active'] = gawm_is_player_active($data, gawm_player_id_victim);
-        $data['victim']['details_left_to_play'] = gawm_player_has_details_left_to_play($data, gawm_player_id_victim);
-    }
-    
     if (isset($data["players"])==false)
         throw new Exception( "Malformed game, contains no players: ". json_encode($data) );
     
@@ -835,6 +820,21 @@ function redact_for_player($data, $player_id)
                     $deck[$key] = -1;
     }
     
+    // until "play" is setup on victim (in setup_extrascene), 
+    // redact the victim object
+    // (the victim is revealed in the last scene of act 1)
+    if (!isset($data['victim']['play']))
+    {
+        unset($data['victim']);
+    }
+
+    // suplementals for victim
+    if (isset($data['victim']))
+    {
+        $data['victim']['active'] = gawm_is_player_active($data, gawm_player_id_victim);
+        $data['victim']['details_left_to_play'] = gawm_player_has_details_left_to_play($data, gawm_player_id_victim);
+    }
+
     return $data;
 }
 
