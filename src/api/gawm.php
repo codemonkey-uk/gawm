@@ -783,8 +783,10 @@ function redact_for_player($data, $player_id)
     // how the tokens got shuffled?
     unset($data["tokens"]);
     
-    // the victim is revealed in the last scene of act 1
-    if ($data["act"]<2 && !gawm_is_extrascene($data))
+    // until "play" is setup on victim (in setup_extrascene), 
+    // redact the victim object
+    // (the victim is revealed in the last scene of act 1)
+    if (!isset($data['victim']['play']))
     {
         unset($data['victim']);
     }
