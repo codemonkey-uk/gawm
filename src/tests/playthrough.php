@@ -10,7 +10,7 @@ $random_accusation = function ($data)
     return $other_players[$vk];
 };
 
-function vote_scene( &$data, $guilt_bias_pc )
+function vote_scene( &$data, $vote_fn )
 {
     $inactive_players = array_filter(
         array_keys($data["players"]),
@@ -18,15 +18,12 @@ function vote_scene( &$data, $guilt_bias_pc )
     );
     test( count($inactive_players), count($data["players"])-1, "All bar 1 players should be active in the scene." );
     
-    if (random_int(0,99)<$guilt_bias_pc)
-        $v=gawm_vote_guilty;
-    else
-        $v=gawm_vote_innocent;
+    $v = $vote_fn($data);
         
     gawm_vote($data, current($inactive_players), $v);
 }
 
-function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
+function play_scenes( &$data, $player_ids, $detail, $vote_fn, $gift_fn )
 {
     foreach( $player_ids as $player_id )
     {
@@ -50,7 +47,7 @@ function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
         $act = $data["act"];
         if ($act>0)
         {
-            vote_scene($data, $guilt_bias_pc);
+            vote_scene($data, $vote_fn);
         }
         
         gawm_request_next_scene($data, $player_id);
@@ -59,21 +56,9 @@ function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
         {
             // token gifting
             test(isset($data["players"][$player_id]["unassigned_token"]),true,"after the scene ends the play should have an unassigned token");
-            
-            // with 100% guilt bias, discard innocence tokens 100% of the time
-            $token = $data["players"][$player_id]["unassigned_token"];
-            $discard_bias = ($token == "innocence") ? $guilt_bias_pc : 100-$guilt_bias_pc;
 
-            $target_id=-1;
-            if (random_int(0,99)<$discard_bias)
-            {
-                $target_id=gawm_player_id_victim;
-            }
-            else
-            {
-                $target_id=$other_players[ array_rand($other_players) ];
-            }
-            
+            $token = $data["players"][$player_id]["unassigned_token"];
+            $target_id = $gift_fn($data, $player_id, $token);
             gawm_give_token($data, $player_id, $token, $target_id);
             
             test(isset($data["players"][$player_id]["unassigned_token"]),false,"after giving a token, the player should have one");
@@ -81,10 +66,9 @@ function play_scenes( &$data, $player_ids, $detail, $guilt_bias_pc )
     }
 }
 
-function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
+function test_playthrough_fn($c, $rules, $accusation_fn, $vote_fn, $gift_fn)
 {
-    global $data;
-
+    global $data;    
     $data = gawm_new_game($rules);
     test(gawm_is_setup($data), true, "New game should start in Setup");
 
@@ -102,7 +86,7 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     test(gawm_is_detail_active($data, "motives"), false, "motives should not be active in setup");
     test(gawm_is_detail_active($data, "wildcards"), false, "wildcards should not be active in setup");
 
-    play_scenes($data, $player_ids, "aliases", $guilt_bias_pc);
+    play_scenes($data, $player_ids, "aliases", $vote_fn, $gift_fn);
 
     // advance from setup to act I
     test($data["act"], 1, "Act 1 should follow set up.");
@@ -114,7 +98,7 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     test(gawm_is_detail_active($data, "wildcards"), true, "wildcards should be active in act I");
 
     // play out act I
-    play_scenes($data, $player_ids,"relationships", $guilt_bias_pc);
+    play_scenes($data, $player_ids,"relationships", $vote_fn, $gift_fn);
 
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), true, "Extra Scene expected.");
@@ -157,7 +141,7 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
         current($data["players"][$active_player]["hand"]["relationships"]),
         [$active_player, current($other_players)]
     );
-    vote_scene($data, $guilt_bias_pc);
+    vote_scene($data, $vote_fn);
     gawm_request_next_scene($data,$active_player);
     $token = $data["players"][$active_player]["unassigned_token"];
     gawm_give_token($data,$active_player,$token,gawm_player_id_victim);
@@ -193,7 +177,7 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     test(gawm_is_detail_active($data, "motives"), true, "motives should now be active in Act II");
 
     // play out act II
-    play_scenes($data, $player_ids,"objects", $guilt_bias_pc);
+    play_scenes($data, $player_ids,"objects", $vote_fn, $gift_fn);
     
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
@@ -218,8 +202,8 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     test($data["scene"], 0, "Act III starts with Scene 0.");
 
     // play out act III
-    play_scenes($data, $player_ids,"wildcards", $guilt_bias_pc);
-    play_scenes($data, $player_ids,"motives", $guilt_bias_pc);
+    play_scenes($data, $player_ids,"wildcards", $vote_fn, $gift_fn);
+    play_scenes($data, $player_ids,"motives", $vote_fn, $gift_fn);
 
     // Scene progression test coverage:
     test(gawm_is_extrascene($data), false, "Extra Scene unexpected.");
@@ -272,4 +256,105 @@ function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
     test(gawm_is_epilogue($data), false, "Epilogue over...");
     test(gawm_is_epilogue_inprogress_or_complete($data), true, "Epilogue over.");
 }
+
+function test_playthrough($c, $rules, $accusation_fn, $guilt_bias_pc = 50)
+{
+    $vote_fn = function($data) use ($guilt_bias_pc)
+    {
+        if (random_int(0,99)<$guilt_bias_pc)
+            return gawm_vote_guilty;
+        else
+            return gawm_vote_innocent;
+    };
+
+    $gift_fn = function($data, $player_id, $token) use ($guilt_bias_pc)
+    {
+        // with 100% guilt bias, discard innocence tokens 100% of the time
+        $discard_bias = ($token == "innocence") ? $guilt_bias_pc : 100-$guilt_bias_pc;
+        $target_id=-1;
+        if (random_int(0,99)<$discard_bias)
+        {
+            return gawm_player_id_victim;
+        }
+        else
+        {
+            $player_ids = array_keys( $data["players"]);
+            $other_players = array_filter( $player_ids,
+                function($id)use($player_id){return $id!=$player_id;}
+            );
+            return $other_players[ array_rand($other_players) ];
+        }
+    };
+
+    test_playthrough_fn($c, $rules, $accusation_fn, $vote_fn, $gift_fn);
+}
+
+// special test case for all the guilty tokens being used up
+function test_playthrough_guilt_token_edgecase($c, $rules, $accusation_fn)
+{
+    global $data; 
+
+    // everyone gets a guilty token
+    // except in act 1 the to-be-murder victim gets an innocent token
+    $vote_fn = function($data) 
+    {
+        //echo( "act ".$data["act"]." scene ".$data["scene"]."\n" );
+        //echo( "table: ".json_encode($data["tokens"])."\n" );
+        $v=$data["victim"]["player_id"];
+        //echo( $v.": ".json_encode($data["players"][$v]["tokens"])."\n" );
+        if ($data['act']==1 && !gawm_is_extrascene($data))
+        {
+            if (active_player_id($data)==$v)
+            {  
+                //echo("vote to give innocent to ".active_player_id($data)."\n" );
+                return gawm_vote_innocent;
+            }
+        }
+
+        //echo("vote to give guilt to ".active_player_id($data)."\n" );
+        return gawm_vote_guilty;
+    };
+
+    $gift_fn = function($data, $player_id, $token) 
+    {
+        if ($token == "innocence")
+        {
+            if ($data['act']==1 && !gawm_is_extrascene($data))
+            {   
+                $result = $data["victim"]["player_id"];
+                //echo("gift ".$token." to ".$result."\n" );
+                return $result;
+            }
+            //echo("discard ".$token."\n" );
+            return gawm_player_id_victim;
+        }
+
+        $player_ids = array_keys($data["players"]);
+        $other_players = array_filter( $player_ids,
+            function($id)use($player_id,$data){
+                return $id!=$player_id;
+            }
+        );
+        $result = $other_players[ array_rand($other_players) ];
+
+        //echo("gift ".$token." to ".$result."\n" );
+        return $result;
+    };
+
+    test_playthrough_fn($c, $rules, $accusation_fn, $vote_fn, $gift_fn);
+    
+    foreach($data["players"] as $player)
+    {
+        foreach($player["tokens"] as $token_type)
+        {
+            foreach($token_type as $token)
+            {
+                // note: strict mode needed to differentiate null from 0
+                test(in_array($token, $rules["new_player_tokens"], true),true,"Unexpected token '".json_encode($token)."' found at end of game.");
+            }
+        }
+    }
+    // echo( json_encode($data) );
+}
+
 ?>

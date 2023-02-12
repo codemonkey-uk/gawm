@@ -91,75 +91,122 @@ function test_redact()
 {
     global $data;
 
-    $data_template = [
-        "cards" => [],
-        "tokens" => [],
-        "players" => [
-            1 => [
-                "hand" => ["aliases" => [1,2]],
-                "tokens" => ["guilt" => [1,2],"innocence" => [1,2]],
-                "vote" => "guilt"
-            ],
-            2 => [
-                "hand" => ["aliases" => [1,2]],
-                "tokens" => ["guilt" => [1,2],"innocence" => [1,2]],
-                "vote" => "guilt",
-                "unassigned_token" => "guilt",
-            ]
-        ],
-        "act" => 1,
-        "scene" => 1,
-        "victim" => []
-    ];
+    $data = gawm_new_game();
 
-    $data = $data_template;
-    $redacted = redact_for_player($data, 1);
+    // add 4 players to the game
+    $player_ids = [];
+    array_push( $player_ids, gawm_add_player($data, 1) );
+    array_push( $player_ids, gawm_add_player($data, 2) );
+    array_push( $player_ids, gawm_add_player($data, 3) );
+    array_push( $player_ids, gawm_add_player($data, 4) );
     
-    // hands for other players are redacted
-    test($redacted["players"][1]["hand"], ["aliases" => [ 1, 2]], "Expected p1 hand to be intact.");
-    test($redacted["players"][2]["hand"], ["aliases" => [-1,-1]], "Expected p2 hand to be redacted.");
+    // shortcuts for player 1 & 2 ids
+    $p1 = $player_ids[0];
+    $p2 = $player_ids[1];
+
+    // play an alias for each player
+    foreach( $player_ids as $player_id )
+    {
+        $targets = [$player_id];
+        gawm_play_detail(
+            $data, $player_id, "aliases",
+            current($data["players"][$player_id]["hand"]["aliases"]),
+            $targets
+        );    
+    }
+    
+    complete_setup($data);
+
+    // override murder victim to be player 4
+    // since if p1 or p2 are selected, it breaks the redact testcase
+    // by clearing their tokens
+    $data["victim"]["player_id"]=$player_ids[3];    
+
+    // give everyone some out-of-sequence innocence and guilt tokens
+    foreach( $player_ids as $player_id )
+    {
+        $data["players"][$player_id]["tokens"] = ["guilt" => [1,2],"innocence" => [1,2]];
+    }
+
+    // set p1 & p2 votes
+    $data["players"][$p1]["vote"] = "guilt";
+    $data["players"][$p2]["vote"] = "guilt";
+
+    $redacted = redact_for_player($data, $p1);
+    
+    // hands for other players only, are redacted
+    test(
+        $redacted["players"][$p1]["hand"], 
+        $data["players"][$p1]["hand"], 
+        "Expected p1 hand to be intact.");
+
+    test(
+        $redacted["players"][$p2]["hand"], 
+        ["relationships" => [-1,-1,-1],"objects" => [-1,-1,-1],"motives" => [-1,-1,-1],"wildcards" => [-1,-1,-1]],
+        "Expected p2 hand to be redacted.");
     
     // tokens are delt face down, redacted for all
-    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p1 tokens to be redacted.");
-    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p2 tokens to be redacted.");
     
+    test(
+        $redacted["players"][$p1]["tokens"], 
+        ["guilt" => [-1,-1],"innocence" => [-1,-1]], 
+        "Expected p1 tokens to be redacted.");
+
+    test(
+        $redacted["players"][$p2]["tokens"], 
+        ["guilt" => [-1,-1],"innocence" => [-1,-1]], 
+        "Expected p2 tokens to be redacted.");
+    
+
     // other players vote status is redacted
-    test(isset($redacted["players"][1]["vote"]),true,"player 1 vote should be intact.");
-    test(isset($redacted["players"][2]["vote"]),false,"player 2 vote should be redacted.");
-    
-    // last break redactions differ
-    $data = $data_template;
-    $data["act"] = 3;
+    test(isset($redacted["players"][$p1]["vote"]),true,"player 1 vote should be intact.");
+    test(isset($redacted["players"][$p2]["vote"]),false,"player 2 vote should be redacted.");
+
+    // victim redacted before extrascene
+    test(isset($redacted["victim"]),false,"victim should be redacted in act 1");
+
+    // victim is NOT redacted in extrascene
     $data["scene"] = 4;
+    test(gawm_is_extrascene($data),true,"(meta) act 1 scene 2 in a 2 player game should be an extrasceene");
+    
+    setup_extrascene($data);
+    $redacted = redact_for_player($data, $p1);
+    test(isset($redacted["victim"]),true,"victim should not be redacted in act 1 extrascene");
+
+    // last break redactions differ
+    // $data = $data_template;
+    $data["act"] = 3;
+    $data["scene"] = 8;
     $data["most_innocent"] = 1;
+    $data["players"][$p2]["unassigned_token"] = "guilt";
 
     test(gawm_is_lastbreak($data),true,"expected to be last break");
-    $redacted = redact_for_player($data, 1);
+    $redacted = redact_for_player($data, $p1);
 
     // innocence tokens are redacted until the last one is assigned...
-    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p1 innocence tokens to be redacted.");
-    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p2 innocence tokens to be redacted.");
+    test($redacted["players"][$p1]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p1 innocence tokens to be redacted.");
+    test($redacted["players"][$p2]["tokens"], ["guilt" => [-1,-1],"innocence" => [-1,-1]], "Expected p2 innocence tokens to be redacted.");
 
-    unset($data["players"][2]["unassigned_token"]);
+
+    unset($data["players"][$p2]["unassigned_token"]);
     $redacted = redact_for_player($data, 1);
     
     // innocence tokens not redacted during the accusations
-    test($redacted["players"][1]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p1 innocence tokens to be intact.");
-    test($redacted["players"][2]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p2 innocence tokens to be intact.");
-
-    
+    test($redacted["players"][$p1]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p1 innocence tokens to be intact.");
+    test($redacted["players"][$p2]["tokens"], ["guilt" => [-1,-1],"innocence" => [ 1, 2]], "Expected p2 innocence tokens to be intact.");
     
     // epilogue redactions differ
-    $data = $data_template;
+    // $data = $data_template;
     $data["act"] = 4;
-    $data["epilogue_order"] = [0,1];
-    $redacted = redact_for_player($data, 1);
+    $data["scene"] = 1;
+    $data["epilogue_order"] = $player_ids;
+    $redacted = redact_for_player($data, $p1);
 
     // tokens not redacted in the 4th act (epilogue)
-    test($redacted["players"][1]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p1 tokens to be intact.");
-    test($redacted["players"][2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
+    test($redacted["players"][$p1]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p1 tokens to be intact.");
+    test($redacted["players"][$p2]["tokens"], ["guilt" => [ 1, 2],"innocence" => [ 1, 2]], "Expected p2 tokens to be intact.");
     
-    test(array_keys($redacted["players"]),[1,2],"redact should not change the player uids");
+    test(array_keys($redacted["players"]),$player_ids,"redact should not change the player uids");
 }
 
 function test_move_detail()
@@ -253,6 +300,9 @@ function test_setup_extrascene()
             "tokens" => []
         ]
     ];
+
+    $data["victim"]=array();
+    $data["victim"]["player_id"]=array_rand($data["players"]);  
     
     setup_extrascene($data);
     $o = ["aa"=>"bb","bb"=>"aa"];
@@ -287,6 +337,8 @@ try{
     test_playthrough(5, gawm_default_rules, $random_accusation);
     test_playthrough(6, gawm_default_rules, $random_accusation);
     
+    test_playthrough_guilt_token_edgecase(4, gawm_default_rules, $random_accusation);
+
     echo "Passed ".$test_count." tests.\n";
 }
 catch (Exception $e) {

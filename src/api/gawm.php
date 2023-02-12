@@ -188,7 +188,11 @@ function gawm_give_token(&$data, $player_id, $token, $target_id)
 
         $target = &$data["players"][$target_id];
 
-        array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
+        // dont give tokens if they've run out
+        if (count($data["tokens"][$token]))
+        {
+            array_push( $target["tokens"][$token], array_pop($data["tokens"][$token]) );
+        }
     }
 
     unset($player["unassigned_token"]);
@@ -342,7 +346,12 @@ function complete_normalscene(&$data)
     // draw a token of the type according the the vote
     $token = $tally[gawm_vote_innocent] > $tally[gawm_vote_guilty] ?
         "innocence" : "guilt";
-    array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+
+    // only give tokens if they are still available
+    if (count($data["tokens"][$token]))
+    {
+        array_push( $player["tokens"][$token], array_pop($data["tokens"][$token]) );
+    }
 
     global $gawm_opposites;
     $player["unassigned_token"]=$gawm_opposites[$token];
@@ -774,13 +783,6 @@ function redact_for_player($data, $player_id)
     // how the tokens got shuffled?
     unset($data["tokens"]);
     
-    // suplementals for victim
-    if (isset($data['victim']))
-    {
-        $data['victim']['active'] = gawm_is_player_active($data, gawm_player_id_victim);
-        $data['victim']['details_left_to_play'] = gawm_player_has_details_left_to_play($data, gawm_player_id_victim);
-    }
-    
     if (isset($data["players"])==false)
         throw new Exception( "Malformed game, contains no players: ". json_encode($data) );
     
@@ -818,6 +820,21 @@ function redact_for_player($data, $player_id)
                     $deck[$key] = -1;
     }
     
+    // until "play" is setup on victim (in setup_extrascene), 
+    // redact the victim object
+    // (the victim is revealed in the last scene of act 1)
+    if (!isset($data['victim']['play']))
+    {
+        unset($data['victim']);
+    }
+
+    // suplementals for victim
+    if (isset($data['victim']))
+    {
+        $data['victim']['active'] = gawm_is_player_active($data, gawm_player_id_victim);
+        $data['victim']['details_left_to_play'] = gawm_player_has_details_left_to_play($data, gawm_player_id_victim);
+    }
+
     return $data;
 }
 
