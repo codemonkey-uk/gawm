@@ -3,7 +3,6 @@ _A co-operative role-play game of drama, wit, and mystery._
 
 ## GAWM on github
 This repo contains an api & browser UI to facilitate remote-play of Getting Away With Murder.
-![CI](https://github.com/codemonkey-uk/gawm/workflows/CI/badge.svg?branch=master)
 
 ## Comunity
 
@@ -39,3 +38,8 @@ Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI
 
 Nunito - Copyright 2014 The Nunito Project Authors. Available under the [SIL Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
 
+## Production Environments
+
+GAWM is live here: [gawm.link](https://gawm.link).
+
+GAWM runs on PHP 8.2.
