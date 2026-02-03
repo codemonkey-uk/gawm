@@ -1,4 +1,5 @@
-\documentclass[a4paper]{article}
+\documentclass[10pt]{extarticle}
+\AtBeginDocument{\setcounter{page}{1}}
 
 \usepackage{fontspec}
 
@@ -63,13 +64,31 @@
 }
 
 \newcommand{\cardback}[1]{%
-  \noindent
-  \includegraphics[
-    width=\paperwidth,
-    height=\paperheight
-  ]{#1.png}%
+  \clearpage
+  \thispagestyle{empty}%
+  \shipout\hbox{%
+    \includegraphics[
+      width=\paperwidth,
+      height=\paperheight
+    ]{#1.png}%
+  }%
 }
 
+% Zero the default TeX 1-inch offset
+\hoffset=-1in
+\voffset=-1in
+
+% Eliminate layout margins entirely
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+\setlength{\topmargin}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\footskip}{0pt}
+
+
 \begin{document}
+\clearpage
+\thispagestyle{empty}
 \input{cards_generated.tex}
 \end{document}

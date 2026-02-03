@@ -80,7 +80,7 @@ def emit_front(category: str, card: dict) -> str:
     desc = tex_escape(card["desc"])
     category = tex_escape(category)
 
-    return f"\\cardfront{{{name}}}{{{subtype}}}{{{desc}}}\n\\newpage"
+    return f"\\cardfront{{{name}}}{{{subtype}}}{{{desc}}}"
 
 def emit_back(category: str, card: dict) -> str:
     """
@@ -96,7 +96,7 @@ def emit_back(category: str, card: dict) -> str:
     desc = tex_escape(card["desc"])
     category = tex_escape(category)
 
-    return f"\\cardback{{{category}}}\n\\newpage"
+    return f"\\cardback{{{category}}}"
 
 # ---------- MAIN ----------
 
