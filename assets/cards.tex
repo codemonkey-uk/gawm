@@ -1,0 +1,78 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fontspec}
+
+% Tell LaTeX where your fonts live
+\setmainfont[
+  Path=fonts/,
+  UprightFont=Nunito-VariableFont_wght.ttf,
+  ItalicFont=Nunito-Italic-VariableFont_wght.ttf
+]{Nunito}
+
+\newfontfamily\titlefont[
+  Path=fonts/,
+  UprightFont=SpecialElite-Regular.ttf
+]{Special Elite}
+
+\usepackage[papersize={69.35mm,94.35mm},margin=0mm]{geometry}
+
+\newlength{\bleed}
+\setlength{\bleed}{3.175mm}
+\newlength{\safe}
+\setlength{\safe}{3.175mm}
+
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{svg}
+\pagestyle{empty}
+
+% ---------- CARD MACRO ----------
+
+\newcommand{\drawcard}[3]{%
+  % Card outline (trim size)
+  \draw (0,0) rectangle (6.3,8.8);
+
+  % Title
+  \node[anchor=north west,font=\titlefont\Large] at (0.3,8.5) {#1};
+
+  % Subtype
+  \node[anchor=north west,font=\itshape] at (0.3,8.0) {#2};
+
+  % Description
+  \node[anchor=north west,text width=5.7cm] at (0.3,7.5) {%
+    \adjustbox{max height=4.5cm, keepaspectratio}{%
+      \parbox{5.7cm}{\small #3}%
+    }%
+  };
+}
+
+\newcommand{\card}[3]{%
+  \begin{tikzpicture}[x=1cm,y=1cm]
+    \drawcard{#1}{#2}{#3}
+  \end{tikzpicture}%
+}
+
+\newcommand{\cardfront}[3]{%
+  \noindent
+  \begin{tikzpicture}[x=1cm,y=1cm]
+    % shift origin by bleed (3.175mm = 0.3175cm)
+    \begin{scope}[shift={(0.3175,0.3175)}]
+      \drawcard{#1}{#2}{#3}
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+\newcommand{\cardback}[1]{%
+  \noindent
+  \includegraphics[
+    width=\paperwidth,
+    height=\paperheight
+  ]{#1.png}%
+}
+
+\begin{document}
+
+% ---------- GENERATED CONTENT ----------
+\input{cards_generated.tex}
+
+\end{document}
