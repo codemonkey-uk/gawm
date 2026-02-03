@@ -66,7 +66,7 @@ def tex_escape(s: str) -> str:
 
 # ---------- CARD EMISSION ----------
 
-def emit_card(category: str, card: dict) -> str:
+def emit_front(category: str, card: dict) -> str:
     """
     Convert a single card into a LaTeX \\card command.
 
@@ -80,8 +80,23 @@ def emit_card(category: str, card: dict) -> str:
     desc = tex_escape(card["desc"])
     category = tex_escape(category)
 
-    return f"\\cardfront{{{name}}}{{{subtype}}}{{{desc}}}"
+    return f"\\cardfront{{{name}}}{{{subtype}}}{{{desc}}}\n\\newpage"
 
+def emit_back(category: str, card: dict) -> str:
+    """
+    Convert a single card into a LaTeX \\card command.
+
+    Required card keys:
+    - name
+    - subtype
+    - desc
+    """
+    name = tex_escape(card["name"])
+    subtype = tex_escape(card["subtype"])
+    desc = tex_escape(card["desc"])
+    category = tex_escape(category)
+
+    return f"\\cardback{{{category}}}\n\\newpage"
 
 # ---------- MAIN ----------
 
@@ -117,7 +132,9 @@ def main() -> None:
                     f"[{category}] long desc ({len(card['desc'])} chars): {card['name']}"
                 )
 
-            output_lines.append(emit_card(category, card))
+            output_lines.append(emit_back(category, card))
+            output_lines.append(emit_front(category, card))
+            
             total_cards += 1
 
     OUTPUT_TEX.write_text(
