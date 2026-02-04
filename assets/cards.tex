@@ -43,13 +43,7 @@
   \path[use as bounding box]
     (current page.south west)
     rectangle
-    (current page.north east);
-
-  % DEBUG — page edge (temporary)
-  \draw[red,line width=0.3mm]
-    (current page.south west)
-    rectangle
-    (current page.north east);    
+    (current page.north east);   
 
   % work in mm from now on
   \begin{scope}[x=1mm,y=1mm]
@@ -79,9 +73,13 @@
       ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\nameH)$)
       rectangle ++(\innerW,\nameH);
 
-    \node[align=center]
+    \node[align=center, text width=\innerW mm]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\nameH)$)
-      {\titlefont\Large #1};
+      { \centering
+        \sloppy
+        \exhyphenpenalty=10000
+        \hyphenpenalty=10000
+        \titlefont\fontsize{16}{20}\selectfont #1};    
 
     % ---- TYPE ----
     \draw
@@ -102,7 +100,7 @@
       text width=\innerW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
-      {\small #3};
+      {\raggedright\hyphenpenalty=20000\fontsize{10}{13}\selectfont #3};
 
   \end{scope}
 \end{tikzpicture}

@@ -9,7 +9,7 @@ Output format:
 
 import json
 from pathlib import Path
-
+import re
 
 # ---------- CONFIGURATION ----------
 
@@ -63,6 +63,16 @@ def tex_escape(s: str) -> str:
 
     return s
 
+def mbox_words(text):
+    """
+    Wrap each word in \mbox{} to prevent LaTeX hyphenation.
+    Keeps punctuation attached to the word.
+    """
+    def wrap_word(match):
+        return r'\mbox{' + match.group(0) + '}'
+
+    # matches sequences of non-whitespace characters
+    return re.sub(r'\S+', wrap_word, text)
 
 # ---------- CARD EMISSION ----------
 
@@ -75,7 +85,7 @@ def emit_front(category: str, card: dict) -> str:
     - subtype
     - desc
     """
-    name = tex_escape(card["name"])
+    name = mbox_words(tex_escape(card["name"]))
     subtype = tex_escape(card["subtype"])
     desc = tex_escape(card["desc"])
     category = tex_escape(category)
