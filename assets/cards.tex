@@ -15,7 +15,11 @@
   UprightFont=SpecialElite-Regular.ttf
 ]{Special Elite}
 
-\usepackage[papersize={69.35mm,94.35mm},margin=0mm]{geometry}
+\usepackage[
+  paperwidth=69.35mm,
+  paperheight=94.35mm,
+  margin=0mm
+]{geometry}
 
 \newlength{\bleed}
 \setlength{\bleed}{3.175mm}
@@ -23,93 +27,103 @@
 \setlength{\safe}{3.175mm}
 
 \usepackage{tikz}
+\usetikzlibrary{calc}
 \usepackage{adjustbox}
 \usepackage{svg}
 \pagestyle{empty}
 
 % ---------- CARD MACROS ----------
 
-\newcommand{\safeText}[1]{%
-  \if\relax\detokenize{#1}\relax
-    ~%
-  \else
-    #1%
-  \fi
-}
-
-\newcommand{\boxedtext}[5]{%
-  \draw[line width=0.3mm] (#1,#2) rectangle ++(#3,#4);
-  \node[
-    align=center,
-    text width=#3 mm,
-    inner sep=2mm
-  ] at (#1 + #3/2, #2 + #4/2) {#5};
-}
-
 \newcommand{\cardfront}[3]{%
-  \clearpage
-  \thispagestyle{empty}%
-  \shipout\hbox to \paperwidth{%
-    \vbox to \paperheight{%
-      \vfil\hfil
-      \begin{tikzpicture}[x=1mm,y=1mm]
+\thispagestyle{empty}%
 
-        % --- Dimensions ---
-        \pgfmathsetmacro{\W}{63}
-        \pgfmathsetmacro{\H}{88}
-        \pgfmathsetmacro{\safe}{4}
-        \pgfmathsetmacro{\nameH}{12}
-        \pgfmathsetmacro{\subH}{10}
-        \pgfmathsetmacro{\innerW}{\W - 2*\safe}
-        \pgfmathsetmacro{\descH}{\H - 2*\safe - \nameH - \subH}
+\begin{tikzpicture}[remember picture,overlay]
 
-        % --- Card outline ---
-        \draw[line width=0.3mm] (0,0) rectangle (\W,\H);
+  % ---- FORCE PAGE BOUNDING BOX ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
 
-        % --- Name ---
-        \boxedtext
-          {\safe}
-          {\H - \safe - \nameH}
-          {\innerW}
-          {\nameH}
-          {{\Large #1}}
+  % DEBUG — page edge (temporary)
+  \draw[red,line width=0.3mm]
+    (current page.south west)
+    rectangle
+    (current page.north east);    
 
-        % --- Subtype ---
-        \boxedtext
-          {\safe}
-          {\H - \safe - \nameH - \subH}
-          {\innerW}
-          {\subH}
-          {{\itshape #2}}
+  % work in mm from now on
+  \begin{scope}[x=1mm,y=1mm]
 
-        % --- Description ---
-        \boxedtext
-          {\safe}
-          {\safe}
-          {\innerW}
-          {\descH}
-          {{\small #3}}
+    % ---- constants ----
+    \def\bleed{3.175}    % 1/8"
+    \def\cardW{63}
+    \def\cardH{88}
+    \def\safe{4}
 
-      \end{tikzpicture}
-      \hfil\vfil
-    }%
-  }%
+    \def\nameH{14}
+    \def\typeH{10}
+    \def\descH{52}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+
+    % page origin
+    \coordinate (O) at (current page.south west);
+
+    % ---- trim outline ----
+    \draw[line width=0.4mm]
+      ($(O)+(\bleed,\bleed)$)
+      rectangle ++(\cardW,\cardH);
+
+    % ---- NAME ----
+    \draw
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\nameH)$)
+      rectangle ++(\innerW,\nameH);
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\nameH)$)
+      {\titlefont\Large #1};
+
+    % ---- TYPE ----
+    \draw
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\nameH-\typeH)$)
+      rectangle ++(\innerW,\typeH);
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\nameH-0.5*\typeH)$)
+      {\itshape #2};
+
+    % ---- DESCRIPTION ----
+    \draw
+      ($(O)+(\bleed+\safe,\bleed+\safe)$)
+      rectangle ++(\innerW,\descH);
+
+    \node[
+      align=center,
+      text width=\innerW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
+      {\small #3};
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
 }
+
+
 
 \newcommand{\cardback}[1]{%
-  \clearpage
-  \thispagestyle{empty}%
-  \shipout\hbox{%
-    \includegraphics[
+\thispagestyle{empty}%
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=south west,inner sep=0pt]
+    at (current page.south west)
+    {\includegraphics[
       width=\paperwidth,
       height=\paperheight
-    ]{#1.png}%
-  }%
+    ]{#1.png}};
+\end{tikzpicture}
+\newpage
 }
-
-% Zero the default TeX 1-inch offset
-\hoffset=-1in
-\voffset=-1in
 
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
