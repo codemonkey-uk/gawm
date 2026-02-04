@@ -27,40 +27,73 @@
 \usepackage{svg}
 \pagestyle{empty}
 
-% ---------- CARD MACRO ----------
+% ---------- CARD MACROS ----------
 
-\newcommand{\drawcard}[3]{%
-  % Card outline (trim size)
-  \draw (0,0) rectangle (6.3,8.8);
-
-  % Title
-  \node[anchor=north west,font=\titlefont\Large] at (0.3,8.5) {#1};
-
-  % Subtype
-  \node[anchor=north west,font=\itshape] at (0.3,8.0) {#2};
-
-  % Description
-  \node[anchor=north west,text width=5.7cm] at (0.3,7.5) {%
-    \adjustbox{max height=4.5cm, keepaspectratio}{%
-      \parbox{5.7cm}{\small #3}%
-    }%
-  };
+\newcommand{\safeText}[1]{%
+  \if\relax\detokenize{#1}\relax
+    ~%
+  \else
+    #1%
+  \fi
 }
 
-\newcommand{\card}[3]{%
-  \begin{tikzpicture}[x=1cm,y=1cm]
-    \drawcard{#1}{#2}{#3}
-  \end{tikzpicture}%
+\newcommand{\boxedtext}[5]{%
+  \draw[line width=0.3mm] (#1,#2) rectangle ++(#3,#4);
+  \node[
+    align=center,
+    text width=#3 mm,
+    inner sep=2mm
+  ] at (#1 + #3/2, #2 + #4/2) {#5};
 }
 
 \newcommand{\cardfront}[3]{%
-  \noindent
-  \begin{tikzpicture}[x=1cm,y=1cm]
-    % shift origin by bleed (3.175mm = 0.3175cm)
-    \begin{scope}[shift={(0.3175,0.3175)}]
-      \drawcard{#1}{#2}{#3}
-    \end{scope}
-  \end{tikzpicture}%
+  \clearpage
+  \thispagestyle{empty}%
+  \shipout\hbox to \paperwidth{%
+    \vbox to \paperheight{%
+      \vfil\hfil
+      \begin{tikzpicture}[x=1mm,y=1mm]
+
+        % --- Dimensions ---
+        \pgfmathsetmacro{\W}{63}
+        \pgfmathsetmacro{\H}{88}
+        \pgfmathsetmacro{\safe}{4}
+        \pgfmathsetmacro{\nameH}{12}
+        \pgfmathsetmacro{\subH}{10}
+        \pgfmathsetmacro{\innerW}{\W - 2*\safe}
+        \pgfmathsetmacro{\descH}{\H - 2*\safe - \nameH - \subH}
+
+        % --- Card outline ---
+        \draw[line width=0.3mm] (0,0) rectangle (\W,\H);
+
+        % --- Name ---
+        \boxedtext
+          {\safe}
+          {\H - \safe - \nameH}
+          {\innerW}
+          {\nameH}
+          {{\Large #1}}
+
+        % --- Subtype ---
+        \boxedtext
+          {\safe}
+          {\H - \safe - \nameH - \subH}
+          {\innerW}
+          {\subH}
+          {{\itshape #2}}
+
+        % --- Description ---
+        \boxedtext
+          {\safe}
+          {\safe}
+          {\innerW}
+          {\descH}
+          {{\small #3}}
+
+      \end{tikzpicture}
+      \hfil\vfil
+    }%
+  }%
 }
 
 \newcommand{\cardback}[1]{%
@@ -91,4 +124,8 @@
 \clearpage
 \thispagestyle{empty}
 \input{cards_generated.tex}
+% \cardfront
+%   {Monsieur Test}
+%   {Subtype Alpha}
+%   {This is a long description. If this appears, the model is correct.}
 \end{document}
