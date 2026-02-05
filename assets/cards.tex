@@ -34,6 +34,14 @@
 
 % ---------- CARD MACROS ----------
 
+\newcommand{\descLarge}[1]{%
+  \fontsize{11.5}{14.5}\selectfont #1%
+}
+
+\newcommand{\descSmall}[1]{%
+  \fontsize{10}{13}\selectfont #1%
+}
+
 \newcommand{\cardfront}[4]{%
 \thispagestyle{empty}%
 
@@ -52,6 +60,7 @@
     \def\cardW{63}
     \def\cardH{88}
     \def\safe{4}
+    \def\gap{4} % mm
 
     % box heights (tune later)
     \def\catH{8}
@@ -60,6 +69,7 @@
     \def\descH{46}
 
     \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - 3*\safe} 
 
     \coordinate (O) at (current page.south west);
 
@@ -108,10 +118,10 @@
 
     \node[
       align=center,
-      text width=\innerW mm
+      text width=\innerTextW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
-      {\fontsize{10}{13}\selectfont #4};
+      {\spaceskip=0.3em plus 0.2em minus 0.1em #4};
 
   \end{scope}
 \end{tikzpicture}
@@ -142,6 +152,13 @@
 \setlength{\headsep}{0pt}
 \setlength{\footskip}{0pt}
 
+% Reduce hyphenation and stretching to prevent overflow in card descriptions
+\tolerance=2000
+\emergencystretch=1em
+\hyphenpenalty=1500
+\exhyphenpenalty=1500
+\doublehyphendemerits=10000
+\finalhyphendemerits=5000
 
 \begin{document}
 \clearpage

@@ -82,6 +82,20 @@ def category_id_to_label(cat_id: str) -> str:
     words = cat_id.split("_")
     return " ".join(word.capitalize() for word in words)
 
+def desc_font_variant(desc: str) -> str:
+    """
+    Decide which description font size to use.
+    Returns 'large' or 'small'.
+    """
+    length = len(desc)
+
+    # You have dedicated your life to looking after others. You are down to earth and good with people. You are likely young to middle aged and could be attractive. You may be working in the public domain, or your bedside manner means you’ve been offered work looking after wealthy individuals.
+    # tune this threshold by eyeballing 2–3 decks
+    if length <= 220:
+        return "large"
+    else:
+        return "small"
+    
 # ---------- CARD EMISSION ----------
 
 def emit_front(category: str, card: dict) -> str:
@@ -95,13 +109,21 @@ def emit_front(category: str, card: dict) -> str:
     """
     name = mbox_words(tex_escape(card["name"]))
     subtype = tex_escape(card["subtype"])
+
     desc = tex_escape(card["desc"])
+    variant = desc_font_variant(desc)
+
+    if variant == "large":
+        desc_tex = r"\descLarge{" + desc + "}"
+    else:
+        desc_tex = r"\descSmall{" + desc + "}"
+
     category_id = tex_escape(category)
 
     category_label = category_id_to_label(category_id)
     category_tex = mbox_words(tex_escape(category_label))
 
-    return f"\\cardfront{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc}}}"
+    return f"\\cardfront{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc_tex}}}"
 
 def emit_back(category: str, card: dict) -> str:
     """
