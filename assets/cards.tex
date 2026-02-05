@@ -63,10 +63,10 @@
     \def\gap{4} % mm
 
     % box heights (tune later)
-    \def\catH{8}
-    \def\typeH{10}
+    \def\catH{6}
+    \def\typeH{8}
     \def\titleH{14}
-    \def\descH{46}
+    \def\descH{48}
 
     \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
     \pgfmathsetmacro{\innerTextW}{\cardW - 3*\safe} 
@@ -74,14 +74,16 @@
     \coordinate (O) at (current page.south west);
 
     % ---- trim outline ----
-    \draw[line width=0.4mm]
-      ($(O)+(\bleed,\bleed)$)
-      rectangle ++(\cardW,\cardH);
+    % \draw[line width=0.4mm]
+    %   ($(O)+(\bleed,\bleed)$)
+    %   rectangle ++(\cardW,\cardH);
 
     % ---- CATEGORY ----
-    \draw
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH)$)
-      rectangle ++(\innerW,\catH);
+    \draw[thick, rounded corners=4]
+      %($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH)$)
+      %rectangle ++(\innerW,\catH);
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
+      rectangle ++(\innerW,28);
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
@@ -100,9 +102,9 @@
       {\itshape\fontsize{12}{14}\selectfont #3};
 
     % ---- SUBTYPE ----
-    \draw
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
-      rectangle ++(\innerW,\titleH);
+    % \draw
+    %   ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
+    %   rectangle ++(\innerW,\titleH);
 
     \node[
       align=center,
@@ -112,7 +114,7 @@
       {\titlefont\fontsize{16}{20}\selectfont #2};
 
     % ---- DESCRIPTION ----
-    \draw
+    \draw[thick, rounded corners=4]
       ($(O)+(\bleed+\safe,\bleed+\safe)$)
       rectangle ++(\innerW,\descH);
 
@@ -164,8 +166,6 @@
 \clearpage
 \thispagestyle{empty}
 \input{cards_generated.tex}
-% \cardfront
-%   {Monsieur Test}
-%   {Subtype Alpha}
-%   {This is a long description. If this appears, the model is correct.}
+% \cardback{aliases}
+% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 \end{document}
