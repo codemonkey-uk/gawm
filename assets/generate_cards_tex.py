@@ -74,6 +74,14 @@ def mbox_words(text):
     # matches sequences of non-whitespace characters
     return re.sub(r'\S+', wrap_word, text)
 
+def category_id_to_label(cat_id: str) -> str:
+    """
+    Convert a category identifier like 'murder_cause'
+    into a human-readable label like 'Murder Cause'.
+    """
+    words = cat_id.split("_")
+    return " ".join(word.capitalize() for word in words)
+
 # ---------- CARD EMISSION ----------
 
 def emit_front(category: str, card: dict) -> str:
@@ -88,9 +96,12 @@ def emit_front(category: str, card: dict) -> str:
     name = mbox_words(tex_escape(card["name"]))
     subtype = tex_escape(card["subtype"])
     desc = tex_escape(card["desc"])
-    category = tex_escape(category)
+    category_id = tex_escape(category)
 
-    return f"\\cardfront{{{name}}}{{{subtype}}}{{{desc}}}"
+    category_label = category_id_to_label(category_id)
+    category_tex = mbox_words(tex_escape(category_label))
+
+    return f"\\cardfront{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc}}}"
 
 def emit_back(category: str, card: dict) -> str:
     """

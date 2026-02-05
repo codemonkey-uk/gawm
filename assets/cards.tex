@@ -34,33 +34,33 @@
 
 % ---------- CARD MACROS ----------
 
-\newcommand{\cardfront}[3]{%
+\newcommand{\cardfront}[4]{%
 \thispagestyle{empty}%
 
 \begin{tikzpicture}[remember picture,overlay]
 
-  % ---- FORCE PAGE BOUNDING BOX ----
+  % ---- force page bounding box ----
   \path[use as bounding box]
     (current page.south west)
     rectangle
-    (current page.north east);   
+    (current page.north east);
 
-  % work in mm from now on
   \begin{scope}[x=1mm,y=1mm]
 
     % ---- constants ----
-    \def\bleed{3.175}    % 1/8"
+    \def\bleed{3.175}
     \def\cardW{63}
     \def\cardH{88}
     \def\safe{4}
 
-    \def\nameH{14}
+    % box heights (tune later)
+    \def\catH{8}
     \def\typeH{10}
-    \def\descH{52}
+    \def\titleH{14}
+    \def\descH{46}
 
     \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
 
-    % page origin
     \coordinate (O) at (current page.south west);
 
     % ---- trim outline ----
@@ -68,27 +68,38 @@
       ($(O)+(\bleed,\bleed)$)
       rectangle ++(\cardW,\cardH);
 
-    % ---- NAME ----
+    % ---- CATEGORY ----
     \draw
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\nameH)$)
-      rectangle ++(\innerW,\nameH);
-
-    \node[align=center, text width=\innerW mm]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\nameH)$)
-      { \centering
-        \sloppy
-        \exhyphenpenalty=10000
-        \hyphenpenalty=10000
-        \titlefont\fontsize{16}{20}\selectfont #1};    
-
-    % ---- TYPE ----
-    \draw
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\nameH-\typeH)$)
-      rectangle ++(\innerW,\typeH);
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH)$)
+      rectangle ++(\innerW,\catH);
 
     \node[align=center]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\nameH-0.5*\typeH)$)
-      {\itshape #2};
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
+      {\fontsize{9}{11}\selectfont #1};
+
+    % ---- TITLE ----
+    \draw
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH)$)
+      rectangle ++(\innerW,\typeH);
+
+    \node[
+      align=center,
+      text width=\innerW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.5*\typeH)$)
+      {\itshape\fontsize{12}{14}\selectfont #3};
+
+    % ---- SUBTYPE ----
+    \draw
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
+      rectangle ++(\innerW,\titleH);
+
+    \node[
+      align=center,
+      text width=\innerW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\typeH-0.5*\titleH)$)
+      {\titlefont\fontsize{18}{20}\selectfont #2};
 
     % ---- DESCRIPTION ----
     \draw
@@ -100,7 +111,7 @@
       text width=\innerW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
-      {\raggedright\hyphenpenalty=20000\fontsize{10}{13}\selectfont #3};
+      {\fontsize{10}{13}\selectfont #4};
 
   \end{scope}
 \end{tikzpicture}
