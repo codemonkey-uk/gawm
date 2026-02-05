@@ -118,9 +118,7 @@ def emit_front(category: str, card: dict) -> str:
     else:
         desc_tex = r"\descSmall{" + desc + "}"
 
-    category_id = tex_escape(category)
-
-    category_label = category_id_to_label(category_id)
+    category_label = tex_escape(category_id_to_label(category))
     category_tex = mbox_words(tex_escape(category_label))
 
     return f"\\cardfront{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc_tex}}}"
