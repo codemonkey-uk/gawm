@@ -2,10 +2,12 @@
 \AtBeginDocument{\setcounter{page}{1}}
 
 \usepackage{fontspec}
+\usepackage{pdfrender}
 
 % Tell LaTeX where your fonts live
 \setmainfont[
-  UprightFont=nunito-v25-latin-regular.ttf
+  UprightFont=nunito-v25-latin-regular.ttf,
+  BoldFont=Nunito-Bold.ttf
 ]{Nunito}
 
 \newfontfamily\titlefont[
@@ -147,6 +149,78 @@
 \newpage
 }
 
+
+\newcommand{\infocard}[2]{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % ---- constants (match cardfront) ----
+    \def\bleed{3.175}
+    \def\cardW{63}
+    \def\cardH{88}
+    \def\safe{4}
+    \def\gap{4}
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{56}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - 3*\safe}
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- HEAD BOX ----
+    \draw[thick, rounded corners=4]
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
+      rectangle ++(\innerW,\headH);
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
+    {%
+      \parbox{\innerW mm}{%
+        \centering
+        \titlefont
+        \fontsize{15}{20}\selectfont
+        \setlength{\baselineskip}{20pt}
+        #1
+      }%
+    };
+
+    % ---- BODY BOX ----
+    \draw[thick, rounded corners=4]
+      ($(O)+(\bleed+\safe,\bleed+\safe)$)
+      rectangle ++(\innerW,\bodyH);
+
+    \node[
+      align=center,
+      text width=\innerTextW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\bodyH)$)
+    {%
+      \parbox{\innerTextW mm}{%
+        \centering
+        \fontsize{10}{12}\selectfont
+        \setlength{\parskip}{6pt}        
+        \spaceskip=0.3em plus 0.2em minus 0.1em
+        #2
+      }%
+    };
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
@@ -166,7 +240,36 @@
 \begin{document}
 \clearpage
 \thispagestyle{empty}
-\input{cards_generated.tex}
-% \cardback{aliases}
-% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+% \input{cards_generated.tex}
+\cardback{aliases}
+\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+
+\infocard
+{Setting Your Scene}
+{%
+Use a \textbf{detail card} in your hand to come up with an idea for a scene.
+
+\textbf{Where} is it set?
+
+\textbf{Who} else is there?
+
+What is your character’s \textbf{motivation}?
+
+Then explain your setup to the group in 3 sentences or less.
+}
+
+\infocard
+{Playing A Scene}
+{%
+Set the scene.
+
+Role-Play the scene until the premise is fully explored.
+
+\textbf{No cliffhangers!}
+
+The group gives you a guilt or innocence token.
+
+Optionally, give a token of the opposite type to someone who shared the scene with you.
+}
+
 \end{document}
