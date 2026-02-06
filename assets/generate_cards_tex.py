@@ -19,6 +19,16 @@ OUTPUT_TEX = Path("cards_generated.tex")
 # Warn (but do not fail) if descriptions get very long
 DESC_LENGTH_WARNING = 450
 
+# ---------- CATEGORY BACK LOOKUP ----------
+CATEGORY_BACK_LOOKUP = {
+    "aliases": "alias_back",
+    "objects": "object_back",
+    "relationships": "rel_back",
+    "wildcards": "wild_back",
+    "motives": "motive_back",
+    "murder_discovery": "md_back",
+    "murder_cause": "mc_back",
+}
 
 # ---------- LATEX ESCAPING ----------
 def normalize_unicode(s: str) -> str:
@@ -125,7 +135,7 @@ def emit_front(category: str, card: dict) -> str:
 
 def emit_back(category: str, card: dict) -> str:
     """
-    Convert a single card into a LaTeX \\card command.
+    Convert a single card into a LaTeX \card command.
 
     Required card keys:
     - name
@@ -135,9 +145,10 @@ def emit_back(category: str, card: dict) -> str:
     name = tex_escape(card["name"])
     subtype = tex_escape(card["subtype"])
     desc = tex_escape(card["desc"])
-    category = tex_escape(category)
+    category_back = CATEGORY_BACK_LOOKUP.get(category, category)
+    category_tex = tex_escape(category_back)
 
-    return f"\\cardback{{{category}}}"
+    return f"\\cardback{{{category_tex}}}"
 
 # ---------- MAIN ----------
 
