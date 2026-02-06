@@ -5,14 +5,11 @@
 
 % Tell LaTeX where your fonts live
 \setmainfont[
-  Path=fonts/,
-  UprightFont=Nunito-VariableFont_wght.ttf,
-  ItalicFont=Nunito-Italic-VariableFont_wght.ttf
+  UprightFont=nunito-v25-latin-regular.ttf
 ]{Nunito}
 
 \newfontfamily\titlefont[
-  Path=fonts/,
-  UprightFont=SpecialElite-Regular.ttf
+  UprightFont=special-elite-v18-latin-regular.ttf
 ]{Special Elite}
 
 \usepackage[
@@ -89,7 +86,7 @@
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
       {\fontsize{9}{11}\selectfont #1};
 
-    % ---- TITLE ----
+    % ---- SUBTYPE ----
     \draw
       ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH)$)
       rectangle ++(\innerW,\typeH);
@@ -99,19 +96,23 @@
       text width=\innerW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.5*\typeH)$)
-      {\itshape\fontsize{12}{14}\selectfont #3};
+      {\fontsize{12}{14}\selectfont #3};
 
-    % ---- SUBTYPE ----
-    % \draw
-    %   ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
-    %   rectangle ++(\innerW,\titleH);
-
+    % ---- TITLE ----
     \node[
       align=center,
       text width=\innerW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\typeH-0.5*\titleH)$)
-      {\titlefont\fontsize{16}{20}\selectfont #2};
+    {%
+    \parbox{\innerW mm}{%
+        \centering
+        \titlefont
+        \fontsize{16}{20}\selectfont
+        \setlength{\baselineskip}{20pt}
+        #2
+    }%
+    };
 
     % ---- DESCRIPTION ----
     \draw[thick, rounded corners=4]
@@ -165,7 +166,7 @@
 \begin{document}
 \clearpage
 \thispagestyle{empty}
-\input{cards_generated.tex}
-% \cardback{aliases}
-% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+% \input{cards_generated.tex}
+\cardback{aliases}
+\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 \end{document}
