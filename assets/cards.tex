@@ -41,6 +41,19 @@
   \fontsize{10}{13}\selectfont #1%
 }
 
+\newcommand{\infocardlist}[1]{%
+  \begin{itemize}
+    \setlength{\leftmargini}{0pt}
+    \setlength{\labelsep}{0.25em}
+    \setlength{\itemindent}{0pt}
+    \setlength{\listparindent}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\topsep}{0pt}
+    \setlength{\itemsep}{0pt}
+    #1
+  \end{itemize}
+}
+
 \newcommand{\cardfront}[4]{%
 \thispagestyle{empty}%
 
@@ -220,6 +233,74 @@
 \newpage
 }
 
+\newcommand{\infolist}[2]{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % ---- constants (match cardfront) ----
+    \def\bleed{3.175}
+    \def\cardW{63}
+    \def\cardH{88}
+    \def\safe{4}
+    \def\gap{4}
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{58}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - \safe}
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- HEAD BOX ----
+    \draw[thick, rounded corners=4]
+      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
+      rectangle ++(\innerW,\headH);
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
+    {%
+      \parbox{\innerW mm}{%
+        \centering
+        \titlefont
+        \fontsize{15}{20}\selectfont
+        \setlength{\baselineskip}{20pt}
+        #1
+      }%
+    };
+
+    % ---- BODY BOX ----
+    \draw[thick, rounded corners=4]
+      ($(O)+(\bleed+\safe,\bleed+\safe)$)
+      rectangle ++(\innerW,\bodyH);
+
+    % ---- INFO LIST ----
+    \node[
+    anchor=center,
+    text width=\innerTextW mm
+    ]
+    at ($(O)+(\bleed-2+0.5*\cardW,\bleed+2+\safe+0.5*\bodyH)$)
+    {%
+        \fontsize{8}{11}\selectfont
+        \raggedright
+        \setlength{\parskip}{2pt}
+        \setlength{\parindent}{0pt}
+        \infocardlist{#2}
+    };
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
 
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
@@ -240,9 +321,9 @@
 \begin{document}
 \clearpage
 \thispagestyle{empty}
-% \input{cards_generated.tex}
-\cardback{aliases}
-\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+\input{cards_generated.tex}
+% \cardback{aliases}
+% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
 \infocard
 {Setting Your Scene}
@@ -271,5 +352,29 @@ The group gives you a guilt or innocence token.
 
 Optionally, give a token of the opposite type to someone who shared the scene with you.
 }
+
+\infolist
+{Game Overview}
+{
+\item \textbf{Act I} - One scene per player.
+\item \textbf{Extra Scene} - Decide the victim \& Introduce a new character.
+\item \textbf{Murder Scene} - Body is found.
+\item \textbf{Act II} - One scene per player.
+\item \textbf{The Twist} - Discard \& draw.
+\item \textbf{Act III} - Two scenes per player.
+\item \textbf{The Accusation} - The Most Innocent player accuses.
+\item \textbf{The Guilty} - Guilt is determined.
+\item \textbf{Epilogue} - One epilogue per character.
+}
+
+\infolist
+{Game Setup}
+{
+\item Shuffle all decks.
+\item For each player, add a \textbf{guilt token} labelled \textbf{0}, \textbf{1}, \textbf{2} and \textbf{3} to a central pile and shuffle with numbers \textbf{face-down}.
+\item Repeat for \textbf{innocence tokens}.
+\item Each player draws \textbf{2 alias cards} and chooses one to play.
+\item Each player draws \textbf{3 wildcards}, \textbf{3 relationships}, \textbf{3 motives} and \textbf{3 objects}. Don't reveal your cards.
+}   
 
 \end{document}
