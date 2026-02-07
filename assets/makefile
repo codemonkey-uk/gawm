@@ -43,6 +43,9 @@ $(FINAL): $(PDF)
 	  -dCompatibilityLevel=1.3 \
 	  -sColorConversionStrategy=CMYK \
 	  -dProcessColorModel=/DeviceCMYK \
+	  -dAutoFilterColorImages=false \
+	  -dColorImageFilter=/FlateEncode \
+	  -dDownsampleColorImages=false \
 	  -sOutputFile=$@ \
 	  $<
 
