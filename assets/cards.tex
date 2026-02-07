@@ -383,33 +383,39 @@ https://gawm.link
 % \cardback{aliases}
 % \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
-\infocard
-{Setting Your Scene}
-{%
-Use a \textbf{detail card} in your hand to come up with an idea for a scene.
+\newcounter{perplayercards}
+\loop
+  \infocard
+  {Setting Your Scene}
+  {%
+  Use a \textbf{detail card} in your hand to come up with an idea for a scene.
 
-\textbf{Where} is it set?
+  \textbf{Where} is it set?
 
-\textbf{Who} else is there?
+  \textbf{Who} else is there?
 
-What is your character’s \textbf{motivation}?
+  What is your character’s \textbf{motivation}?
 
-Then explain your setup to the group in 3 sentences or less.
-}
+  Then explain your setup to the group in 3 sentences or less.
+  }
 
-\infocard
-{Playing A Scene}
-{%
-Set the scene.
+  \infocard
+  {Playing A Scene}
+  {%
+  Set the scene.
 
-Role-Play the scene until the premise is fully explored.
+  Role-Play the scene until the premise is fully explored.
 
-\textbf{No cliffhangers!}
+  \textbf{No cliffhangers!}
 
-The group gives you a guilt or innocence token.
+  The group gives you a guilt or innocence token.
 
-Optionally, give a token of the opposite type to someone who shared the scene with you.
-}
+  Optionally, give a token of the opposite type to someone who shared the scene with you.
+  }
+
+  \stepcounter{perplayercards}
+\ifnum\value{perplayercards}<4
+\repeat
 
 \infolist
 {Game Overview}
