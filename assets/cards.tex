@@ -287,6 +287,69 @@
 \newpage
 }
 
+\newcommand{\titlecard}[3]{%
+% #1 = background image filename (no extension)
+% #2 = top line text (e.g. Getting Away With)
+% #3 = bottom line text (e.g. MURDER)
+
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  % ---- full-bleed background ----
+  \node[anchor=south west, inner sep=0]
+    at (current page.south west)
+    {\includegraphics[
+      width=\paperwidth,
+      height=\paperheight
+    ]{#1}};
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- TITLE BLOCK ----
+    \node[anchor=north]
+    at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
+    {%
+    \begin{tikzpicture}[x=1mm,y=1mm]
+
+        % Top line
+        \node[anchor=north]
+        at (0,0)
+        {%
+            \titlefont
+            \fontsize{18}{18}\selectfont
+            GETTING AWAY WITH
+        };
+
+        % Bottom line
+        \node[anchor=north]
+        at (0,-2) % vertical gap control
+        {%
+            \titlefont
+            \fontsize{46}{46}\selectfont
+            \begin{tikzpicture}[baseline]
+            \node[black, opacity=0.85, xshift=0.6mm, yshift=-0.6mm] {MURDER};
+            \node[red] {MURDER};
+            \end{tikzpicture}
+        };
+
+  \end{tikzpicture}%
+};
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
@@ -306,6 +369,21 @@
 \begin{document}
 \clearpage
 \thispagestyle{empty}
+\titlecard
+  {backdrop}
+  {GETTING AWAY WITH}
+  {MURDER}
+
+\infocard
+{Getting Away With MURDER}
+{%
+A co-operative role-play game for drama wit and mystery.
+
+https://gawm.link
+
+© 2016-2026 Joseph Fowler \& Thaddaeus Frogley
+}
+
 \input{cards_generated.tex}
 % \cardback{aliases}
 % \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
