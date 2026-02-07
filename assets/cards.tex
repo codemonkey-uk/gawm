@@ -86,9 +86,9 @@
     \coordinate (O) at (current page.south west);
 
     % ---- trim outline ----
-    % \draw[line width=0.4mm]
-    %   ($(O)+(\bleed,\bleed)$)
-    %   rectangle ++(\cardW,\cardH);
+    \draw[line width=0.4mm]
+      ($(O)+(\bleed,\bleed)$)
+      rectangle ++(\cardW,\cardH);
 
     % ---- CATEGORY ----
     \draw[thick, rounded corners=4]
@@ -287,10 +287,8 @@
 \newpage
 }
 
-\newcommand{\titlecard}[3]{%
+\newcommand{\titlecard}[1]{%
 % #1 = background image filename (no extension)
-% #2 = top line text (e.g. Getting Away With)
-% #3 = bottom line text (e.g. MURDER)
 
 \begin{tikzpicture}[remember picture,overlay]
 
@@ -325,7 +323,7 @@
         at (0,0)
         {%
             \titlefont
-            \fontsize{18}{18}\selectfont
+            \fontsize{17}{17}\selectfont
             GETTING AWAY WITH
         };
 
@@ -334,7 +332,7 @@
         at (0,-2) % vertical gap control
         {%
             \titlefont
-            \fontsize{46}{46}\selectfont
+            \fontsize{42}{42}\selectfont
             \begin{tikzpicture}[baseline]
             \node[black, opacity=0.85, xshift=0.6mm, yshift=-0.6mm] {MURDER};
             \node[red] {MURDER};
@@ -369,10 +367,7 @@
 \begin{document}
 \clearpage
 \thispagestyle{empty}
-\titlecard
-  {backdrop}
-  {GETTING AWAY WITH}
-  {MURDER}
+\titlecard{background_titlecard}
 
 \infocard
 {Getting Away With MURDER}
