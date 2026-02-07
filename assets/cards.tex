@@ -4,6 +4,11 @@
 \usepackage{fontspec}
 \usepackage{pdfrender}
 
+\usepackage{xcolor}
+\selectcolormodel{cmyk}
+\definecolor{RichBlack}{cmyk}{0.6,0.4,0.4,1}
+\definecolor{RichRed}{cmyk}{0,1,1,0.2}
+
 % Tell LaTeX where your fonts live
 \setmainfont[
   UprightFont=nunito-v25-latin-regular.ttf,
@@ -334,8 +339,8 @@
             \titlefont
             \fontsize{42}{42}\selectfont
             \begin{tikzpicture}[baseline]
-            \node[black, opacity=0.85, xshift=0.6mm, yshift=-0.6mm] {MURDER};
-            \node[red] {MURDER};
+            \node[RichBlack, opacity=0.85, xshift=0.6mm, yshift=-0.6mm] {MURDER};
+            \node[RichRed] {MURDER};
             \end{tikzpicture}
         };
 
@@ -365,6 +370,8 @@
 \finalhyphendemerits=5000
 
 \begin{document}
+% Set a default CMYK colour
+\color{RichBlack}
 \clearpage
 \thispagestyle{empty}
 \titlecard{background_titlecard}
