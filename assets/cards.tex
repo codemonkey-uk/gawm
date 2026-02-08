@@ -90,14 +90,14 @@
 
   % Circular accent (line end v)
   \ifnum#4=1
-    \fill
+    \fill[yshift=\decoDotRadius]
         (0,#2)
         circle (\decoDotRadius);
   \fi
 
   % Circular accent (line end h)
   \ifnum#3=1
-    \fill
+    \fill[xshift=\decoDotRadius]
         (#1,0)
         circle (\decoDotRadius);
   \fi
