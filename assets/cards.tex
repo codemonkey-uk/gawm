@@ -70,7 +70,9 @@
 
 % #1 = horizontal run length
 % #2 = vertical run length
-\newcommand{\artDecoCorner}[2]{%
+% #3 = draw horizontal end dot? (0/1)
+% #4 = draw vertical end dot?   (0/1)
+\newcommand{\artDecoCorner}[4]{%
 
   % Outer frame lines (relative length)
   \draw (0,#2) -- (0,0) -- (#1,0);
@@ -81,11 +83,26 @@
     (\decoInset,\decoInset) --
     (#1-\decoInset,\decoInset);
 
-  % Circular accent (absolute size, fixed position)
+  % Circular accents (corner)
   \fill
     (\decoInset+\decoStep,\decoInset+\decoStep)
     circle (\decoDotRadius);
+
+  % Circular accent (line end v)
+  \ifnum#4=1
+    \fill
+        (0,#2)
+        circle (\decoDotRadius);
+  \fi
+
+  % Circular accent (line end h)
+  \ifnum#3=1
+    \fill
+        (#1,0)
+        circle (\decoDotRadius);
+  \fi
 }
+
 
 \newcommand{\ornateframe}[4][]{%
   % #1 = optional TikZ style
@@ -97,24 +114,27 @@
   \pgfmathsetmacro{\cornerX}{max(#3 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
   \pgfmathsetmacro{\cornerY}{max(#4 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
 
+  \pgfmathsetmacro{\dotH}{ifthenelse(\cornerX > 0.45*#3, 0, 1)}
+  \pgfmathsetmacro{\dotV}{ifthenelse(\cornerY > 0.45*#4, 0, 1)}
+
   \begin{scope}[shift={#2}, #1]
 
     % bottom-left
-    \artDecoCorner{\cornerX}{\cornerY}
+    \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
 
     % bottom-right
     \begin{scope}[shift={(#3,0)}, xscale=-1]
-      \artDecoCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
     \end{scope}
 
     % top-left
     \begin{scope}[shift={(0,#4)}, yscale=-1]
-      \artDecoCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
     \end{scope}
 
     % top-right
     \begin{scope}[shift={(#3,#4)}, xscale=-1, yscale=-1]
-      \artDecoCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
     \end{scope}
 
   \end{scope}
@@ -462,9 +482,9 @@ https://gawm.link
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-\input{cards_generated.tex}
-% \cardback{aliases}
-% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+% \input{cards_generated.tex}
+\cardback{aliases}
+\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
 \newcounter{perplayercards}
 \loop
