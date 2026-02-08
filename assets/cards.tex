@@ -58,9 +58,46 @@
 
 % #1 = horizontal extent
 % #2 = vertical extent
-\newcommand{\artNouveauCorner}[2]{%
+\newcommand{\simpleCorner}[2]{%
   \draw (0,0) -- (#1,0);
   \draw (0,0) -- (0,#2);
+}
+
+% --- Art Deco geometry constants ---
+\newcommand{\decoInset}{4pt}
+\newcommand{\decoStep}{6pt}
+\newcommand{\decoDotRadius}{2pt}
+
+% #1 = horizontal run length
+% #2 = vertical run length
+\newcommand{\artDecoCorner}[2]{%
+
+  % Outer frame lines (relative length)
+  \draw (0,0) -- (#1,0);
+  \draw (0,0) -- (0,#2);
+
+  % Stepped inset (absolute depth)
+  \draw
+    (\decoInset,\decoInset) --
+    (#1-\decoInset,\decoInset);
+
+  \draw
+    (\decoInset,\decoInset) --
+    (\decoInset,#2-\decoInset);
+
+  % Secondary step
+  \draw
+    (\decoInset+\decoStep,\decoInset+\decoStep) --
+    (#1-\decoInset-\decoStep,\decoInset+\decoStep);
+
+  \draw
+    (\decoInset+\decoStep,\decoInset+\decoStep) --
+    (\decoInset+\decoStep,#2-\decoInset-\decoStep);
+
+  % Circular accent (absolute size, fixed position)
+  \fill
+    (\decoInset+\decoStep,\decoInset+\decoStep)
+    circle (\decoDotRadius);
 }
 
 \newcommand{\ornateframe}[4][]{%
@@ -76,21 +113,21 @@
   \begin{scope}[shift={#2}, #1]
 
     % bottom-left
-    \artNouveauCorner{\cornerX}{\cornerY}
+    \simpleCorner{\cornerX}{\cornerY}
 
     % bottom-right
     \begin{scope}[shift={(#3,0)}, xscale=-1]
-      \artNouveauCorner{\cornerX}{\cornerY}
+      \simpleCorner{\cornerX}{\cornerY}
     \end{scope}
 
     % top-left
     \begin{scope}[shift={(0,#4)}, yscale=-1]
-      \artNouveauCorner{\cornerX}{\cornerY}
+      \simpleCorner{\cornerX}{\cornerY}
     \end{scope}
 
     % top-right
     \begin{scope}[shift={(#3,#4)}, xscale=-1, yscale=-1]
-      \artNouveauCorner{\cornerX}{\cornerY}
+      \simpleCorner{\cornerX}{\cornerY}
     \end{scope}
 
   \end{scope}
