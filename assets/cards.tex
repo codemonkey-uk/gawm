@@ -64,35 +64,22 @@
 }
 
 % --- Art Deco geometry constants ---
-\newcommand{\decoInset}{4pt}
-\newcommand{\decoStep}{6pt}
-\newcommand{\decoDotRadius}{2pt}
+\newcommand{\decoInset}{2pt}
+\newcommand{\decoStep}{3pt}
+\newcommand{\decoDotRadius}{1pt}
 
 % #1 = horizontal run length
 % #2 = vertical run length
 \newcommand{\artDecoCorner}[2]{%
 
   % Outer frame lines (relative length)
-  \draw (0,0) -- (#1,0);
-  \draw (0,0) -- (0,#2);
+  \draw (0,#2) -- (0,0) -- (#1,0);
 
   % Stepped inset (absolute depth)
   \draw
+    (\decoInset,#2-\decoInset) --
     (\decoInset,\decoInset) --
     (#1-\decoInset,\decoInset);
-
-  \draw
-    (\decoInset,\decoInset) --
-    (\decoInset,#2-\decoInset);
-
-  % Secondary step
-  \draw
-    (\decoInset+\decoStep,\decoInset+\decoStep) --
-    (#1-\decoInset-\decoStep,\decoInset+\decoStep);
-
-  \draw
-    (\decoInset+\decoStep,\decoInset+\decoStep) --
-    (\decoInset+\decoStep,#2-\decoInset-\decoStep);
 
   % Circular accent (absolute size, fixed position)
   \fill
@@ -107,27 +94,27 @@
   % #4 = height
 
   \pgfmathsetmacro{\cornerFrac}{0.18}
-  \pgfmathsetmacro{\cornerX}{#3 * \cornerFrac}
-  \pgfmathsetmacro{\cornerY}{#4 * \cornerFrac}
+  \pgfmathsetmacro{\cornerX}{max(#3 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
+  \pgfmathsetmacro{\cornerY}{max(#4 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
 
   \begin{scope}[shift={#2}, #1]
 
     % bottom-left
-    \simpleCorner{\cornerX}{\cornerY}
+    \artDecoCorner{\cornerX}{\cornerY}
 
     % bottom-right
     \begin{scope}[shift={(#3,0)}, xscale=-1]
-      \simpleCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}
     \end{scope}
 
     % top-left
     \begin{scope}[shift={(0,#4)}, yscale=-1]
-      \simpleCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}
     \end{scope}
 
     % top-right
     \begin{scope}[shift={(#3,#4)}, xscale=-1, yscale=-1]
-      \simpleCorner{\cornerX}{\cornerY}
+      \artDecoCorner{\cornerX}{\cornerY}
     \end{scope}
 
   \end{scope}
@@ -167,7 +154,7 @@
 
   \begin{scope}[x=1mm,y=1mm]
 
-    % box heights (tune later)
+    % box heights
     \def\catH{6}
     \def\typeH{8}
     \def\titleH{14}
@@ -178,54 +165,51 @@
 
     \coordinate (O) at (current page.south west);
 
-    % ---- trim outline ----
+    % ---- bleed outline (debugging) ----
     % \draw[line width=0.4mm]
     %   ($(O)+(\bleed,\bleed)$)
     %   rectangle ++(\cardW,\cardH);
 
-    % ---- CATEGORY ----
-    \draw[thick, rounded corners=4]
-      %($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH)$)
-      %rectangle ++(\innerW,\catH);
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)
-      rectangle ++(\innerW,28);
+    % ---- TOP FRAME ----
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)}
+        {\innerW}
+        {28}
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
       {\fontsize{9}{11}\selectfont #1};
-
-    % ---- SUBTYPE ----
-    \draw
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH)$)
-      rectangle ++(\innerW,\typeH);
-
-    \node[
-      align=center,
-      text width=\innerW mm
-    ]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.5*\typeH)$)
-      {\fontsize{12}{14}\selectfont #3};
 
     % ---- TITLE ----
     \node[
       align=center,
       text width=\innerW mm
     ]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\typeH-0.5*\titleH)$)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.5*\titleH)$)
     {%
-    \parbox{\innerW mm}{%
+      \parbox{\innerW mm}
+      {%
         \centering
         \titlefont
         \fontsize{16}{20}\selectfont
         \setlength{\baselineskip}{20pt}
         #2
-    }%
+      }%
     };
 
+    % ---- SUBTYPE ----
+    \node[
+      align=center,
+      text width=\innerW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\titleH-0.5*\typeH)$)
+      {\titlefont\fontsize{12}{14}\selectfont #3};    
+
     % ---- DESCRIPTION ----
-    \draw[thick, rounded corners=4]
-      ($(O)+(\bleed+\safe,\bleed+\safe)$)
-      rectangle ++(\innerW,\descH);
+    \ornateframe[thick]
+      {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+      {\innerW}
+      {\descH}
 
     \node[
       align=center,
@@ -277,13 +261,10 @@
     \coordinate (O) at (current page.south west);
 
     % ---- HEAD BOX ----
-    % \draw[thick, rounded corners=4]
-    %  ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
-    %  rectangle ++(\innerW,\headH);
     \ornateframe[thick]
         {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
         {\innerW}
-        {\headH};
+        {\headH}
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
@@ -298,13 +279,10 @@
     };
 
     % ---- BODY BOX ----
-    % \draw[thick, rounded corners=4]
-    %   ($(O)+(\bleed+\safe,\bleed+\safe)$)
-    %   rectangle ++(\innerW,\bodyH);
     \ornateframe[thick]
         {($(O)+(\bleed+\safe,\bleed+\safe)$)}
         {\innerW}
-        {\bodyH};
+        {\bodyH}
 
     \node[
       align=center,
@@ -347,13 +325,10 @@
     \coordinate (O) at (current page.south west);
 
     % ---- HEAD BOX ----
-    % \draw[thick, rounded corners=4]
-    %  ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
-    %  rectangle ++(\innerW,\headH);
     \ornateframe[thick]
         {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
         {\innerW}
-        {\headH};
+        {\headH}
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
@@ -368,13 +343,10 @@
     };
 
     % ---- BODY BOX ----
-    % \draw[thick, rounded corners=4]
-    %  ($(O)+(\bleed+\safe,\bleed+\safe)$)
-    %  rectangle ++(\innerW,\bodyH);
     \ornateframe[thick]
         {($(O)+(\bleed+\safe,\bleed+\safe)$)}
         {\innerW}
-        {\bodyH};    
+        {\bodyH}
 
     % ---- INFO LIST ----
     \node[
@@ -490,7 +462,7 @@ https://gawm.link
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-% \input{cards_generated.tex}
+\input{cards_generated.tex}
 % \cardback{aliases}
 % \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
