@@ -45,6 +45,57 @@
 
 % ---------- CARD MACROS ----------
 
+\tikzset{
+  artnouveau/.style={
+    line cap=round,
+    line join=round,
+    line width=0.8pt
+  },
+  artnouveau/echo/.style={
+    line width=0.45pt
+  }
+}
+
+% #1 = horizontal extent
+% #2 = vertical extent
+\newcommand{\artNouveauCorner}[2]{%
+  \draw (0,0) -- (#1,0);
+  \draw (0,0) -- (0,#2);
+}
+
+\newcommand{\ornateframe}[4][]{%
+  % #1 = optional TikZ style
+  % #2 = origin
+  % #3 = width
+  % #4 = height
+
+  \pgfmathsetmacro{\cornerFrac}{0.18}
+  \pgfmathsetmacro{\cornerX}{#3 * \cornerFrac}
+  \pgfmathsetmacro{\cornerY}{#4 * \cornerFrac}
+
+  \begin{scope}[shift={#2}, #1]
+
+    % bottom-left
+    \artNouveauCorner{\cornerX}{\cornerY}
+
+    % bottom-right
+    \begin{scope}[shift={(#3,0)}, xscale=-1]
+      \artNouveauCorner{\cornerX}{\cornerY}
+    \end{scope}
+
+    % top-left
+    \begin{scope}[shift={(0,#4)}, yscale=-1]
+      \artNouveauCorner{\cornerX}{\cornerY}
+    \end{scope}
+
+    % top-right
+    \begin{scope}[shift={(#3,#4)}, xscale=-1, yscale=-1]
+      \artNouveauCorner{\cornerX}{\cornerY}
+    \end{scope}
+
+  \end{scope}
+}
+
 \newcommand{\descLarge}[1]{%
   \fontsize{11.5}{14.5}\selectfont #1%
 }
@@ -189,9 +240,13 @@
     \coordinate (O) at (current page.south west);
 
     % ---- HEAD BOX ----
-    \draw[thick, rounded corners=4]
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
-      rectangle ++(\innerW,\headH);
+    % \draw[thick, rounded corners=4]
+    %  ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
+    %  rectangle ++(\innerW,\headH);
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
+        {\innerW}
+        {\headH};
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
@@ -206,9 +261,13 @@
     };
 
     % ---- BODY BOX ----
-    \draw[thick, rounded corners=4]
-      ($(O)+(\bleed+\safe,\bleed+\safe)$)
-      rectangle ++(\innerW,\bodyH);
+    % \draw[thick, rounded corners=4]
+    %   ($(O)+(\bleed+\safe,\bleed+\safe)$)
+    %   rectangle ++(\innerW,\bodyH);
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+        {\innerW}
+        {\bodyH};
 
     \node[
       align=center,
@@ -251,9 +310,13 @@
     \coordinate (O) at (current page.south west);
 
     % ---- HEAD BOX ----
-    \draw[thick, rounded corners=4]
-      ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
-      rectangle ++(\innerW,\headH);
+    % \draw[thick, rounded corners=4]
+    %  ($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)
+    %  rectangle ++(\innerW,\headH);
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
+        {\innerW}
+        {\headH};
 
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
@@ -268,9 +331,13 @@
     };
 
     % ---- BODY BOX ----
-    \draw[thick, rounded corners=4]
-      ($(O)+(\bleed+\safe,\bleed+\safe)$)
-      rectangle ++(\innerW,\bodyH);
+    % \draw[thick, rounded corners=4]
+    %  ($(O)+(\bleed+\safe,\bleed+\safe)$)
+    %  rectangle ++(\innerW,\bodyH);
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+        {\innerW}
+        {\bodyH};    
 
     % ---- INFO LIST ----
     \node[
@@ -386,7 +453,7 @@ https://gawm.link
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-\input{cards_generated.tex}
+% \input{cards_generated.tex}
 % \cardback{aliases}
 % \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
