@@ -3,7 +3,7 @@
 
 \usepackage{fontspec}
 \usepackage{pdfrender}
-
+\usepackage{qrcode}
 \usepackage{xcolor}
 \selectcolormodel{cmyk}
 \definecolor{RichBlack}{cmyk}{0.6,0.4,0.4,1}
@@ -473,11 +473,13 @@
 \titlecard{background_titlecard}
 
 \infocard
-{Getting Away With MURDER}
+{\uppercase{Getting Away With Murder}}
 {%
 A co-operative role-play game of drama wit and mystery.
 
-https://gawm.link
+\qrcode{https://gawm.link}
+
+https://gawm.link/
 
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
