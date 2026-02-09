@@ -30,6 +30,17 @@ CATEGORY_BACK_LOOKUP = {
     "murder_cause": "mc_back",
 }
 
+# ---------- CATEGORY BACK LOOKUP ----------
+CATEGORY_BORDER_LOOKUP = {
+    "aliases": "RichBlue",
+    "objects": "RichGreen",
+    "relationships": "RichRed",
+    "wildcards": "RichPurple",
+    "motives": "RichBrown",
+    "murder_discovery": "RichBlack",
+    "murder_cause": "RichBlack",
+}
+
 # ---------- LATEX ESCAPING ----------
 def normalize_unicode(s: str) -> str:
     """
@@ -131,7 +142,9 @@ def emit_front(category: str, card: dict) -> str:
     category_label = tex_escape(category_id_to_label(category))
     category_tex = mbox_words(tex_escape(category_label))
 
-    return f"\\cardfront{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc_tex}}}"
+    border_colour = CATEGORY_BORDER_LOOKUP.get(category, category)
+
+    return f"\\cardfront[{border_colour}]{{{category_tex}}}{{{name}}}{{{subtype}}}{{{desc_tex}}}"
 
 def emit_back(category: str, card: dict) -> str:
     """

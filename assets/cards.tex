@@ -8,6 +8,10 @@
 \selectcolormodel{cmyk}
 \definecolor{RichBlack}{cmyk}{0.6,0.4,0.4,1}
 \definecolor{RichRed}{cmyk}{0,1,1,0.2}
+\definecolor{RichBlue}{cmyk}{0.9,0.89,0,0.2}
+\definecolor{RichGreen}{cmyk}{0.93,0,0.55,0.71}
+\definecolor{RichPurple}{cmyk}{0.93,0,0.55,0.71}
+\definecolor{RichBrown}{cmyk}{0,0.42,0.79,0.63}
 
 % Tell LaTeX where your fonts live
 \setmainfont[
@@ -161,7 +165,12 @@
   \end{itemize}
 }
 
-\newcommand{\cardfront}[4]{%
+\newcommand{\cardfront}[5][]{%
+% #1 = optional border style
+% #2 = category
+% #3 = title
+% #4 = subtype
+% #5 = description
 \thispagestyle{empty}%
 
 \begin{tikzpicture}[remember picture,overlay]
@@ -191,14 +200,15 @@
     %   rectangle ++(\cardW,\cardH);
 
     % ---- TOP FRAME ----
-    \ornateframe[thick]
+    \ornateframe[thick,#1]
         {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)}
         {\innerW}
         {28}
 
+    % ---- CATEGORY ----
     \node[align=center]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
-      {\fontsize{9}{11}\selectfont #1};
+      {\fontsize{9}{11}\selectfont #2};
 
     % ---- TITLE ----
     \node[
@@ -213,7 +223,7 @@
         \titlefont
         \fontsize{16}{20}\selectfont
         \setlength{\baselineskip}{20pt}
-        #2
+        #3
       }%
     };
 
@@ -223,10 +233,10 @@
       text width=\innerW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\titleH-0.5*\typeH)$)
-      {\titlefont\fontsize{12}{14}\selectfont #3};    
+      {\titlefont\fontsize{12}{14}\selectfont #4};    
 
     % ---- DESCRIPTION ----
-    \ornateframe[thick]
+    \ornateframe[thick,#1]
       {($(O)+(\bleed+\safe,\bleed+\safe)$)}
       {\innerW}
       {\descH}
@@ -236,7 +246,7 @@
       text width=\innerTextW mm
     ]
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
-      {\spaceskip=0.3em plus 0.2em minus 0.1em #4};
+      {\spaceskip=0.3em plus 0.2em minus 0.1em #5};
 
   \end{scope}
 \end{tikzpicture}
