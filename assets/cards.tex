@@ -528,7 +528,7 @@
     {\tokenSize}
 }
 
-\newcommand{\tokencardgrid}[8]{%
+\newcommand{\tokencardgridEight}[8]{%
 \begin{tikzpicture}[remember picture,overlay]
 
   % ---- force page bounding box ----
@@ -625,7 +625,92 @@
 \newpage
 }
 
+\newcommand{\tokencardgridFour}[4]{%
+\begin{tikzpicture}[remember picture,overlay]
 
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{56}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*(\bleed+\safe)}
+    \pgfmathsetmacro{\innerH}{\cardH - 2*(\bleed+\safe)}
+
+    %  we need to fit 2 columns (1 safe space between)
+    \pgfmathsetmacro{\tokenMaxW}{0.5 * (\innerW - 1*\safe)}
+    %  we need to fit 2 rows (1 safe space between)
+    \pgfmathsetmacro{\tokenMaxH}{0.5 * (\innerH - 1*\safe)}
+
+    %  tokens should be square
+    \pgfmathsetmacro{\tokenSize}{min(\tokenMaxW, \tokenMaxH)}
+
+    %  center the two tokens in two columns 
+    \pgfmathsetmacro{\halfW}{0.5*\cardW}
+    \pgfmathsetmacro{\leftCentre}{\bleed + 0.5*\halfW}
+    \pgfmathsetmacro{\rightCentre}{\bleed + \halfW + 0.5*\halfW}
+    \pgfmathsetmacro{\leftO}{\leftCentre - 0.5*\tokenSize}
+    \pgfmathsetmacro{\rightO}{\rightCentre - 0.5*\tokenSize}    
+
+
+    \pgfmathsetmacro{\vGap}{(\cardH - 2*\tokenSize)/2}
+    \pgfmathsetmacro{\bottomO}{\bleed + 0.5*\vGap}
+    \pgfmathsetmacro{\vSpace}{\tokenSize + \vGap}
+
+    \coordinate (O) at (current page.south west);
+    
+    % ---- bleed outline (debugging) ----
+    % \draw[line width=0.4mm]
+    %   ($(O)+(\bleed,\bleed)$)
+    %   rectangle ++(\cardW,\cardH);
+
+    % ---- CUT line (vertical) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed + \cardW*0.5,\bleed)$) --
+      ($(O)+(\bleed + \cardW*0.5,\bleed + \cardH)$);
+
+    % ---- CUT line (horizontal/center) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed,         \bleed + \cardH*0.5)$) --
+      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.5)$);
+
+    % ---- Token BOXES ----
+
+    % bottom left
+    \tokenbox{\leftO}{\bottomO}{#1}
+
+    % bottom right
+    \tokenbox{\rightO}{\bottomO}{#2}
+
+    % 2nd bottom left
+    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#3}
+
+    % 2nd bottom right
+    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#4}
+
+    % 3nd bottom left
+    % \tokenbox{\leftO}{\bottomO + 2*\vSpace}{#3}
+
+    % 3nd bottom right
+    % \tokenbox{\rightO}{\bottomO + 2*\vSpace}{#7}
+
+    % top left
+    % \tokenbox{\leftO}{\bottomO + 3*\vSpace}{#4}
+
+    % top right
+    % \tokenbox{\rightO}{\bottomO + 3*\vSpace}{#8}
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
 
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
@@ -661,8 +746,12 @@ https://gawm.link/
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-\tokencardgrid{G}{G}{G}{G}{I}{I}{I}{I}
-\tokencardgrid{0}{1}{2}{3}{0}{1}{2}{3}
+% \tokencardgridEight{G}{G}{G}{G}{I}{I}{I}{I}
+% \tokencardgridEight{0}{1}{2}{3}{0}{1}{2}{3}
+\tokencardgridFour{G}{G}{G}{G}
+\tokencardgridFour{0}{1}{2}{3}
+\tokencardgridFour{I}{I}{I}{I}
+\tokencardgridFour{0}{1}{2}{3}
 
 % \input{cards_generated.tex}
 \cardback{aliases}
