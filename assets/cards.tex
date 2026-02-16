@@ -473,14 +473,29 @@
   % #2 = y
   % #3 = content
 
+  \ifx#3G
+    % guilt logic
+    \fill[RichRed]
+      ($(O)+(#1,#2)$)
+      rectangle
+      ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
+  \else\ifx#3I
+    % innocence logic
+    \fill[RichBlue]
+      ($(O)+(#1,#2)$)
+      rectangle
+      ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
+  \else
+    % treat as text
+    \node[align=center]
+      at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+      {\parbox{\tokenSize mm}{\centering \tokenfont #3}};
+  \fi\fi
+
   \ornateframe[thick]
     {($(O)+(#1,#2)$)}
     {\tokenSize}
     {\tokenSize}
-
-  \node[align=center]
-    at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
-    {\parbox{\tokenSize mm}{\centering \tokenfont #3}};
 }
 
 \newcommand{\tokencardgrid}[8]{%
