@@ -463,7 +463,27 @@
 
 % ---------- TOKEN MACROS ----------
 
-\newcommand{\tokencardgrid}{%
+\newcommand{\tokenfont}{%
+  \titlefont\fontsize{28}{28}\selectfont
+}
+
+
+\newcommand{\tokenbox}[3]{%
+  % #1 = x
+  % #2 = y
+  % #3 = content
+
+  \ornateframe[thick]
+    {($(O)+(#1,#2)$)}
+    {\tokenSize}
+    {\tokenSize}
+
+  \node[align=center]
+    at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+    {\parbox{\tokenSize mm}{\centering \tokenfont #3}};
+}
+
+\newcommand{\tokencardgrid}[8]{%
 \begin{tikzpicture}[remember picture,overlay]
 
   % ---- force page bounding box ----
@@ -531,52 +551,28 @@
     % ---- Token BOXES ----
 
     % bottom left
-    \ornateframe[thick]
-        {($(O)+(\leftO, \bottomO)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\leftO}{\bottomO}{#1}
 
     % bottom right
-    \ornateframe[thick]
-        {($(O)+(\rightO, \bottomO)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\rightO}{\bottomO}{#5}
 
     % 2nd bottom left
-    \ornateframe[thick]
-        {($(O)+(\leftO, \bottomO + 1*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#2}
 
     % 2nd bottom right
-    \ornateframe[thick]
-        {($(O)+(\rightO, \bottomO + 1*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#6}
 
     % 3nd bottom left
-    \ornateframe[thick]
-        {($(O)+(\leftO, \bottomO + 2*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\leftO}{\bottomO + 2*\vSpace}{#3}
 
     % 3nd bottom right
-    \ornateframe[thick]
-        {($(O)+(\rightO, \bottomO + 2*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\rightO}{\bottomO + 2*\vSpace}{#7}
 
     % top left
-    \ornateframe[thick]
-        {($(O)+(\leftO, \bottomO + 3*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\leftO}{\bottomO + 3*\vSpace}{#4}
 
     % top right
-    \ornateframe[thick]
-        {($(O)+(\rightO, \bottomO + 3*\vSpace)$)}
-        {\tokenSize}
-        {\tokenSize}
+    \tokenbox{\rightO}{\bottomO + 3*\vSpace}{#8}
 
   \end{scope}
 \end{tikzpicture}
@@ -620,12 +616,12 @@ https://gawm.link/
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-\tokencardgrid
-\tokencardgrid
+\tokencardgrid{G}{G}{G}{G}{I}{I}{I}{I}
+\tokencardgrid{0}{1}{2}{3}{0}{1}{2}{3}
 
-\input{cards_generated.tex}
-% \cardback{aliases}
-% \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+% \input{cards_generated.tex}
+\cardback{aliases}
+\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
 
 \newcounter{perplayercards}
 \loop
