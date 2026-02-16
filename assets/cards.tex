@@ -5,6 +5,7 @@
 \usepackage{pdfrender}
 \usepackage{qrcode}
 \usepackage{xcolor}
+
 \selectcolormodel{cmyk}
 \definecolor{RichBlack}{cmyk}{0.6,0.4,0.4,1}
 \definecolor{RichRed}{cmyk}{0,1,1,0.2}
@@ -38,6 +39,7 @@
 \usetikzlibrary{calc}
 \usepackage{adjustbox}
 \usepackage{svg}
+
 \pagestyle{empty}
 
 % ---- constants ----
@@ -409,12 +411,12 @@
     rectangle
     (current page.north east);
 
-  % ---- full-bleed background ----
+  % ---- full-bleed background (bottom 2/3rd) ----
   \node[anchor=south west, inner sep=0]
     at (current page.south west)
     {\includegraphics[
       width=\paperwidth,
-      height=\paperheight
+      keepaspectratio
     ]{#1}};
 
   \begin{scope}[x=1mm,y=1mm]
@@ -459,6 +461,131 @@
 \newpage
 }
 
+% ---------- TOKEN MACROS ----------
+
+\newcommand{\tokencardgrid}{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{56}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*(\bleed+\safe)}
+    \pgfmathsetmacro{\innerH}{\cardH - 2*(\bleed+\safe)}
+
+    %  we need to fit 2 columns (1 safe space between)
+    \pgfmathsetmacro{\tokenMaxW}{0.5 * (\innerW - 1*\safe)}
+    %  we need to fit 4 rows (3 safe space between)
+    \pgfmathsetmacro{\tokenMaxH}{0.25 * (\innerH - 3*\safe)}
+
+    %  tokens should be square
+    \pgfmathsetmacro{\tokenSize}{min(\tokenMaxW, \tokenMaxH)}
+
+    %  center the two tokens in two columns 
+    \pgfmathsetmacro{\halfW}{0.5*\cardW}
+    \pgfmathsetmacro{\leftCentre}{\bleed + 0.5*\halfW}
+    \pgfmathsetmacro{\rightCentre}{\bleed + \halfW + 0.5*\halfW}
+    \pgfmathsetmacro{\leftO}{\leftCentre - 0.5*\tokenSize}
+    \pgfmathsetmacro{\rightO}{\rightCentre - 0.5*\tokenSize}    
+
+
+    \pgfmathsetmacro{\vGap}{(\cardH - 4*\tokenSize)/4}
+    \pgfmathsetmacro{\bottomO}{\bleed + 0.5*\vGap}
+    \pgfmathsetmacro{\vSpace}{\tokenSize + \vGap}
+
+    \coordinate (O) at (current page.south west);
+    
+    % ---- bleed outline (debugging) ----
+    % \draw[line width=0.4mm]
+    %   ($(O)+(\bleed,\bleed)$)
+    %   rectangle ++(\cardW,\cardH);
+
+    % ---- CUT line (vertical) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed + \cardW*0.5,\bleed)$) --
+      ($(O)+(\bleed + \cardW*0.5,\bleed + \cardH)$);
+
+    % ---- CUT line (horizontal/center) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed,         \bleed + \cardH*0.5)$) --
+      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.5)$);
+
+    % ---- CUT line (horizontal/lower) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed,         \bleed + \cardH*0.25)$) --
+      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.25)$);
+
+    % ---- CUT line (horizontal/upper) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed,         \bleed + \cardH*0.75)$) --
+      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.75)$);
+
+    % ---- Token BOXES ----
+
+    % bottom left
+    \ornateframe[thick]
+        {($(O)+(\leftO, \bottomO)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % bottom right
+    \ornateframe[thick]
+        {($(O)+(\rightO, \bottomO)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % 2nd bottom left
+    \ornateframe[thick]
+        {($(O)+(\leftO, \bottomO + 1*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % 2nd bottom right
+    \ornateframe[thick]
+        {($(O)+(\rightO, \bottomO + 1*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % 3nd bottom left
+    \ornateframe[thick]
+        {($(O)+(\leftO, \bottomO + 2*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % 3nd bottom right
+    \ornateframe[thick]
+        {($(O)+(\rightO, \bottomO + 2*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % top left
+    \ornateframe[thick]
+        {($(O)+(\leftO, \bottomO + 3*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+    % top right
+    \ornateframe[thick]
+        {($(O)+(\rightO, \bottomO + 3*\vSpace)$)}
+        {\tokenSize}
+        {\tokenSize}
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+
+
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
@@ -481,7 +608,6 @@
 \clearpage
 \thispagestyle{empty}
 \titlecard{background_titlecard}
-
 \infocard
 {\uppercase{Getting Away With Murder}}
 {%
@@ -493,6 +619,9 @@ https://gawm.link/
 
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
+
+\tokencardgrid
+\tokencardgrid
 
 \input{cards_generated.tex}
 % \cardback{aliases}

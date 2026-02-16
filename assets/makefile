@@ -31,7 +31,7 @@ $(CARDS): $(JSON) $(GEN)
 	$(PYTHON) $(GEN)
 
 # ---------- latex → pdf ----------
-$(PDF): $(TEX) $(CARDS) $(PNGS) background_cmyk.pdf
+$(PDF): $(TEX) $(CARDS) $(PNGS) background_titlecard.jpg 
 	$(XELATEX) $(TEX)
 	$(XELATEX) $(TEX)
 
