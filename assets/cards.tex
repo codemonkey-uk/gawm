@@ -479,9 +479,9 @@
   {
     % guilt token back content
     \fill[RichRed]
-      ($(O)+(#1,#2)$)
+      ($(O)+(#1-1,#2-1)$)
       rectangle
-      ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
+      ($(O)+(#1+\tokenSize+1,#2+\tokenSize+1)$);
 
     % icon
     \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
@@ -512,9 +512,9 @@
   {
     % guilt token back content
     \fill[RichBlue]
-      ($(O)+(#1,#2)$)
+      ($(O)+(#1-1,#2-1)$)
       rectangle
-      ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
+      ($(O)+(#1+\tokenSize+1,#2+\tokenSize+1)$);
 
     % icon
     \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
