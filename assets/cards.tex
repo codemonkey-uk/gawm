@@ -466,7 +466,9 @@
 \newcommand{\tokenfont}{%
   \titlefont\fontsize{28}{28}\selectfont
 }
-
+\newcommand{\tokenSmallFont}{%
+  \titlefont\fontsize{9}{9}\selectfont
+}
 
 \newcommand{\tokenbox}[3]{%
   % #1 = x
@@ -475,45 +477,51 @@
 
   \ifx#3G
   {
-    % guilt logic
+    % guilt token back content
     \fill[RichRed]
       ($(O)+(#1,#2)$)
       rectangle
       ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
     % centered content
-    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
     {
       \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
         \centering
         \includegraphics[
-          width=0.65\linewidth,
-          height=0.65\linewidth,
+          width=0.5\linewidth,
+          height=0.5\linewidth,
           keepaspectratio
         ]{guilt.png}
 
       \end{minipage}
     };
+    \node[align=center]
+      at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+      {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};  
   }      
   \else\ifx#3I
   {
-    % innocence logic
+    % guilt token back content
     \fill[RichBlue]
       ($(O)+(#1,#2)$)
       rectangle
       ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
     % centered content
-    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
     {
       \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
         \centering
         \includegraphics[
-          width=0.65\linewidth,
-          height=0.65\linewidth,
+          width=0.5\linewidth,
+          height=0.5\linewidth,
           keepaspectratio
         ]{innocence.png}
 
       \end{minipage}
-    };      
+    };
+    \node[align=center, text=white]
+      at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+      {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};      
   }
   \else
     % treat as text
