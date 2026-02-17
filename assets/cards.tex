@@ -482,7 +482,8 @@
       ($(O)+(#1,#2)$)
       rectangle
       ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
-    % centered content
+
+    % icon
     \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
     {
       \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
@@ -495,9 +496,17 @@
 
       \end{minipage}
     };
+
+    % text
     \node[align=center]
       at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
-      {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};  
+      {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};
+
+    % border
+    \ornateframe[thick]
+      {($(O)+(#1,#2)$)}
+      {\tokenSize}
+      {\tokenSize}
   }      
   \else\ifx#3I
   {
@@ -506,7 +515,8 @@
       ($(O)+(#1,#2)$)
       rectangle
       ($(O)+(#1+\tokenSize,#2+\tokenSize)$);
-    % centered content
+
+    % icon
     \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
     {
       \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
@@ -519,21 +529,29 @@
 
       \end{minipage}
     };
+
+    % text
     \node[align=center, text=white]
       at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
-      {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};      
+      {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};
+
+    % border
+    \ornateframe[thick, white]
+      {($(O)+(#1,#2)$)}
+      {\tokenSize}
+      {\tokenSize}
   }
   \else
     % treat as text
     \node[align=center]
       at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
       {\parbox{\tokenSize mm}{\centering \tokenfont #3}};
-  \fi\fi
 
-  \ornateframe[thick]
-    {($(O)+(#1,#2)$)}
-    {\tokenSize}
-    {\tokenSize}
+    \ornateframe[thick]
+      {($(O)+(#1,#2)$)}
+      {\tokenSize}
+      {\tokenSize}
+  \fi\fi
 }
 
 \newcommand{\tokencardgridEight}[8]{%
