@@ -41,24 +41,6 @@ CATEGORY_BORDER_LOOKUP = {
     "murder_cause": "RichBlack",
 }
 
-# ---------- LATEX ESCAPING ----------
-def normalize_unicode(s: str) -> str:
-    """
-    Convert smart quotes and fancy apostrophes to plain ASCII equivalents.
-    """
-    replacements = {
-        "’": "'",
-        "‘": "'",
-        "“": '"',
-        "”": '"',
-        "–": "-",  # en dash
-        "—": "--", # em dash
-        # add more if needed
-    }
-    for k, v in replacements.items():
-        s = s.replace(k, v)
-    return s
-
 def tex_escape(s: str) -> str:
     """
     Escape characters with special meaning in LaTeX.
@@ -76,8 +58,6 @@ def tex_escape(s: str) -> str:
         "~": r"\textasciitilde{}",
         "^": r"\textasciicircum{}",
     }
-
-    s = normalize_unicode(s)
 
     for char, escaped in replacements.items():
         s = s.replace(char, escaped)
