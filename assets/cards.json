@@ -220,7 +220,7 @@
         {
             "name": "Poison",
             "subtype": "Weapon",
-            "desc": "~ XXXX ~  Rat Poison Keep out of children's reach."
+            "desc": "~ XXXX ~\n Rat Poison\nKeep out of children's reach."
         },
         {
             "name": "Revolver",
