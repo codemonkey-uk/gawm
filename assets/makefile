@@ -41,7 +41,18 @@ all: $(FINAL)
 
 %.pdf: %.jpg
 	magick $< -density 300 -colorspace CMYK -strip -quality 100 $@
-	
+
+# ---------- special handling for background_titlecard (lighten grayscale to meet TAC limit) ----------
+# background_titlecard is B&W/sepia; convert to grayscale and lighten to reduce black density
+# This reduces overall ink coverage below 240% TAC
+background_titlecard.pdf: background_titlecard.jpg
+	magick $< -colorspace Gray -level 0%,100%,1.3 \
+	  -density 300 -colorspace CMYK -strip -quality 100 $@
+
+background_titlecard.tif: background_titlecard.jpg
+	magick $< -colorspace Gray -level 0%,100%,1.3 \
+	  -density 300 -colorspace CMYK -strip -quality 100 $@
+
 # ---------- json → tex ----------
 $(CARDS): $(JSON) $(GEN)
 	$(PYTHON) $(GEN)
