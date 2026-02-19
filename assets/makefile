@@ -6,7 +6,9 @@ GS       = gs
 
 # ---------- files ----------
 SVGS   := $(wildcard *.svg)
-PNGS   := $(SVGS:.svg=.png)
+# final raster assets for print (TIFF) and for XeLaTeX inclusion (PDF)
+RASTERS := $(SVGS:.svg=.tif)
+RASTERS_PDF := $(SVGS:.svg=.pdf)
 
 JSON   := cards.json
 GEN    := generate_cards_tex.py
@@ -26,12 +28,26 @@ all: $(FINAL)
 	  --export-dpi=300 \
 	  --export-filename=$@
 
+# ---------- png -> cmyk tiff (final raster for print) ----------
+# Requires ImageMagick `convert` on PATH. Produces CMYK TIFFs at 300dpi.
+%.tif: %.png
+	magick $< -density 300 -colorspace CMYK -strip -quality 100 $@
+ 
+
+# ---------- png/jpg -> pdf (for XeLaTeX inclusion) ----------
+# Embed the raster into a single-page PDF at 300dpi; keep CMYK colorspace.
+%.pdf: %.png
+	magick $< -density 300 -colorspace CMYK -strip -quality 100 $@
+
+%.pdf: %.jpg
+	magick $< -density 300 -colorspace CMYK -strip -quality 100 $@
+	
 # ---------- json → tex ----------
 $(CARDS): $(JSON) $(GEN)
 	$(PYTHON) $(GEN)
 
 # ---------- latex → pdf ----------
-$(PDF): $(TEX) $(CARDS) $(PNGS) background_titlecard.jpg 
+$(PDF): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
 	$(XELATEX) $(TEX)
 	$(XELATEX) $(TEX)
 
@@ -69,6 +85,13 @@ verify: $(FINAL)
 		if (fail) exit 1; \
 		print "OK: all pages ≤ 240% TAC"; \
 	}'
+
+
+# ---------- font embedding check ----------
+.PHONY: fonts
+fonts: $(PDF)
+	@echo "Checking embedded fonts in $(PDF)..."
+	@pdffonts $(PDF) || true
 
 # ---------- cleanup ----------
 clean:
