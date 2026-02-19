@@ -30,15 +30,8 @@
   margin=0mm
 ]{geometry}
 
-\newlength{\bleed}
-\setlength{\bleed}{3.175mm}
-\newlength{\safe}
-\setlength{\safe}{3.175mm}
-
 \usepackage{tikz}
 \usetikzlibrary{calc}
-\usepackage{adjustbox}
-\usepackage{svg}
 
 \pagestyle{empty}
 
@@ -719,18 +712,6 @@
 
     % 2nd bottom right
     \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#4}
-
-    % 3nd bottom left
-    % \tokenbox{\leftO}{\bottomO + 2*\vSpace}{#3}
-
-    % 3nd bottom right
-    % \tokenbox{\rightO}{\bottomO + 2*\vSpace}{#7}
-
-    % top left
-    % \tokenbox{\leftO}{\bottomO + 3*\vSpace}{#4}
-
-    % top right
-    % \tokenbox{\rightO}{\bottomO + 3*\vSpace}{#8}
 
   \end{scope}
 \end{tikzpicture}
