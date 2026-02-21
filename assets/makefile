@@ -132,13 +132,6 @@ verify:
 		fi; \
 	done
 
-
-# ---------- font embedding check ----------
-.PHONY: fonts
-fonts: $(PDF)
-	@echo "Checking embedded fonts in $(PDF)..."
-	@pdffonts $(PDF) || true
-
 # ---------- cleanup ----------
 clean:
 	rm -f *.aux *.log *.out *.toc
