@@ -49,15 +49,10 @@
   UprightFont=special-elite-v18-latin-regular.ttf
 ]{Special Elite}
 
-% Set card dimensions based on CARDSIZE (EU or US)
-% Default to EU if not specified
-\ifdefined\CARDSIZE\else
-  \def\CARDSIZE{EU}
-\fi
-
+% Set card dimensions based on \ifUSCards flag (set via makefile)
 % EU Poker: 63mm x 88mm + 3.175mm bleed = 69.35mm x 94.35mm
 % US Poker: 63.5mm x 88.9mm + 3.175mm bleed = 69.85mm x 95.25mm
-\if\CARDSIZE U%
+\ifUSCards
   % US Poker sizes
   \usepackage[
     paperwidth=69.85mm,
@@ -80,7 +75,7 @@
 
 % ---- constants ----
 \def\bleed{3.175}
-\if\CARDSIZE U%
+\ifUSCards
   % US Poker: 2.5" x 3.5" = 63.5mm x 88.9mm
   \def\cardW{63.5}
   \def\cardH{88.9}

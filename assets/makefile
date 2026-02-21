@@ -86,13 +86,13 @@ endef
 
 # ---------- latex → pdf (EU) ----------
 $(PDF_EU): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
-	$(XELATEX) -jobname=cards_eu '\def\CARDSIZE{EU}\input{$(TEX)}'
-	$(XELATEX) -jobname=cards_eu '\def\CARDSIZE{EU}\input{$(TEX)}'
+	$(XELATEX) -jobname=cards_eu '\newif\ifUSCards \input{$(TEX)}'
+	$(XELATEX) -jobname=cards_eu '\newif\ifUSCards \input{$(TEX)}'
 
 # ---------- latex → pdf (US) ----------
 $(PDF_US): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
-	$(XELATEX) -jobname=cards_us '\def\CARDSIZE{US}\input{$(TEX)}'
-	$(XELATEX) -jobname=cards_us '\def\CARDSIZE{US}\input{$(TEX)}'
+	$(XELATEX) -jobname=cards_us '\newif\ifUSCards \USCardstrue \input{$(TEX)}'
+	$(XELATEX) -jobname=cards_us '\newif\ifUSCards \USCardstrue \input{$(TEX)}'
 
 # ---------- pdf → PDF/X-1a CMYK (EU) ----------
 $(FINAL_EU): $(PDF_EU)
