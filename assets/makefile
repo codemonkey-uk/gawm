@@ -102,25 +102,35 @@ $(FINAL_EU): $(PDF_EU)
 $(FINAL_US): $(PDF_US)
 	$(call gs-pdfx1a,$<,$@)
 
-# ---------- check coverage ----------
+# ---------- check coverage and fonts ----------
 .PHONY: verify
-verify: $(FINAL)
-	@echo "Verifying CMYK TAC ≤ 240%..."
-	@gs -q -o - -sDEVICE=inkcov $(FINAL) | \
-	awk '\
-	/^Page / {page=$$2} \
-	/CMYK/ { \
-		total = $$1 + $$2 + $$3 + $$4; \
-		if (total > 2.40) { \
-			printf("FAIL page %s: %.1f%% (C %.1f M %.1f Y %.1f K %.1f)\n", \
-				page, total*100, $$1*100, $$2*100, $$3*100, $$4*100); \
-			fail=1 \
-		} \
-	} \
-	END { \
-		if (fail) exit 1; \
-		print "OK: all pages ≤ 240% TAC"; \
-	}'
+verify:
+	@for pdf in $(FINAL_EU) $(FINAL_US); do \
+		if [ ! -f "$$pdf" ]; then \
+			echo "MISSING: $$pdf"; \
+		else \
+			echo "=== Verifying $$pdf ==="; \
+			echo "--- Ink Coverage ---"; \
+			gs -q -o - -sDEVICE=inkcov "$$pdf" | \
+			awk '\
+			/^Page / {page=$$2} \
+			/CMYK/ { \
+				total = $$1 + $$2 + $$3 + $$4; \
+				if (total > 2.40) { \
+					printf("FAIL page %s: %.1f%% (C %.1f M %.1f Y %.1f K %.1f)\n", \
+						page, total*100, $$1*100, $$2*100, $$3*100, $$4*100); \
+					fail=1 \
+				} \
+			} \
+			END { \
+				if (fail) exit 1; \
+				print "OK: all pages ≤ 240% TAC"; \
+			}'; \
+			echo "--- Font Embedding ---"; \
+			pdffonts "$$pdf" || true; \
+			echo ""; \
+		fi; \
+	done
 
 
 # ---------- font embedding check ----------
