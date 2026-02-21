@@ -15,8 +15,18 @@ GEN    := generate_cards_tex.py
 CARDS  := cards_generated.tex
 
 TEX    := cards.tex
-PDF    := cards.pdf
-FINAL  := deck-print-PDFX1a-cmyk.pdf
+
+# ---------- card size ----------
+CARDSIZE ?= EU
+
+# Output files with size suffix
+PDF_EU  := cards_eu.pdf
+PDF_US  := cards_us.pdf
+PDF     = $(PDF_$(CARDSIZE))
+
+FINAL_EU := deck-print-eu-PDFX1a-cmyk.pdf
+FINAL_US := deck-print-us-PDFX1a-cmyk.pdf
+FINAL    = $(FINAL_$(CARDSIZE))
 
 # ---------- default ----------
 all: $(FINAL)
@@ -57,25 +67,40 @@ background_titlecard.tif: background_titlecard.jpg
 $(CARDS): $(JSON) $(GEN)
 	$(PYTHON) $(GEN)
 
-# ---------- latex → pdf ----------
-$(PDF): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
-	$(XELATEX) $(TEX)
-	$(XELATEX) $(TEX)
+# ---------- GS PDF/X-1a conversion rule ----------
+# Converts a PDF to PDF/X-1a CMYK with proper color profiles
+define gs-pdfx1a
+$(GS) -dSAFER -dBATCH -dNOPAUSE \
+	-sDEVICE=pdfwrite \
+	-dPDFX \
+	-dCompatibilityLevel=1.3 \
+	-sDefaultCMYKProfile=CGATS21_CRPC1.icc \
+	-sColorConversionStrategy=CMYK \
+	-dProcessColorModel=/DeviceCMYK \
+	-dAutoFilterColorImages=false \
+	-dColorImageFilter=/FlateEncode \
+	-dDownsampleColorImages=false \
+	-sOutputFile=$(2) \
+	$(1)
+endef
 
-# ---------- pdf → PDF/X-1a CMYK ----------
-$(FINAL): $(PDF)
-	$(GS) -dSAFER -dBATCH -dNOPAUSE \
-		-sDEVICE=pdfwrite \
-		-dPDFX \
-		-dCompatibilityLevel=1.3 \
-		-sDefaultCMYKProfile=CGATS21_CRPC1.icc \
-		-sColorConversionStrategy=CMYK \
-		-dProcessColorModel=/DeviceCMYK \
-		-dAutoFilterColorImages=false \
-		-dColorImageFilter=/FlateEncode \
-		-dDownsampleColorImages=false \
-		-sOutputFile=$@ \
-		$<
+# ---------- latex → pdf (EU) ----------
+$(PDF_EU): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
+	$(XELATEX) -jobname=cards_eu '\def\CARDSIZE{EU}\input{$(TEX)}'
+	$(XELATEX) -jobname=cards_eu '\def\CARDSIZE{EU}\input{$(TEX)}'
+
+# ---------- latex → pdf (US) ----------
+$(PDF_US): $(TEX) $(CARDS) $(RASTERS_PDF) background_titlecard.pdf innocence_white.pdf
+	$(XELATEX) -jobname=cards_us '\def\CARDSIZE{US}\input{$(TEX)}'
+	$(XELATEX) -jobname=cards_us '\def\CARDSIZE{US}\input{$(TEX)}'
+
+# ---------- pdf → PDF/X-1a CMYK (EU) ----------
+$(FINAL_EU): $(PDF_EU)
+	$(call gs-pdfx1a,$<,$@)
+
+# ---------- pdf → PDF/X-1a CMYK (US) ----------
+$(FINAL_US): $(PDF_US)
+	$(call gs-pdfx1a,$<,$@)
 
 # ---------- check coverage ----------
 .PHONY: verify
@@ -107,6 +132,12 @@ fonts: $(PDF)
 # ---------- cleanup ----------
 clean:
 	rm -f *.aux *.log *.out *.toc
-	rm -f $(CARDS) $(PDF) $(FINAL)
+	rm -f $(CARDS) $(PDF_EU) $(PDF_US) $(FINAL_EU) $(FINAL_US)
+
+# ---------- card size targets ----------
+.PHONY: eu us
+eu: $(FINAL_EU)
+
+us: $(FINAL_US)
 
 .PHONY: all clean
