@@ -6,8 +6,9 @@ GS       = gs
 
 # ---------- files ----------
 SVGS   := $(wildcard *.svg)
-# final raster assets for print (TIFF) and for XeLaTeX inclusion (PDF)
-RASTERS := $(SVGS:.svg=.tif)
+# final vector assets for print (PDF from SVG) and raster assets from PNG/JPG
+RASTERS := $(wildcard *.png)
+RASTERS_TIFF := $(RASTERS:.png=.tif)
 RASTERS_PDF := $(SVGS:.svg=.pdf)
 
 JSON   := cards.json
@@ -31,18 +32,17 @@ FINAL    = $(FINAL_$(CARDSIZE))
 # ---------- default ----------
 all: $(FINAL)
 
-# ---------- svg → png ----------
-%.png: %.svg
+# ---------- svg → pdf (as vector) ----------
+%.pdf: %.svg
 	$(INKSCAPE) $< \
-	  --export-type=png \
+	  --export-type=pdf \
 	  --export-dpi=300 \
 	  --export-filename=$@
 
-# ---------- png -> cmyk tiff (final raster for print) ----------
+# ---------- png -> cmyk tiff (for raster print assets) ----------
 # Requires ImageMagick `convert` on PATH. Produces CMYK TIFFs at 300dpi.
 %.tif: %.png
 	magick $< -density 300 -colorspace CMYK -strip -quality 100 $@
- 
 
 # ---------- png/jpg -> pdf (for XeLaTeX inclusion) ----------
 # Embed the raster into a single-page PDF at 300dpi; keep CMYK colorspace.
@@ -135,8 +135,7 @@ verify:
 # ---------- cleanup ----------
 clean:
 	rm -f *.aux *.log *.out *.toc
-	rm -f $(CARDS) $(PDF_EU) $(PDF_US) $(FINAL_EU) $(FINAL_US)
-
+	rm -f $(CARDS) $(PDF_EU) $(PDF_US) $(FINAL_EU) $(FINAL_US) $(RASTERS_PDF) $(RASTERS_TIFF)
 # ---------- card size targets ----------
 .PHONY: eu us
 eu: $(FINAL_EU)
