@@ -297,14 +297,31 @@
 
 
 \newcommand{\cardback}[1]{%
-\thispagestyle{empty}%
 \begin{tikzpicture}[remember picture,overlay]
-  \node[anchor=south west,inner sep=0pt]
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  % ---- full-bleed background ----
+  \node[anchor=south west, inner sep=0]
     at (current page.south west)
     {\includegraphics[
       width=\paperwidth,
-      height=\paperheight
+      height=\paperheight,
+      % keepaspectratio
     ]{#1.pdf}};
+
+  % ---- bleed outline (debugging) ----
+  % \begin{scope}[x=1mm,y=1mm]
+  %   \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
+  %   \coordinate (O) at (current page.south west);
+  %   \draw[line width=0.4mm]
+  %     ($(O)+(\bleed,\bleed)$)
+  %     rectangle ++(\cardW,\cardH);
+  % \end{scope}
+
 \end{tikzpicture}
 \newpage
 }
@@ -449,7 +466,7 @@
     rectangle
     (current page.north east);
 
-  % ---- full-bleed background (bottom 2/3rd) ----
+  % ---- full-bleed background (bottom anchored) ----
   \node[anchor=south west, inner sep=0]
     at (current page.south west)
     {\includegraphics[
@@ -799,9 +816,9 @@ https://gawm.link/
 }
 
 \input{cards_generated.tex}
-%\cardback{alias_back}
+%\cardback{alias\_back\_no\_border}
 %\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
-%\cardback{object\_back}
+%\cardback{object\_back\_no\_border}
 %\cardfront[RichGreen]{\mbox{Objects}}{\mbox{Poison}}{Weapon}{\descLarge{\textasciitilde{} XXXX \textasciitilde{}\\ Rat Poison\\Keep out of children's reach.}}
 
 
