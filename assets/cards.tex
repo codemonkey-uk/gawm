@@ -296,35 +296,68 @@
 
 
 
-\newcommand{\cardback}[1]{%
-\begin{tikzpicture}[remember picture,overlay]
-  % ---- force page bounding box ----
-  \path[use as bounding box]
-    (current page.south west)
-    rectangle
-    (current page.north east);
+\newcommand{\cardback}[2]{%
+% #1 = background image filename (no extension)
 
-  % ---- full-bleed background ----
-  \node[anchor=south west, inner sep=0]
-    at (current page.south west)
-    {\includegraphics[
-      width=\paperwidth,
-      height=\paperheight,
-      % keepaspectratio
-    ]{#1.pdf}};
+  \begin{tikzpicture}[remember picture,overlay]
 
-  % ---- bleed outline (debugging) ----
-  % \begin{scope}[x=1mm,y=1mm]
-  %   \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
-  %   \coordinate (O) at (current page.south west);
-  %   \draw[line width=0.4mm]
-  %     ($(O)+(\bleed,\bleed)$)
-  %     rectangle ++(\cardW,\cardH);
-  % \end{scope}
+    % ---- force page bounding box ----
+    \path[use as bounding box]
+      (current page.south west)
+      rectangle
+      (current page.north east);
 
-\end{tikzpicture}
+    % ---- full-bleed background (bottom anchored) ----
+    \node[anchor=south west, inner sep=0]
+      at (current page.south west)
+      {\includegraphics[
+        width=\paperwidth,
+        height=\paperheight
+      ]{#1.pdf}};
+
+    \begin{scope}[x=1mm,y=1mm]
+
+      % layout
+      \def\headH{12}
+      % \def\bodyH{56}
+
+      \pgfmathsetmacro{\innerW}{\cardW - 4*\safe}
+      
+      \pgfmathsetmacro{\left}{\bleed+ \cardW*0.5 - \innerW*0.5}
+      \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
+
+      \coordinate (O) at (current page.south west);
+
+      % ---- HEAD BOX ----
+      \fill[white, rounded corners=1mm]
+        {($(O)+(\left-1,\top-1)$)}
+        rectangle
+        +($(\innerW+2,\headH+2)$);
+
+      \ornateframe[thick]
+          {($(O)+(\left,\top)$)}
+          {\innerW}
+          {\headH}
+
+      \node[align=center]
+        at ($(O)+(\bleed+0.5*\cardW,\top+0.5*\headH)$)
+      {%
+        \parbox{\innerW mm}{%
+          \centering
+          \titlefont
+          \fontsize{16}{16}\selectfont
+          \setlength{\baselineskip}{20pt}
+          #2
+        }%
+      };
+
+    \end{scope}
+
+  \end{tikzpicture}
+
 \newpage
 }
+
 
 
 \newcommand{\infocard}[2]{%
@@ -458,60 +491,61 @@
 \newcommand{\titlecard}[1]{%
 % #1 = background image filename (no extension)
 
-\begin{tikzpicture}[remember picture,overlay]
+  \begin{tikzpicture}[remember picture,overlay]
 
-  % ---- force page bounding box ----
-  \path[use as bounding box]
-    (current page.south west)
-    rectangle
-    (current page.north east);
+    % ---- force page bounding box ----
+    \path[use as bounding box]
+      (current page.south west)
+      rectangle
+      (current page.north east);
 
-  % ---- full-bleed background (bottom anchored) ----
-  \node[anchor=south west, inner sep=0]
-    at (current page.south west)
-    {\includegraphics[
-      width=\paperwidth,
-      keepaspectratio
-    ]{#1}};
+    % ---- full-bleed background (bottom anchored) ----
+    \node[anchor=south west, inner sep=0]
+      at (current page.south west)
+      {\includegraphics[
+        width=\paperwidth,
+        keepaspectratio
+      ]{#1}};
 
-  \begin{scope}[x=1mm,y=1mm]
+    \begin{scope}[x=1mm,y=1mm]
 
-    \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
+      \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
 
-    \coordinate (O) at (current page.south west);
+      \coordinate (O) at (current page.south west);
 
-    % ---- TITLE BLOCK ----
-    \node[anchor=north]
-    at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
-    {%
-    \begin{tikzpicture}[x=1mm,y=1mm]
-
-        % Top line
-        \node[anchor=north]
-        at (0,0)
+      % ---- TITLE BLOCK ----
+      \node[anchor=north]
+        at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
         {%
-            \titlefont
-            \fontsize{17}{17}\selectfont
-            GETTING AWAY WITH
+        \begin{tikzpicture}[x=1mm,y=1mm]
+
+          % Top line
+          \node[anchor=north]
+            at (0,0)
+            {%
+              \titlefont
+              \fontsize{17}{17}\selectfont
+              GETTING AWAY WITH
+            };
+
+          % Bottom line
+          \node[anchor=north]
+            at (0,-2) % vertical gap control
+            {%
+              \titlefont
+              \fontsize{42}{42}\selectfont
+              \begin{tikzpicture}[baseline]
+                \node[black, opacity=1, xshift=0.6mm, yshift=-0.6mm] {MURDER};
+                \node[RichRed] {MURDER};
+              \end{tikzpicture}
+            };
+
+        \end{tikzpicture}%
         };
 
-        % Bottom line
-        \node[anchor=north]
-        at (0,-2) % vertical gap control
-        {%
-            \titlefont
-            \fontsize{42}{42}\selectfont
-            \begin{tikzpicture}[baseline]
-            \node[black, opacity=1, xshift=0.6mm, yshift=-0.6mm] {MURDER};
-            \node[RichRed] {MURDER};
-            \end{tikzpicture}
-        };
+    \end{scope}
 
-  \end{tikzpicture}%
-};
-
-  \end{scope}
-\end{tikzpicture}
+  \end{tikzpicture}
 
 \newpage
 }
@@ -816,9 +850,9 @@ https://gawm.link/
 }
 
 \input{cards_generated.tex}
-%\cardback{alias\_back\_no\_border}
+%\cardback{alias\_back\_no\_border, Alias}
 %\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
-%\cardback{object\_back\_no\_border}
+%\cardback{object\_back\_no\_border, Object}
 %\cardfront[RichGreen]{\mbox{Objects}}{\mbox{Poison}}{Weapon}{\descLarge{\textasciitilde{} XXXX \textasciitilde{}\\ Rat Poison\\Keep out of children's reach.}}
 
 

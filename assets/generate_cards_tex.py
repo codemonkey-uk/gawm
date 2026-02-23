@@ -30,7 +30,7 @@ CATEGORY_BACK_LOOKUP = {
     "murder_cause": "mc_back_no_border",
 }
 
-# ---------- CATEGORY BACK LOOKUP ----------
+# ---------- CATEGORY BORDER LOOKUP ----------
 CATEGORY_BORDER_LOOKUP = {
     "aliases": "RichBlue",
     "objects": "RichGreen",
@@ -39,6 +39,17 @@ CATEGORY_BORDER_LOOKUP = {
     "motives": "RichBrown",
     "murder_discovery": "RichBlack",
     "murder_cause": "RichBlack",
+}
+
+# ---------- CATEGORY SINGULAR NAME LOOKUP ----------
+CATEGORY_SINGULAR_LOOKUP = {
+    "aliases": "Alias",
+    "objects": "Object",
+    "relationships": "Relationship",
+    "wildcards": "Wildcard",
+    "motives": "Motive",
+    "murder_discovery": "Murder Discovery",
+    "murder_cause": "Murder Cause",
 }
 
 def tex_escape(s: str) -> str:
@@ -129,20 +140,17 @@ def emit_front(category: str, card: dict) -> str:
 
 def emit_back(category: str, card: dict) -> str:
     """
-    Convert a single card into a LaTeX \card command.
+    Convert a single card into a LaTeX \\cardback command.
 
     Required card keys:
     - name
     - subtype
     - desc
     """
-    name = tex_escape(card["name"])
-    subtype = tex_escape(card["subtype"])
-    desc = tex_escape(card["desc"])
     category_back = CATEGORY_BACK_LOOKUP.get(category, category)
-    category_tex = tex_escape(category_back)
-
-    return f"\\cardback{{{category_tex}}}"
+    category_label = CATEGORY_SINGULAR_LOOKUP.get(category, category_id_to_label(category))
+    
+    return f"\\cardback{{{category_back}}}{{{category_label}}}"
 
 # ---------- MAIN ----------
 
