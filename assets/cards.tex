@@ -324,20 +324,29 @@
       \pgfmathsetmacro{\innerW}{\cardW - 4*\safe}
       
       \pgfmathsetmacro{\left}{\bleed+ \cardW*0.5 - \innerW*0.5}
-      \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
+      
+      % top aligned variant
+      % \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
+
+      % middle aligned variant
+      \pgfmathsetmacro{\top}{\bleed+ \cardH*0.5 - \headH*0.5}
 
       \coordinate (O) at (current page.south west);
 
       % ---- HEAD BOX ----
-      \fill[white, rounded corners=1mm]
-        {($(O)+(\left-1,\top-1)$)}
+      \fill[white, rounded corners=1.6mm]
+        {($(O)+(\left-1.3,\top-1.3)$)}
         rectangle
-        +($(\innerW+2,\headH+2)$);
+        +($(\innerW+2.6,\headH+2.6)$);
+      \draw[black, line width=0.7mm, rounded corners=1mm]
+        {($(O)+(\left,\top)$)}
+        rectangle
+        +($(\innerW,\headH)$);
 
-      \ornateframe[thick]
-          {($(O)+(\left,\top)$)}
-          {\innerW}
-          {\headH}
+      % \ornateframe[thick]
+      %     {($(O)+(\left,\top)$)}
+      %     {\innerW}
+      %     {\headH}
 
       \node[align=center]
         at ($(O)+(\bleed+0.5*\cardW,\top+0.5*\headH)$)
@@ -346,7 +355,7 @@
           \centering
           \titlefont
           \fontsize{16}{16}\selectfont
-          \setlength{\baselineskip}{20pt}
+          \setlength{\baselineskip}{16pt}
           #2
         }%
       };
@@ -849,11 +858,11 @@ https://gawm.link/
 © 2016-2026 Joseph Fowler \& Thaddaeus Frogley
 }
 
-\input{cards_generated.tex}
-%\cardback{alias\_back\_no\_border, Alias}
-%\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
-%\cardback{object\_back\_no\_border, Object}
-%\cardfront[RichGreen]{\mbox{Objects}}{\mbox{Poison}}{Weapon}{\descLarge{\textasciitilde{} XXXX \textasciitilde{}\\ Rat Poison\\Keep out of children's reach.}}
+% \input{cards_generated.tex}
+\cardback{alias\_back\_no\_border}{Alias}
+\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+\cardback{md_back_no_border}{Murder Discovery}
+\cardfront[RichBlack]{\mbox{Murder} \mbox{Discovery}}{\mbox{Public} \mbox{Murder}}{The Discovery}{\descLarge{The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights.}}
 
 
 
