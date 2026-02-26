@@ -33,7 +33,7 @@
         {
             "name": "Mr/s. Wordsmith",
             "subtype": "The Writer",
-            "desc": "You are observant, astute, and like to write. You have a tendency to stick your nose where it doesn’t belong. You dress conservatively, but are surprisingly attractive when you take off your thick glasses.You might be a reporter, or perhaps a crime-fiction novelist."
+            "desc": "You are observant, astute, and like to write. You have a tendency to stick your nose where it doesn’t belong. You dress conservatively, but are surprisingly attractive when you take off your thick glasses. You might be a reporter, or perhaps a crime-fiction novelist."
         },
         {
             "name": "Mr/s. X",
@@ -63,7 +63,7 @@
         {
             "name": "The Great M",
             "subtype": "The Fraud",
-            "desc": "Using your connection to the spirit world, you saw all this coming and the doom ahead! Your good looks and quick thinking are perfect for parting people from their money. You might practice palm reading, tarot and other parlor tricks. Maybe you’ve been employed to exorcise evil spirits from the house."
+            "desc": "Using your connection to the spirit world, you saw all this coming and the doom ahead! Your good looks and quick thinking are perfect for parting people from their money. You might practice palm reading, tarot and other parlour tricks. Maybe you’ve been employed to exorcise evil spirits from the house."
         },
         {
             "name": "Mr/s. Diligent",
@@ -108,7 +108,7 @@
         {
             "name": "Officer Valiant",
             "subtype": "The Hero",
-            "desc": "Your heroic acts preceed you. But that was a long time ago. Your body is now frail, and you may have long term injuries or a disability. Despite that, you still feel the need to protect people. You are retired, and might have once been a firefighter, police officer, or war hero."
+            "desc": "Your heroic acts precede you. But that was a long time ago. Your body is now frail, and you may have long term injuries or a disability. Despite that, you still feel the need to protect people. You are retired, and might have once been a firefighter, police officer, or war hero."
         },
         {
             "name": "Mr/s. Benefactor",
@@ -352,7 +352,7 @@
         {
             "name": "Drinking Buddies",
             "subtype": "Friends",
-            "desc": "Always do sober what you said you’d do drunk. That will teach you to keep your mouth shut. ~ Ernest Hemingway"
+            "desc": "“Always do sober what you said you’d do drunk. That will teach you to keep your mouth shut.”\n— Ernest Hemingway"
         },
         {
             "name": "Fraternity Members",
@@ -464,7 +464,7 @@
         {
             "name": "The Maze",
             "subtype": "Location",
-            "desc": "A secret flower garden lies in the center of the hedge maze, known to only a few."
+            "desc": "A secret flower garden lies in the centre of the hedge maze, known to only a few."
         },
         {
             "name": "Surveillance Room",
@@ -504,7 +504,7 @@
         {
             "name": "Cruel Architecture",
             "subtype": "Obstruction",
-            "desc": "Traps! Built into the very mansion itself."
+            "desc": "Traps! Built into the very building itself."
         },
         {
             "name": "Fire! Fire!",
