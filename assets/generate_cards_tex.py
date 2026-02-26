@@ -21,13 +21,13 @@ DESC_LENGTH_WARNING = 450
 
 # ---------- CATEGORY BACK LOOKUP ----------
 CATEGORY_BACK_LOOKUP = {
-    "aliases": "alias_back_no_border",
-    "objects": "object_back_no_border",
-    "relationships": "rel_back_no_border",
-    "wildcards": "wild_back_no_border",
-    "motives": "motive_back_no_border",
-    "murder_discovery": "md_back_no_border",
-    "murder_cause": "mc_back_no_border",
+    "aliases": "alias_2.0",
+    "objects": "object_2.0",
+    "relationships": "relationship_2.0",
+    "wildcards": "wildcard_2.0",
+    "motives": "motive_2.0",
+    "murder_discovery": "murder_discovery_2.0",
+    "murder_cause": "murder_cause_2.0",
 }
 
 # ---------- CATEGORY BORDER LOOKUP ----------

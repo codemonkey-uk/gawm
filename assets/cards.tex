@@ -315,52 +315,52 @@
         height=\paperheight
       ]{#1.pdf}};
 
-    \begin{scope}[x=1mm,y=1mm]
+    % \begin{scope}[x=1mm,y=1mm]
 
-      % layout
-      \def\headH{12}
-      % \def\bodyH{56}
+    %   % layout
+    %   \def\headH{12}
+    %   % \def\bodyH{56}
 
-      \pgfmathsetmacro{\innerW}{\cardW - 4*\safe}
+    %   \pgfmathsetmacro{\innerW}{\cardW - 4*\safe}
       
-      \pgfmathsetmacro{\left}{\bleed+ \cardW*0.5 - \innerW*0.5}
+    %   \pgfmathsetmacro{\left}{\bleed+ \cardW*0.5 - \innerW*0.5}
       
-      % top aligned variant
-      % \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
+    %   % top aligned variant
+    %   % \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
 
-      % middle aligned variant
-      \pgfmathsetmacro{\top}{\bleed+ \cardH*0.5 - \headH*0.5}
+    %   % middle aligned variant
+    %   \pgfmathsetmacro{\top}{\bleed+ \cardH*0.5 - \headH*0.5}
 
-      \coordinate (O) at (current page.south west);
+    %   \coordinate (O) at (current page.south west);
 
-      % ---- HEAD BOX ----
-      \fill[white, rounded corners=1.6mm]
-        {($(O)+(\left-1.3,\top-1.3)$)}
-        rectangle
-        +($(\innerW+2.6,\headH+2.6)$);
-      \draw[black, line width=0.7mm, rounded corners=1mm]
-        {($(O)+(\left,\top)$)}
-        rectangle
-        +($(\innerW,\headH)$);
+    %   % ---- HEAD BOX ----
+    %   \fill[white, rounded corners=1.6mm]
+    %     {($(O)+(\left-1.3,\top-1.3)$)}
+    %     rectangle
+    %     +($(\innerW+2.6,\headH+2.6)$);
+    %   \draw[black, line width=0.7mm, rounded corners=1mm]
+    %     {($(O)+(\left,\top)$)}
+    %     rectangle
+    %     +($(\innerW,\headH)$);
 
-      % \ornateframe[thick]
-      %     {($(O)+(\left,\top)$)}
-      %     {\innerW}
-      %     {\headH}
+    %   % \ornateframe[thick]
+    %   %     {($(O)+(\left,\top)$)}
+    %   %     {\innerW}
+    %   %     {\headH}
 
-      \node[align=center]
-        at ($(O)+(\bleed+0.5*\cardW,\top+0.5*\headH)$)
-      {%
-        \parbox{\innerW mm}{%
-          \centering
-          \titlefont
-          \fontsize{16}{16}\selectfont
-          \setlength{\baselineskip}{16pt}
-          #2
-        }%
-      };
+    %   \node[align=center]
+    %     at ($(O)+(\bleed+0.5*\cardW,\top+0.5*\headH)$)
+    %   {%
+    %     \parbox{\innerW mm}{%
+    %       \centering
+    %       \titlefont
+    %       \fontsize{16}{16}\selectfont
+    %       \setlength{\baselineskip}{16pt}
+    %       #2
+    %     }%
+    %   };
 
-    \end{scope}
+    % \end{scope}
 
   \end{tikzpicture}
 
@@ -859,9 +859,9 @@ https://gawm.link/
 }
 
 % \input{cards_generated.tex}
-\cardback{alias\_back\_no\_border}{Alias}
+\cardback{alias_2.0}{Alias}
 \cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
-\cardback{md_back_no_border}{Murder Discovery}
+\cardback{murder_discovery_2.0}{Murder Discovery}
 \cardfront[RichBlack]{\mbox{Murder} \mbox{Discovery}}{\mbox{Public} \mbox{Murder}}{The Discovery}{\descLarge{The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights.}}
 
 
