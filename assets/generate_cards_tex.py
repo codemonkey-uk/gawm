@@ -68,7 +68,7 @@ def tex_escape(s: str) -> str:
         "}": r"\}",
         "~": r"\textasciitilde{}",
         "^": r"\textasciicircum{}",
-        "\n": r"\\",  # Convert newlines to LaTeX line breaks
+        "\n": r"\\[0.6em]",  # Convert newlines to LaTeX line breaks
     }
 
     for char, escaped in replacements.items():
