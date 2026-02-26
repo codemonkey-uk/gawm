@@ -271,6 +271,31 @@
             "name": "Silk Rope",
             "subtype": "Weapon",
             "desc": "A length of Silk Rope, strong yet thin and black in colour."
+        },
+        {
+            "name": "Rotary Telephone",
+            "subtype": "Technology",
+            "desc": "A marvel of modern engineering, connecting you with the world at the turn of a finger."
+        },
+        {
+            "name": "Polaroid Camera",
+            "subtype": "Technology",
+            "desc": "This cutting-edge camera uses instant film to develop photos in mere minutes."
+        },
+        {
+            "name": "Record Player",
+            "subtype": "Technology",
+            "desc": "Plays 78s and 45s. What music has been played on it recently?"
+        },
+        {
+            "name": "Radio",
+            "subtype": "Technology",
+            "desc": "A large, wooden radio that plays music and news broadcasts."
+        },
+        {
+            "name": "Film Projector",
+            "subtype": "Technology",
+            "desc": "A 16mm film projector with a reel of film still loaded."
         }
     ],
     "relationships": [
@@ -423,6 +448,31 @@
             "name": "Unrequited Love",
             "subtype": "Unequal",
             "desc": "You say that it isn’t real, but I know how I feel!"
+        },
+        {
+            "name": "Ham Radio",
+            "subtype": "Never Met",
+            "desc": "You have only communicated by radio, and may not have even known each other’s real name before now."
+        },
+        {
+            "name": "Mutual Admirers",
+            "subtype": "Never Met",
+            "desc": "You have both admired each other’s work from afar and have wanted to meet for a while."
+        },
+        {
+            "name": "Pen Pals",
+            "subtype": "Never Met",
+            "desc": "You have been corresponding by letter for years, but have never met in person."
+        },
+        {
+            "name": "Hidden Relatives",
+            "subtype": "Never Met",
+            "desc": "Sepeated at birth or an extra-marital indescression kept quiet?"
+        },
+        {
+            "name": "Mistaken Identities",
+            "subtype": "Never Met",
+            "desc": "One or both believe you’ve met before, but you haven’t. You’ve been confused with someone else."
         }
     ],
     "wildcards": [
