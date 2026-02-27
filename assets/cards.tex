@@ -568,70 +568,96 @@
   \titlefont\fontsize{9}{9}\selectfont
 }
 
-\newcommand{\tokenbox}[3]{%
+\newcommand{\tokenbox}[4]{%
   % #1 = x
   % #2 = y
-  % #3 = content
+  % #3 = content type
+  % #4 = content
+
+  % test if #4 is empty by detokenizing
+  \if\relax\detokenize{#4}\relax
+    \def\tokenisempty{1}
+  \else
+    \def\tokenisempty{0}
+  \fi
+
+  \def\cPad{2}
 
   \ifx#3G
   {
     % guilt token back content
     \fill[RichRed]
-      ($(O)+(#1-1,#2-1)$)
+      ($(O)+(#1-\cPad,#2-\cPad)$)
       rectangle
-      ($(O)+(#1+\tokenSize+1,#2+\tokenSize+1)$);
+      ($(O)+(#1+\tokenSize+\cPad,#2+\tokenSize+\cPad)$);
 
-    % icon
-    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
-    {
-      \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
-        \centering
-        \includegraphics[
-          width=0.5\linewidth,
-          height=0.5\linewidth,
-          keepaspectratio
-        ]{guilt.pdf}
+    % show either icon+label or custom text
+    \ifnum\tokenisempty=1
+      % empty: icon+label
+      % icon
+      \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
+      {
+        \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
+          \centering
+          \includegraphics[
+            width=0.5\linewidth,
+            height=0.5\linewidth,
+            keepaspectratio
+          ]{guilt.pdf}
+        \end{minipage}
+      };
 
-      \end{minipage}
-    };
-
-    % text
-    \node[align=center]
-      at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
-      {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};
+      % label
+      \node[align=center]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};
+    \else
+      % nonempty: custom text
+      \node[align=center]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenfont #4}};
+    \fi
 
     % border
     \ornateframe[thick]
       {($(O)+(#1,#2)$)}
       {\tokenSize}
       {\tokenSize}
-  }      
+  }
   \else\ifx#3I
   {
-    % guilt token back content
+    % innocence token back content
     \fill[RichBlue]
-      ($(O)+(#1-1,#2-1)$)
+      ($(O)+(#1-\cPad,#2-\cPad)$)
       rectangle
-      ($(O)+(#1+\tokenSize+1,#2+\tokenSize+1)$);
+      ($(O)+(#1+\tokenSize+\cPad,#2+\tokenSize+\cPad)$);
 
-    % icon
-    \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
-    {
-      \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
-        \centering
-        \includegraphics[
-          width=0.5\linewidth,
-          height=0.5\linewidth,
-          keepaspectratio
-        ]{innocence_white.pdf}
+    % show either icon+label or custom text
+    \ifnum\tokenisempty=1
+      % empty: icon+label
+      % icon
+      \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
+      {
+        \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
+          \centering
+          \includegraphics[
+            width=0.5\linewidth,
+            height=0.5\linewidth,
+            keepaspectratio
+          ]{innocence_white.pdf}
+        \end{minipage}
+      };
 
-      \end{minipage}
-    };
-
-    % text
-    \node[align=center, text=white]
-      at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
-      {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};
+      % label
+      \node[align=center, text=white]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};
+    \else
+      % nonempty: custom text
+      \node[align=center, text=white]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenfont #4}};
+    \fi
 
     % border
     \ornateframe[thick, white]
@@ -639,117 +665,10 @@
       {\tokenSize}
       {\tokenSize}
   }
-  \else
-    % treat as text
-    \node[align=center]
-      at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
-      {\parbox{\tokenSize mm}{\centering \tokenfont #3}};
-
-    \ornateframe[thick]
-      {($(O)+(#1,#2)$)}
-      {\tokenSize}
-      {\tokenSize}
   \fi\fi
 }
 
-\newcommand{\tokencardgridEight}[8]{%
-\begin{tikzpicture}[remember picture,overlay]
-
-  % ---- force page bounding box ----
-  \path[use as bounding box]
-    (current page.south west)
-    rectangle
-    (current page.north east);
-
-  \begin{scope}[x=1mm,y=1mm]
-
-    % layout
-    \def\headH{16}
-    \def\bodyH{56}
-
-    \pgfmathsetmacro{\innerW}{\cardW - 2*(\bleed+\safe)}
-    \pgfmathsetmacro{\innerH}{\cardH - 2*(\bleed+\safe)}
-
-    %  we need to fit 2 columns (1 safe space between)
-    \pgfmathsetmacro{\tokenMaxW}{0.5 * (\innerW - 1*\safe)}
-    %  we need to fit 4 rows (3 safe space between)
-    \pgfmathsetmacro{\tokenMaxH}{0.25 * (\innerH - 3*\safe)}
-
-    %  tokens should be square
-    \pgfmathsetmacro{\tokenSize}{min(\tokenMaxW, \tokenMaxH)}
-
-    %  center the two tokens in two columns 
-    \pgfmathsetmacro{\halfW}{0.5*\cardW}
-    \pgfmathsetmacro{\leftCentre}{\bleed + 0.5*\halfW}
-    \pgfmathsetmacro{\rightCentre}{\bleed + \halfW + 0.5*\halfW}
-    \pgfmathsetmacro{\leftO}{\leftCentre - 0.5*\tokenSize}
-    \pgfmathsetmacro{\rightO}{\rightCentre - 0.5*\tokenSize}    
-
-
-    \pgfmathsetmacro{\vGap}{(\cardH - 4*\tokenSize)/4}
-    \pgfmathsetmacro{\bottomO}{\bleed + 0.5*\vGap}
-    \pgfmathsetmacro{\vSpace}{\tokenSize + \vGap}
-
-    \coordinate (O) at (current page.south west);
-    
-    % ---- bleed outline (debugging) ----
-    % \draw[line width=0.4mm]
-    %   ($(O)+(\bleed,\bleed)$)
-    %   rectangle ++(\cardW,\cardH);
-
-    % ---- CUT line (vertical) ----
-    \draw[line width=0.4mm, dashed]
-      ($(O)+(\bleed + \cardW*0.5,\bleed)$) --
-      ($(O)+(\bleed + \cardW*0.5,\bleed + \cardH)$);
-
-    % ---- CUT line (horizontal/center) ----
-    \draw[line width=0.4mm, dashed]
-      ($(O)+(\bleed,         \bleed + \cardH*0.5)$) --
-      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.5)$);
-
-    % ---- CUT line (horizontal/lower) ----
-    \draw[line width=0.4mm, dashed]
-      ($(O)+(\bleed,         \bleed + \cardH*0.25)$) --
-      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.25)$);
-
-    % ---- CUT line (horizontal/upper) ----
-    \draw[line width=0.4mm, dashed]
-      ($(O)+(\bleed,         \bleed + \cardH*0.75)$) --
-      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.75)$);
-
-    % ---- Token BOXES ----
-
-    % bottom left
-    \tokenbox{\leftO}{\bottomO}{#1}
-
-    % bottom right
-    \tokenbox{\rightO}{\bottomO}{#5}
-
-    % 2nd bottom left
-    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#2}
-
-    % 2nd bottom right
-    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#6}
-
-    % 3nd bottom left
-    \tokenbox{\leftO}{\bottomO + 2*\vSpace}{#3}
-
-    % 3nd bottom right
-    \tokenbox{\rightO}{\bottomO + 2*\vSpace}{#7}
-
-    % top left
-    \tokenbox{\leftO}{\bottomO + 3*\vSpace}{#4}
-
-    % top right
-    \tokenbox{\rightO}{\bottomO + 3*\vSpace}{#8}
-
-  \end{scope}
-\end{tikzpicture}
-
-\newpage
-}
-
-\newcommand{\tokencardgridFour}[4]{%
+\newcommand{\tokencardgridFour}[8]{%
 \begin{tikzpicture}[remember picture,overlay]
 
   % ---- force page bounding box ----
@@ -807,16 +726,16 @@
     % ---- Token BOXES ----
 
     % bottom left
-    \tokenbox{\leftO}{\bottomO}{#1}
+    \tokenbox{\leftO}{\bottomO}{#1}{#2}
 
     % bottom right
-    \tokenbox{\rightO}{\bottomO}{#2}
+    \tokenbox{\rightO}{\bottomO}{#3}{#4} 
 
     % 2nd bottom left
-    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#3}
+    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#5}{#6}
 
     % 2nd bottom right
-    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#4}
+    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#7}{#8}
 
   \end{scope}
 \end{tikzpicture}
@@ -868,10 +787,10 @@ https://gawm.link/
 
 \newcounter{perplayercards}
 \loop
-  \tokencardgridFour{G}{G}{G}{G}
-  \tokencardgridFour{0}{1}{2}{3}
-  \tokencardgridFour{I}{I}{I}{I}
-  \tokencardgridFour{0}{1}{2}{3}
+  \tokencardgridFour{G}{}{G}{}{G}{}{G}{}
+  \tokencardgridFour{G}{0}{G}{1}{G}{2}{G}{3}
+  \tokencardgridFour{I}{}{I}{}{I}{}{I}{}
+  \tokencardgridFour{I}{0}{I}{1}{I}{2}{I}{3}
   \infocard
   {Setting Your Scene}
   {%
