@@ -56,11 +56,11 @@ all: $(FINAL)
 # background_titlecard is B&W/sepia; convert to grayscale and lighten to reduce black density
 # This reduces overall ink coverage below 240% TAC
 background_titlecard.pdf: background_titlecard.jpg
-	magick $< -colorspace Gray -level 0%,100%,1.3 \
+	magick $< -colorspace Gray -level 0%,100%,1.1 \
 	  -density 300 -colorspace CMYK -strip -quality 100 $@
 
 background_titlecard.tif: background_titlecard.jpg
-	magick $< -colorspace Gray -level 0%,100%,1.3 \
+	magick $< -colorspace Gray -level 0%,100%,1.1 \
 	  -density 300 -colorspace CMYK -strip -quality 100 $@
 
 # ---------- json → tex ----------
