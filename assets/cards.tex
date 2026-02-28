@@ -381,10 +381,10 @@
 
     % layout
     \def\headH{16}
-    \def\bodyH{56}
+    \def\bodyH{58}
 
     \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
-    \pgfmathsetmacro{\innerTextW}{\cardW - 3*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - 4*\safe}
 
     \coordinate (O) at (current page.south west);
 
@@ -742,6 +742,12 @@
 \newpage
 }
 
+\newcommand{\todayddmmyyyy}{%
+\ifnum\day<10 0\fi\number\day.% day with leading zero
+\ifnum\month<10 0\fi\number\month.% month with leading zero
+\number\year% year
+}
+
 % Eliminate layout margins entirely
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
@@ -771,9 +777,11 @@ A co-operative role-play game of drama wit and mystery.
 
 \qrcode{https://gawm.link}
 
-https://gawm.link/
+{\footnotesize https://gawm.link/
 
-© 2016-2026 Joseph Fowler \& Thaddaeus Frogley
+\todayddmmyyyy}
+
+© \mbox{Joseph Fowler} \& \mbox{Thaddaeus Frogley}
 }
 
 \input{cards_generated.tex}
