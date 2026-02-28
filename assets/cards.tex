@@ -245,35 +245,34 @@
         {\innerW}
         {28}
 
-    % ---- CATEGORY ----
-    \node[align=center]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\catH)$)
+    % ---- TITLE (fixed vertical position) ----
+    \node[align=center,text width=\innerW mm] (title)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.6*\titleH)$)
+      {\titlefont\fontsize{16}{20}\selectfont\setlength{\baselineskip}{20pt}#3};
+
+    % measure height of title and compute half extra beyond one line
+    \newdimen\titleht
+    \newdimen\extrashift
+    \newdimen\singlelineheight \singlelineheight=20pt
+    % use a tikz let-path to get node height (y1-y2)
+    \path let \p1=(title.north),\p2=(title.south) in
+      \pgfextra{%
+        \pgfmathsetlength{\titleht}{\y1-\y2}%
+        \pgfmathsetlength{\extrashift}{0.5*(\titleht-\singlelineheight)}%
+      };
+
+    % define a minimum gap between title and neighbours
+    \newdimen\mingap \mingap=1mm
+
+    % ---- CATEGORY (above title) ----
+    \node[align=center,text width=\innerW mm,anchor=south,yshift={\extrashift+\mingap}]
+      at (title.north)
       {\fontsize{9}{11}\selectfont #2};
 
-    % ---- TITLE ----
-    \node[
-      align=center,
-      text width=\innerW mm
-    ]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.5*\titleH)$)
-    {%
-      \parbox{\innerW mm}
-      {%
-        \centering
-        \titlefont
-        \fontsize{16}{20}\selectfont
-        \setlength{\baselineskip}{20pt}
-        #3
-      }%
-    };
-
-    % ---- SUBTYPE ----
-    \node[
-      align=center,
-      text width=\innerW mm
-    ]
-      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\titleH-0.5*\typeH)$)
-      {\titlefont\fontsize{12}{14}\selectfont #4};    
+    % ---- SUBTYPE (below title) ----
+    \node[align=center,text width=\innerW mm,anchor=north,yshift={-\extrashift-\mingap}]
+      at (title.south)
+      {\titlefont\fontsize{12}{14}\selectfont #4};
 
     % ---- DESCRIPTION ----
     \ornateframe[thick,#1]
