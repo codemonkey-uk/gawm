@@ -261,24 +261,27 @@
     \newdimen\titleht
     \newdimen\extrashift
     \newdimen\singlelineheight \singlelineheight=20pt
+
     % use a tikz let-path to get node height (y1-y2)
-    \path let \p1=(title.north),\p2=(title.south) in
-      \pgfextra{%
-        \pgfmathsetlength{\titleht}{\y1-\y2}%
-        \pgfmathsetlength{\extrashift}{0.5*(\titleht-\singlelineheight)}%
-      };
+    % \path let \p1=(title.north),\p2=(title.south) in
+    %   \pgfextra{%
+    %     \pgfmathsetlength{\titleht}{\y1-\y2} % 
+    %     \pgfmathsetlength{\extrashift}{0.5*(\titleht-\singlelineheight)}%
+    %   };
 
     % define a minimum gap between title and neighbours
     \newdimen\mingap \mingap=1mm
 
     % ---- CATEGORY (above title) ----
-    \node[align=center,text width=\innerW mm,anchor=south,yshift={\extrashift+\mingap}]
-      at (title.north)
+    \node[align=center,text width=\innerW mm,anchor=north,yshift={-\extrashift-\mingap}]
+      % at (title.north)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
       {\fontsize{9}{11}\selectfont #2};
 
     % ---- SUBTYPE (below title) ----
     \node[align=center,text width=\innerW mm,anchor=north,yshift={-\extrashift-\mingap}]
-      at (title.south)
+      % at (title.south)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\titleH)$)
       {\titlefont\fontsize{12}{14}\selectfont #4};
 
     % ---- DESCRIPTION ----
