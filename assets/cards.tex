@@ -246,9 +246,16 @@
         {28}
 
     % ---- TITLE (fixed vertical position) ----
-    \node[align=center,text width=\innerTextW mm] (title)
+    \node[align=center] (title)
       at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.55*\titleH)$)
-      {\titlefont\fontsize{16}{20}\selectfont\setlength{\baselineskip}{20pt}#3};
+      {\parbox[c]{\innerTextW mm}
+        {%
+          \centering\titlefont
+          \fontsize{16}{16}
+          \selectfont
+          #3
+        }
+      };
 
     % measure height of title and compute half extra beyond one line
     \newdimen\titleht
