@@ -131,7 +131,7 @@ def emit_front(category: str, card: dict) -> str:
     else:
         desc_tex = r"\descSmall{" + desc + "}"
 
-    category_label = tex_escape(category_id_to_label(category))
+    category_label = tex_escape(CATEGORY_SINGULAR_LOOKUP.get(category, category))
     category_tex = mbox_words(tex_escape(category_label))
 
     border_colour = CATEGORY_BORDER_LOOKUP.get(category, category)
