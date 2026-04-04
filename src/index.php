@@ -150,7 +150,7 @@ function copy_game_link(textarea)
   <li> Booklet with clear explanations of the rules, role-playing tips, and examples.
   <li> <a href="components.html">153 detail cards</a> to help you create the mystery, including 16 characters and 30 motives. </li>
   <li> More than four tredecillion murders to solve! </li>
-  <li> Multiple ways to play: <ul> <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
+  <li> Multiple ways to play: <ul> <li> "Print on Demand" Premium Poker Cards <li> "Print and Play", <li> Tabletop Simulator, <li> and in Web Browser.</ul>
   </ul>
   </div>
 
@@ -158,6 +158,7 @@ function copy_game_link(textarea)
   <h3>Buy</h3>
   <ul>
   <li>For just $7 you'll recieve PDFs of the rule book and the Print and Play resources, so you can play online or at home.</li>
+  <li>Or Upgrade to Premium printed Poker cards for $37.24.</li>
   <li>Download the game today from <a href="https://www.drivethrurpg.com/product/332217/Getting-Away-With-Murder">drivethrurpg</a>.</li>
   </ul>
   </div>
