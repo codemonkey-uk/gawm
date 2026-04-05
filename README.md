@@ -26,7 +26,9 @@ The source code can be freely examined here, and you can run the software on you
 
 ## License and Copyright
 
-The content provided with this project (found in the `/assets/` folder) is (c) 2016-2020 Joseph Fowler & Thaddaeus Frogley, and may be distributed as part of the software only, for the purposes of of running the software. All other rights reserved.
+The content provided with this project (found in the `/assets/` folder) is (c) Joseph Fowler & Thaddaeus Frogley, and may be distributed as part of the software only, for the purposes of of running the software. All other rights reserved.
+
+The content in the `/print_edition/` folder may be used to create a print-ready set of cards for personal use only. Derivative works may not be distributed.
 
 The source code (found in the `/src/` folder) is licensed under [AGPL-3.0-or-later](src/LICENSE.txt).
 
