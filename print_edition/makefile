@@ -9,9 +9,9 @@ SVGS   := $(wildcard *.svg)
 # final vector assets for print (PDF from SVG) and raster assets from PNG/JPG
 RASTERS := $(wildcard *.png)
 RASTERS_TIFF := $(RASTERS:.png=.tif)
-RASTERS_PDF := $(SVGS:.svg=.pdf)
+RASTERS_PDF := $(SVGS:.svg=.pdf) guilt.pdf innocence_white.pdf
 
-JSON   := cards.json
+JSON   := cards_full.json
 GEN    := generate_cards_tex.py
 CARDS  := cards_generated.tex
 
@@ -34,6 +34,18 @@ all: $(FINAL)
 
 # ---------- svg → pdf (as vector) ----------
 %.pdf: %.svg
+	$(INKSCAPE) $< \
+	  --export-type=pdf \
+	  --export-dpi=300 \
+	  --export-filename=$@
+
+guilt.pdf: ../assets/guilt.svg
+	$(INKSCAPE) $< \
+	  --export-type=pdf \
+	  --export-dpi=300 \
+	  --export-filename=$@
+
+innocence_white.pdf: ../assets/innocence.svg
 	$(INKSCAPE) $< \
 	  --export-type=pdf \
 	  --export-dpi=300 \

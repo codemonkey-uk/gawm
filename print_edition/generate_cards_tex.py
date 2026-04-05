@@ -13,7 +13,7 @@ import re
 
 # ---------- CONFIGURATION ----------
 
-INPUT_JSON = Path("cards.json")
+INPUT_JSON = Path("..//assets//cards.json")
 OUTPUT_TEX = Path("cards_generated.tex")
 
 # Warn (but do not fail) if descriptions get very long
