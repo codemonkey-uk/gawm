@@ -1,0 +1,886 @@
+% GAWM Print Edition Card Template, to be compiled with XeLaTeX
+% following drivethrupartners Specifications for Print Cards:
+%
+% Create a single PDF for each card deck.
+% First page is the card back (of card 1), second page is that card’s face, 
+%   third page is the card back (of card 2), fourth page is that card’s face, and so on throughout the deck. 
+%   The order of the pages in the PDF will be the order of the deck’s printed cards.
+% No common border color between backs/faces required.
+% Images contained in your PDF must be 300 dpi.
+% The physical size of the image(s) should at least be the size of the card. 
+%   If your image is smaller than that and you upsize the image, your card images may become pixelated.
+% Files must be CMYK with your ink coverage not exceeding 240%. 
+%   (A CMYK mix for a vibrant and rich black is C60%, M40%, Y40%, K100%.)
+% Images used in layout should not be png, png files can not be CMYK.
+%   Please use tif, psd, or if you need to jpg.
+% A bleed of 1/8” (.125”) on all four sides is required. 
+%   If your art does not bleed, bleed a white or black border from the safety to the bleed edge.
+% Do not place any important art or text closer than 1/8” (.125”) from any finished edge.
+% Do not set a die-cut for the round corners into the layout.
+% Export as PDF/X-1a:2003 with all fonts embedded. (Do not include printer/crop marks.)
+% The finished size is 2.5” x 3.5” for U.S. 
+% Poker-sized cards or 63mm x 88mm for Euro Poker-sized cards. 
+% But you must add a bleed of 1/8” on all four sides. 
+% Final layout size: 2.75” x 3.75” (U.S. Poker) or 2.73” x 3.71” (Euro Poker)
+
+\documentclass[10pt]{extarticle}
+\AtBeginDocument{\setcounter{page}{1}}
+
+\usepackage{fontspec}
+\usepackage{pdfrender}
+\usepackage{qrcode}
+\usepackage{xcolor}
+
+\selectcolormodel{cmyk}
+\definecolor{RichBlack}{cmyk}{0.6,0.4,0.4,1}
+\definecolor{RichRed}{cmyk}{0,1,1,0.2}
+\definecolor{RichBlue}{cmyk}{0.9,0.89,0,0.2}
+\definecolor{RichGreen}{cmyk}{0.93,0,0.55,0.71}
+\definecolor{RichPurple}{cmyk}{0.22,0.92,0,0.48}
+\definecolor{RichBrown}{cmyk}{0,0.42,0.79,0.63}
+
+% Tell LaTeX where your fonts live
+\setmainfont[
+  UprightFont=../assets/nunito-v25-latin-regular.ttf,
+  BoldFont=Nunito-Bold.ttf
+]{Nunito}
+
+\newfontfamily\titlefont[
+  UprightFont=../assets/special-elite-v18-latin-regular.ttf
+]{Special Elite}
+
+% Set card dimensions based on \ifUSCards flag (set via makefile)
+% EU Poker: 63mm x 88mm + 3.175mm bleed = 69.35mm x 94.35mm
+% US Poker: 63.5mm x 88.9mm + 3.175mm bleed = 69.85mm x 95.25mm
+\ifUSCards
+  % US Poker sizes
+  \usepackage[
+    paperwidth=69.85mm,
+    paperheight=95.25mm,
+    margin=0mm
+  ]{geometry}
+\else
+  % EU Poker sizes (default)
+  \usepackage[
+    paperwidth=69.35mm,
+    paperheight=94.35mm,
+    margin=0mm
+  ]{geometry}
+\fi
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\pagestyle{empty}
+
+% ---- constants ----
+\def\bleed{3.175}
+\ifUSCards
+  % US Poker: 2.5" x 3.5" = 63.5mm x 88.9mm
+  \def\cardW{63.5}
+  \def\cardH{88.9}
+\else
+  % EU Poker: 63mm x 88mm (default)
+  \def\cardW{63}
+  \def\cardH{88}
+\fi
+\def\safe{3.25}
+\def\gap{4}
+
+% ---------- CARD MACROS ----------
+
+\tikzset{
+  artnouveau/.style={
+    line cap=round,
+    line join=round,
+    line width=0.8pt
+  },
+  artnouveau/echo/.style={
+    line width=0.45pt
+  }
+}
+
+% #1 = horizontal extent
+% #2 = vertical extent
+\newcommand{\simpleCorner}[2]{%
+  \draw (0,0) -- (#1,0);
+  \draw (0,0) -- (0,#2);
+}
+
+% --- Art Deco geometry constants ---
+\newcommand{\decoInset}{2pt}
+\newcommand{\decoStep}{3pt}
+\newcommand{\decoDotRadius}{1pt}
+
+% #1 = horizontal run length
+% #2 = vertical run length
+% #3 = draw horizontal end dot? (0/1)
+% #4 = draw vertical end dot?   (0/1)
+\newcommand{\artDecoCorner}[4]{%
+
+  % Outer frame lines (relative length)
+  \draw (0,#2) -- (0,0) -- (#1,0);
+
+  % Stepped inset (absolute depth)
+  \draw
+    (\decoInset,#2-\decoInset) --
+    (\decoInset,\decoInset) --
+    (#1-\decoInset,\decoInset);
+
+  % Circular accents (corner)
+  \fill
+    (\decoInset+\decoStep,\decoInset+\decoStep)
+    circle (\decoDotRadius);
+
+  % Circular accent (line end v)
+  \ifnum#4=1
+    \fill[yshift=\decoStep]
+        (0,#2)
+        circle (\decoDotRadius);
+  \fi
+
+  % Circular accent (line end h)
+  \ifnum#3=1
+    \fill[xshift=\decoStep]
+        (#1,0)
+        circle (\decoDotRadius);
+  \fi
+}
+
+
+\newcommand{\ornateframe}[4][]{%
+  % #1 = optional TikZ style
+  % #2 = origin
+  % #3 = width
+  % #4 = height
+
+  \pgfmathsetmacro{\cornerFrac}{0.18}
+  \pgfmathsetmacro{\cornerX}{max(#3 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
+  \pgfmathsetmacro{\cornerY}{max(#4 * \cornerFrac, 2*\decoInset + \decoStep + 4pt)}
+
+  \pgfmathsetmacro{\dotH}{ifthenelse(\cornerX > 0.45*#3, 0, 1)}
+  \pgfmathsetmacro{\dotV}{ifthenelse(\cornerY > 0.45*#4, 0, 1)}
+
+  \begin{scope}[shift={#2}, #1]
+
+    % bottom-left
+    \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
+
+    % bottom-right
+    \begin{scope}[shift={(#3,0)}, xscale=-1]
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
+    \end{scope}
+
+    % top-left
+    \begin{scope}[shift={(0,#4)}, yscale=-1]
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
+    \end{scope}
+
+    % top-right
+    \begin{scope}[shift={(#3,#4)}, xscale=-1, yscale=-1]
+      \artDecoCorner{\cornerX}{\cornerY}{\dotH}{\dotV}
+    \end{scope}
+
+  \end{scope}
+}
+
+\newcommand{\descLarge}[1]{%
+  \fontsize{11.5}{14.5}\selectfont #1%
+}
+
+\newcommand{\descSmall}[1]{%
+  \fontsize{10}{13}\selectfont #1%
+}
+
+\newcommand{\infocardlist}[1]{%
+  \begin{itemize}
+    \setlength{\leftmargini}{0pt}
+    \setlength{\labelsep}{0.25em}
+    \setlength{\itemindent}{0pt}
+    \setlength{\listparindent}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\topsep}{0pt}
+    \setlength{\itemsep}{0pt}
+    #1
+  \end{itemize}
+}
+
+\newcommand{\cardfront}[5][]{%
+% #1 = optional border style
+% #2 = category
+% #3 = title
+% #4 = subtype
+% #5 = description
+\thispagestyle{empty}%
+
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % box heights
+    \def\catH{6}
+    \def\typeH{8}
+    \def\titleH{14}
+    \def\descH{48}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - 4*\safe} 
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- bleed outline (debugging) ----
+    % \draw[line width=0.4mm]
+    %   ($(O)+(\bleed,\bleed)$)
+    %   rectangle ++(\cardW,\cardH);
+
+    % ---- TOP FRAME ----
+    \ornateframe[thick,#1]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\catH-\typeH-\titleH)$)}
+        {\innerW}
+        {28}
+
+    % ---- TITLE (fixed vertical position) ----
+    \node[align=center] (title)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-0.55*\titleH)$)
+      {\parbox[c]{\innerTextW mm}
+        {%
+          \centering\titlefont
+          \fontsize{16}{16}
+          \selectfont
+          #3
+        }
+      };
+
+    % measure height of title and compute half extra beyond one line
+    \newdimen\titleht
+    \newdimen\extrashift
+    \newdimen\singlelineheight \singlelineheight=20pt
+
+    % use a tikz let-path to get node height (y1-y2)
+    % \path let \p1=(title.north),\p2=(title.south) in
+    %   \pgfextra{%
+    %     \pgfmathsetlength{\titleht}{\y1-\y2} % 
+    %     \pgfmathsetlength{\extrashift}{0.5*(\titleht-\singlelineheight)}%
+    %   };
+
+    % define a minimum gap between title and neighbours
+    \newdimen\mingap \mingap=1mm
+
+    % ---- CATEGORY (above title) ----
+    \node[align=center,text width=\innerW mm,anchor=north,yshift={-\extrashift-\mingap}]
+      % at (title.north)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
+      {\fontsize{9}{11}\selectfont #2};
+
+    % ---- SUBTYPE (below title) ----
+    \node[align=center,text width=\innerW mm,anchor=north,yshift={-\extrashift-\mingap}]
+      % at (title.south)
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-\catH-\titleH)$)
+      {\titlefont\fontsize{12}{14}\selectfont #4};
+
+    % ---- DESCRIPTION ----
+    \ornateframe[thick,#1]
+      {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+      {\innerW}
+      {\descH}
+
+    \node[
+      align=center,
+      text width=\innerTextW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\descH)$)
+      {\spaceskip=0.3em plus 0.2em minus 0.1em #5};
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+
+
+\newcommand{\cardback}[2]{%
+% #1 = background image filename (no extension)
+
+  \begin{tikzpicture}[remember picture,overlay]
+
+    % ---- force page bounding box ----
+    \path[use as bounding box]
+      (current page.south west)
+      rectangle
+      (current page.north east);
+
+    % ---- full-bleed background (bottom anchored) ----
+    \node[anchor=south west, inner sep=0]
+      at (current page.south west)
+      {\includegraphics[
+        width=\paperwidth,
+        height=\paperheight
+      ]{#1.pdf}};
+
+    % \begin{scope}[x=1mm,y=1mm]
+
+    %   % layout
+    %   \def\headH{12}
+    %   % \def\bodyH{56}
+
+    %   \pgfmathsetmacro{\innerW}{\cardW - 4*\safe}
+      
+    %   \pgfmathsetmacro{\left}{\bleed+ \cardW*0.5 - \innerW*0.5}
+      
+    %   % top aligned variant
+    %   % \pgfmathsetmacro{\top}{\bleed+\cardH-\safe*2-\headH}
+
+    %   % middle aligned variant
+    %   \pgfmathsetmacro{\top}{\bleed+ \cardH*0.5 - \headH*0.5}
+
+    %   \coordinate (O) at (current page.south west);
+
+    %   % ---- HEAD BOX ----
+    %   \fill[white, rounded corners=1.6mm]
+    %     {($(O)+(\left-1.3,\top-1.3)$)}
+    %     rectangle
+    %     +($(\innerW+2.6,\headH+2.6)$);
+    %   \draw[black, line width=0.7mm, rounded corners=1mm]
+    %     {($(O)+(\left,\top)$)}
+    %     rectangle
+    %     +($(\innerW,\headH)$);
+
+    %   % \ornateframe[thick]
+    %   %     {($(O)+(\left,\top)$)}
+    %   %     {\innerW}
+    %   %     {\headH}
+
+    %   \node[align=center]
+    %     at ($(O)+(\bleed+0.5*\cardW,\top+0.5*\headH)$)
+    %   {%
+    %     \parbox{\innerW mm}{%
+    %       \centering
+    %       \titlefont
+    %       \fontsize{16}{16}\selectfont
+    %       \setlength{\baselineskip}{16pt}
+    %       #2
+    %     }%
+    %   };
+
+    % \end{scope}
+
+  \end{tikzpicture}
+
+\newpage
+}
+
+
+
+\newcommand{\infocard}[2]{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{58}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - 4*\safe}
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- HEAD BOX ----
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
+        {\innerW}
+        {\headH}
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
+    {%
+      \parbox{\innerW mm}{%
+        \centering
+        \titlefont
+        \fontsize{15}{20}\selectfont
+        \setlength{\baselineskip}{20pt}
+        #1
+      }%
+    };
+
+    % ---- BODY BOX ----
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+        {\innerW}
+        {\bodyH}
+
+    \node[
+      align=center,
+      text width=\innerTextW mm
+    ]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\safe+0.5*\bodyH)$)
+    {%
+      \parbox{\innerTextW mm}{%
+        \centering
+        \fontsize{10}{12}\selectfont
+        \setlength{\parskip}{6pt}        
+        \spaceskip=0.3em plus 0.2em minus 0.1em
+        #2
+      }%
+    };
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+\newcommand{\infolist}[2]{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+    % layout
+    \def\headH{16}
+    \def\bodyH{58}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*\safe}
+    \pgfmathsetmacro{\innerTextW}{\cardW - \safe}
+
+    \coordinate (O) at (current page.south west);
+
+    % ---- HEAD BOX ----
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\cardH-\safe-\headH)$)}
+        {\innerW}
+        {\headH}
+
+    \node[align=center]
+      at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe-0.5*\headH)$)
+    {%
+      \parbox{\innerW mm}{%
+        \centering
+        \titlefont
+        \fontsize{15}{20}\selectfont
+        \setlength{\baselineskip}{20pt}
+        #1
+      }%
+    };
+
+    % ---- BODY BOX ----
+    \ornateframe[thick]
+        {($(O)+(\bleed+\safe,\bleed+\safe)$)}
+        {\innerW}
+        {\bodyH}
+
+    % ---- INFO LIST ----
+    \node[
+    anchor=center,
+    text width=\innerTextW mm
+    ]
+    at ($(O)+(\bleed-2+0.5*\cardW,\bleed+2+\safe+0.5*\bodyH)$)
+    {%
+        \fontsize{8}{11}\selectfont
+        \raggedright
+        \setlength{\parskip}{2pt}
+        \setlength{\parindent}{0pt}
+        \infocardlist{#2}
+    };
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+\newcommand{\titlecard}[1]{%
+% #1 = background image filename (no extension)
+
+  \begin{tikzpicture}[remember picture,overlay]
+
+    % ---- force page bounding box ----
+    \path[use as bounding box]
+      (current page.south west)
+      rectangle
+      (current page.north east);
+
+    % ---- full-bleed background (bottom anchored) ----
+    \node[anchor=south west, inner sep=0]
+      at (current page.south west)
+      {\includegraphics[
+        width=\paperwidth,
+        keepaspectratio
+      ]{#1}};
+
+    \begin{scope}[x=1mm,y=1mm]
+
+      \pgfmathsetmacro{\safeW}{\cardW - 2*\safe}
+
+      \coordinate (O) at (current page.south west);
+
+      % ---- TITLE BLOCK ----
+      \node[anchor=north]
+        at ($(O)+(\bleed+0.5*\cardW,\bleed+\cardH-\safe)$)
+        {%
+        \begin{tikzpicture}[x=1mm,y=1mm]
+
+          % Top line
+          \node[anchor=north]
+            at (0,0)
+            {%
+              \titlefont
+              \fontsize{17}{17}\selectfont
+              GETTING AWAY WITH
+            };
+
+          % Bottom line
+          \node[anchor=north]
+            at (0,-2) % vertical gap control
+            {%
+              \titlefont
+              \fontsize{42}{42}\selectfont
+              \begin{tikzpicture}[baseline]
+                \node[black, opacity=1, xshift=0.6mm, yshift=-0.6mm] {MURDER};
+                \node[RichRed] {MURDER};
+              \end{tikzpicture}
+            };
+
+        \end{tikzpicture}%
+        };
+
+    \end{scope}
+
+  \end{tikzpicture}
+
+\newpage
+}
+
+% ---------- TOKEN MACROS ----------
+
+\newcommand{\tokenfont}{%
+  \titlefont\fontsize{28}{28}\selectfont
+}
+\newcommand{\tokenSmallFont}{%
+  \titlefont\fontsize{9}{9}\selectfont
+}
+
+\newcommand{\tokenbox}[4]{%
+  % #1 = x
+  % #2 = y
+  % #3 = content type
+  % #4 = content
+
+  % test if #4 is empty by detokenizing
+  \if\relax\detokenize{#4}\relax
+    \def\tokenisempty{1}
+  \else
+    \def\tokenisempty{0}
+  \fi
+
+  \def\cPad{2}
+
+  \ifx#3G
+  {
+    % guilt token back content
+    \fill[RichRed]
+      ($(O)+(#1-\cPad,#2-\cPad)$)
+      rectangle
+      ($(O)+(#1+\tokenSize+\cPad,#2+\tokenSize+\cPad)$);
+
+    % show either icon+label or custom text
+    \ifnum\tokenisempty=1
+      % empty: icon+label
+      % icon
+      \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
+      {
+        \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
+          \centering
+          \includegraphics[
+            width=0.5\linewidth,
+            height=0.5\linewidth,
+            keepaspectratio
+          ]{guilt.pdf}
+        \end{minipage}
+      };
+
+      % label
+      \node[align=center]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenSmallFont GUILT}};
+    \else
+      % nonempty: custom text
+      \node[align=center]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenfont #4}};
+    \fi
+
+    % border
+    \ornateframe[thick]
+      {($(O)+(#1,#2)$)}
+      {\tokenSize}
+      {\tokenSize}
+  }
+  \else\ifx#3I
+  {
+    % innocence token back content
+    \fill[RichBlue]
+      ($(O)+(#1-\cPad,#2-\cPad)$)
+      rectangle
+      ($(O)+(#1+\tokenSize+\cPad,#2+\tokenSize+\cPad)$);
+
+    % show either icon+label or custom text
+    \ifnum\tokenisempty=1
+      % empty: icon+label
+      % icon
+      \node at ($(O)+(#1+0.5*\tokenSize,#2+0.6*\tokenSize)$)
+      {
+        \begin{minipage}[c][\tokenSize mm][c]{\tokenSize mm}
+          \centering
+          \includegraphics[
+            width=0.5\linewidth,
+            height=0.5\linewidth,
+            keepaspectratio
+          ]{innocence_white.pdf}
+        \end{minipage}
+      };
+
+      % label
+      \node[align=center, text=white]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.175*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenSmallFont INNOCENCE}};
+    \else
+      % nonempty: custom text
+      \node[align=center, text=white]
+        at ($(O)+(#1+0.5*\tokenSize,#2+0.5*\tokenSize)$)
+        {\parbox{\tokenSize mm}{\centering \tokenfont #4}};
+    \fi
+
+    % border
+    \ornateframe[thick, white]
+      {($(O)+(#1,#2)$)}
+      {\tokenSize}
+      {\tokenSize}
+  }
+  \fi\fi
+}
+
+\newcommand{\tokencardgridFour}[8]{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  % ---- force page bounding box ----
+  \path[use as bounding box]
+    (current page.south west)
+    rectangle
+    (current page.north east);
+
+  \begin{scope}[x=1mm,y=1mm]
+
+    % layout
+    \def\headH{16}
+    \def\bodyH{56}
+
+    \pgfmathsetmacro{\innerW}{\cardW - 2*(\bleed+\safe)}
+    \pgfmathsetmacro{\innerH}{\cardH - 2*(\bleed+\safe)}
+
+    %  we need to fit 2 columns (1 safe space between)
+    \pgfmathsetmacro{\tokenMaxW}{0.5 * (\innerW - 1*\safe)}
+    %  we need to fit 2 rows (1 safe space between)
+    \pgfmathsetmacro{\tokenMaxH}{0.5 * (\innerH - 1*\safe)}
+
+    %  tokens should be square
+    \pgfmathsetmacro{\tokenSize}{min(\tokenMaxW, \tokenMaxH)}
+
+    %  center the two tokens in two columns 
+    \pgfmathsetmacro{\halfW}{0.5*\cardW}
+    \pgfmathsetmacro{\leftCentre}{\bleed + 0.5*\halfW}
+    \pgfmathsetmacro{\rightCentre}{\bleed + \halfW + 0.5*\halfW}
+    \pgfmathsetmacro{\leftO}{\leftCentre - 0.5*\tokenSize}
+    \pgfmathsetmacro{\rightO}{\rightCentre - 0.5*\tokenSize}    
+
+
+    \pgfmathsetmacro{\vGap}{(\cardH - 2*\tokenSize)/2}
+    \pgfmathsetmacro{\bottomO}{\bleed + 0.5*\vGap}
+    \pgfmathsetmacro{\vSpace}{\tokenSize + \vGap}
+
+    \coordinate (O) at (current page.south west);
+    
+    % ---- bleed outline (debugging) ----
+    % \draw[line width=0.4mm]
+    %   ($(O)+(\bleed,\bleed)$)
+    %   rectangle ++(\cardW,\cardH);
+
+    % ---- CUT line (vertical) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed + \cardW*0.5,\bleed)$) --
+      ($(O)+(\bleed + \cardW*0.5,\bleed + \cardH)$);
+
+    % ---- CUT line (horizontal/center) ----
+    \draw[line width=0.4mm, dashed]
+      ($(O)+(\bleed,         \bleed + \cardH*0.5)$) --
+      ($(O)+(\bleed + \cardW,\bleed + \cardH*0.5)$);
+
+    % ---- Token BOXES ----
+
+    % bottom left
+    \tokenbox{\leftO}{\bottomO}{#1}{#2}
+
+    % bottom right
+    \tokenbox{\rightO}{\bottomO}{#3}{#4} 
+
+    % 2nd bottom left
+    \tokenbox{\leftO}{\bottomO + 1*\vSpace}{#5}{#6}
+
+    % 2nd bottom right
+    \tokenbox{\rightO}{\bottomO + 1*\vSpace}{#7}{#8}
+
+  \end{scope}
+\end{tikzpicture}
+
+\newpage
+}
+
+\newcommand{\todayddmmyyyy}{%
+\ifnum\day<10 0\fi\number\day.% day with leading zero
+\ifnum\month<10 0\fi\number\month.% month with leading zero
+\number\year% year
+}
+
+% Eliminate layout margins entirely
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+\setlength{\topmargin}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\footskip}{0pt}
+
+% Reduce hyphenation and stretching to prevent overflow in card descriptions
+\tolerance=2000
+\emergencystretch=1em
+\hyphenpenalty=1500
+\exhyphenpenalty=1500
+\doublehyphendemerits=10000
+\finalhyphendemerits=5000
+
+\begin{document}
+% Set a default CMYK colour
+\color{RichBlack}
+\clearpage
+\thispagestyle{empty}
+\titlecard{background_titlecard}
+\infocard
+{\uppercase{Getting Away With Murder}}
+{%
+A co-operative role-play game of drama wit and mystery.
+
+\qrcode{https://gawm.link}
+
+{\footnotesize https://gawm.link/
+
+\todayddmmyyyy}
+
+© \mbox{Joseph Fowler} \& \mbox{Thaddaeus Frogley}
+}
+
+% spare/write-in cards
+\cardback{alias_2.0}{Alias}
+\cardfront[RichBlue]{\mbox{Alias}}{}{Spare}{}
+\cardback{object_2.0}{Object}
+\cardfront[RichGreen]{\mbox{Object}}{}{}{}
+\cardback{relationship_2.0}{Relationship}
+\cardfront[RichRed]{\mbox{Relationship}}{}{}{}
+\cardback{wildcard_2.0}{Wildcard}
+\cardfront[RichPurple]{\mbox{Wildcard}}{}{}{}
+\cardback{motive_2.0}{Motive}
+\cardfront[RichBrown]{\mbox{Motive}}{}{}{}
+\cardback{murder_discovery_2.0}{Murder Discovery}
+\cardfront[RichBlack]{\mbox{Murder} \mbox{Discovery}}{}{The Discovery}{}
+\cardback{murder_cause_2.0}{Murder Cause}
+\cardfront[RichBlack]{\mbox{Murder} \mbox{Cause}}{}{The Cause of Death}{}
+
+% main deck
+\input{cards_generated.tex}
+
+% test/debug cards
+%\cardback{alias_2.0}{Alias}
+%\cardfront{\mbox{Aliases}}{\mbox{Monsieur} \mbox{/} \mbox{Madame} \mbox{Affaire}}{The Visitor}{\descSmall{You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what's going on, but it's all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by.}}
+%\cardback{murder_discovery_2.0}{Murder Discovery}
+%\cardfront[RichBlack]{\mbox{Murder} \mbox{Discovery}}{\mbox{Public} \mbox{Murder}}{The Discovery}{\descLarge{The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights.}}
+
+
+
+\newcounter{perplayercards}
+\loop
+  \tokencardgridFour{G}{}{G}{}{G}{}{G}{}
+  \tokencardgridFour{G}{0}{G}{1}{G}{2}{G}{3}
+  \tokencardgridFour{I}{}{I}{}{I}{}{I}{}
+  \tokencardgridFour{I}{0}{I}{1}{I}{2}{I}{3}
+  \infocard
+  {Setting Your Scene}
+  {%
+  Use a \textbf{detail card} in your hand to come up with an idea for a scene.
+
+  \textbf{Where} is it set?
+
+  \textbf{Who} else is there?
+
+  What is your character’s \textbf{motivation}?
+
+  Then explain your setup to the group in 3 sentences or less.
+  }
+
+  \infocard
+  {Playing A Scene}
+  {%
+  Set the scene.
+
+  Role-Play the scene until the premise is fully explored.
+
+  \textbf{No cliffhangers!}
+
+  The group gives you a guilt or innocence token.
+
+  Optionally, give a token of the opposite type to someone who shared the scene with you.
+  }
+
+  \stepcounter{perplayercards}
+\ifnum\value{perplayercards}<6
+\repeat
+
+\infolist
+{Game Overview}
+{
+\item \textbf{Act I} - One scene per player.
+\item \textbf{Extra Scene} - Decide the victim \& Introduce a new character.
+\item \textbf{Murder Scene} - Body is found.
+\item \textbf{Act II} - One scene per player.
+\item \textbf{The Twist} - Discard \& draw.
+\item \textbf{Act III} - Two scenes per player.
+\item \textbf{The Accusation} - The Most Innocent player accuses.
+\item \textbf{The Guilty} - Guilt is determined.
+\item \textbf{Epilogue} - One per player.
+}
+
+\infolist
+{Game Setup}
+{
+\item Shuffle all decks.
+\item For each player, add a \textbf{guilt token} labelled \textbf{0}, \textbf{1}, \textbf{2} and \textbf{3} to a central pile and shuffle with numbers \textbf{face-down}.
+\item Repeat for \textbf{innocence tokens}.
+\item Each player draws \textbf{2 alias cards} and chooses one to play.
+\item Each player draws \textbf{3 wildcards}, \textbf{3 relationships}, \textbf{3 motives} and \textbf{3 objects}. Don't reveal your cards.
+}   
+
+\end{document}

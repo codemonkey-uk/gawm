@@ -1,0 +1,30 @@
+# LaTeX intermediate files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Generated TeX from JSON
+cards_generated.tex
+
+# Makefile-generated raster assets and intermediate images
+*.png
+*.tif
+
+# PDF outputs (keeps intermediate and final PDFs out of git as they are generated)
+*.pdf
+
+# OS / editor cruft
+.DS_Store
+*.swp
+*.bak
+.idea/
+.vscode/
