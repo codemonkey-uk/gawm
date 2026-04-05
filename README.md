@@ -38,6 +38,10 @@ Special Elite - Copyright (c) 2010 by Brian J. Bonislawsky DBA Astigmatic (AOETI
 
 Nunito - Copyright 2014 The Nunito Project Authors. Available under the [SIL Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
 
+### CGATS21_CRPC1.icc
+
+This profile is made available by IDEAlliance®, with permission of X-Rite, Inc., and may be used, embedded, exchanged, and shared without restriction. It may not be altered, or sold without written permission of IDEAlliance.
+
 ## Production Environments
 
 GAWM is live here: [gawm.link](https://gawm.link).
