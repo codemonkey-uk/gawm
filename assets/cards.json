@@ -3,12 +3,12 @@
         {
             "name": "Monsieur / Madame Affaire",
             "subtype": "The Visitor",
-            "desc": "You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don’t quite get what’s going on, but it’s all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by."
+            "desc": "You are young, beautiful, foreign and mysterious. You sometimes drop into your first tongue. You don't quite get what’s going on, but it’s all very exciting! You are probably just a tourist on your holiday or a marooned driver who just happened to drop by."
         },
         {
             "name": "Mr/s. Big",
             "subtype": "The Gangster",
-            "desc": "You’ve got nothing to hide, as you are a completely legitimate business-person. You speak softly but are not afraid to threaten. Your stylish clothing is in stark contrast to the abuse your features have taken. You probably smoke. You have a fancy job title, but nobody knows what it means."
+            "desc": "You've got nothing to hide, as you are a completely legitimate business-person. You speak softly but are not afraid to threaten. Your stylish clothing is in stark contrast to the abuse your features have taken. You probably smoke. You have a fancy job title, but nobody knows what it means."
         },
         {
             "name": "Mr/s. Drab",
@@ -18,12 +18,12 @@
         {
             "name": "Mr/s. Money",
             "subtype": "The Capitalist",
-            "desc": "You are wealthy and don’t mind flaunting it. You talk big and act bigger. You do not like anyone telling you what you can and can’t do. You could be the CEO of a large company or the child of a wealthy aristocrat."
+            "desc": "You are wealthy and don't mind flaunting it. You talk big and act bigger. You do not like anyone telling you what you can and can't do. You could be the CEO of a large company or the child of a wealthy aristocrat."
         },
         {
             "name": "Mr/s. Representative",
             "subtype": "The Politician",
-            "desc": "You don’t argue, you are a negotiator. You can easily get a room on your side. You have connections in high places. You are probably middle-aged and dress formally at all times. You might be an ambassador, a mayor, an MP, or hold some other political office."
+            "desc": "You don't argue, you are a negotiator. You can easily get a room on your side. You have connections in high places. You are probably middle-aged and dress formally at all times. You might be an ambassador, a mayor, an MP, or hold some other political office."
         },
         {
             "name": "Mr/s. White",
@@ -33,12 +33,12 @@
         {
             "name": "Mr/s. Wordsmith",
             "subtype": "The Writer",
-            "desc": "You are observant, astute, and like to write. You have a tendency to stick your nose where it doesn’t belong. You dress conservatively, but are surprisingly attractive when you take off your thick glasses. You might be a reporter, or perhaps a crime-fiction novelist."
+            "desc": "You are observant, astute, and like to write. You have a tendency to stick your nose where it doesn't belong. You dress conservatively, but are surprisingly attractive when you take off your thick glasses.You might be a reporter, or perhaps a crime-fiction novelist."
         },
         {
             "name": "Mr/s. X",
             "subtype": "The Rebel",
-            "desc": "You are young and hedonistic. You dress informally and play an instrument. You’ll rock the boat just to see what happens, and you don’t care what these uptight establishment types think. You don’t have a job, but you do have a plan – you’re gonna blow this joint."
+            "desc": "You are young and hedonistic. You dress informally and play an instrument. You'll rock the boat just to see what happens, and you don't care what these uptight establishment types think. You don't have a job, but you do have a plan - you're gonna blow this joint."
         },
         {
             "name": "Doctor / Nurse Nightingale",
@@ -63,69 +63,29 @@
         {
             "name": "The Great M",
             "subtype": "The Fraud",
-            "desc": "Using your connection to the spirit world, you saw all this coming and the doom ahead! Your good looks and quick thinking are perfect for parting people from their money. You might practice palm reading, tarot and other parlour tricks. Maybe you’ve been employed to exorcise evil spirits from the house."
+            "desc": "Using your connection to the spirit world, you saw all this coming and the doom ahead! Your good looks and quick thinking are perfect for parting people from their money. You might practice palm reading, tarot and other parlor tricks. Maybe you've been employed to exorcise evil spirits from the house."
         },
         {
             "name": "Mr/s. Diligent",
             "subtype": "The Labourer",
-            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You’ve worked hard for what you have and are damn proud of it. You might work at the house, a smallholding of your own, or peddle your trade door-to-door."
+            "desc": "Your looks convey your life of hardship, and you are probably much younger than you appear. You likely speak with a regional accent. You've worked hard for what you have and are damn proud of it. You might work at the house, a smallholding of your own, or peddle your trade door-to-door."
         },
         {
             "name": "Mr/s. Suave",
             "subtype": "The Seducer",
-            "desc": "You enjoy the chase and are good at it. You use hair dye or makeup to hide your real age and wear the most fashionable clothes. You’ve had countless lovers – maybe even ex-spouses – but you’re always on the lookout for your next conquest."
+            "desc": "You enjoy the chase and are good at it. You use hair dye or makeup to hide your real age and wear the most fashionable clothes. You've had countless lovers - maybe even ex-spouses - but you're always on the lookout for your next conquest."
         },
         {
             "name": "Mr/s. Pioneer",
             "subtype": "The Adventurer",
-            "desc": "You’ve travelled the world and seen everything from mountains to endless deserts. Now you’re back home and it’s all a little bland. You may wear something from a distant culture. You could make a living retrieving lost objects or maybe you have a fat bank account and a case of wanderlust."
-        },
-        {
-            "name": "Mr/s. Advocate",
-            "subtype": "The Legal Eagle",
-            "desc": "You are a shrewd lawyer, or you otherwise know how to navigate the legal system. You are always looking to achieve the best outcome, whether it’s by the rules or a way around them. You could be middle aged or approaching retirement. You are well connected and won’t back down easily."
-        },
-        {
-            "name": "Mr/s. Vogue",
-            "subtype": "The Narcissist",
-            "desc": "You crave attention and validation, and are entitled to the point you struggle to understand the feelings of others. You are very attractive and you know it. You dress yourself in the very peak of fashion at all times. You could be a model, a socialite, or a fashion designer."
-        },
-        {
-            "name": "Mr/s. Hollywood",
-            "subtype": "The Fallen Star",
-            "desc": "You’re famous, or at least you used to be. These days people might recognise your stage-name, but not your face. Your youth has faded and you cling on to the fashions of the past. You might have been a singer, director, or actor."
-        },
-        {
-            "name": "Mr/s. Enigma",
-            "subtype": "The Liar",
-            "desc": "Your forked tongue is both your biggest asset and greatest flaw. You never tell a story about your past the same way twice. You could pass for almost any age. You dress professionally, but this is just another cover. You might be a confidence tricker, sales-person, or even a spy."
-        },
-        {
-            "name": "Mr/s. Dreamer",
-            "subtype": "The Visionary",
-            "desc": "You are certain your ideas will change the world someday – if only you could convince other people! You are young, eccentric and so self-assured it borders on arrogance. You dress scruffily because clothes aren’t important. You could be an entrepreneur, an inventor, or modern artist."
-        },
-        {
-            "name": "Officer Valiant",
-            "subtype": "The Hero",
-            "desc": "Your heroic acts precede you. But that was a long time ago. Your body is now frail, and you may have long term injuries or a disability. Despite that, you still feel the need to protect people. You are retired, and might have once been a firefighter, police officer, or war hero."
-        },
-        {
-            "name": "Mr/s. Benefactor",
-            "subtype": "The Philanthropist",
-            "desc": "You inherited a fortune, and have chosen to use that money to do some good in the world. You are aloof, and dress well, but not extravagantly. You don’t work directly with the needy, instead you spend your time going to fundraisers and speaking engagements. How old are you?"
-        },
-        {
-            "name": "Reverend Hope",
-            "subtype": "The Cleric",
-            "desc": "You are a kind and respected spiritual leader. Middle-aged, and modestly dressed, you offer guidance and support to all. You could be a Vicar, a Monk or a Nun. You have a sympathetic way, that helps people open up. Perhaps you know too much."
+            "desc": "You've travelled the world and seen everything from mountains to endless deserts. Now you're back home and it's all a little bland. You may wear something from a distant culture. You could make a living retrieving lost objects or maybe you have a fat bank account and a case of wanderlust."
         }
     ],
     "objects": [
         {
             "name": "Erotica",
             "subtype": "Contraband",
-            "desc": "Given the personal nature of these photographs, they clearly weren’t intended to be made public."
+            "desc": "Given the personal nature of these photographs, they clearly weren't intended to be made public."
         },
         {
             "name": "Marijuana Cigarettes",
@@ -149,27 +109,27 @@
         },
         {
             "name": "Ancient Egyptian Artifact",
-            "subtype": "d’Art",
-            "desc": "A gold and jade idol of Isis. Supposedly protected by The Mummy’s Curse."
+            "subtype": "d'Art",
+            "desc": "A gold and jade idol of Isis. Supposedly protected by The Mummy's Curse."
         },
         {
             "name": "Beautiful Photograph",
-            "subtype": "d’Art",
+            "subtype": "d'Art",
             "desc": "A hauntingly beautiful photograph of a young couple."
         },
         {
             "name": "Ming Dynasty Vase",
-            "subtype": "d’Art",
+            "subtype": "d'Art",
             "desc": "An extremely expensive piece of history, just sitting there with the other vases."
         },
         {
             "name": "Rembrandt Painting",
-            "subtype": "d’Art",
-            "desc": "Abraham’s Sacrifice.\nOil on Canvas, 1635."
+            "subtype": "d'Art",
+            "desc": "Abraham's Sacrifice. Oil on Canvas, 1635."
         },
         {
             "name": "Silver Locket",
-            "subtype": "d’Art",
+            "subtype": "d'Art",
             "desc": "An exquisite locket made of silver. It has been sealed shut."
         },
         {
@@ -215,17 +175,17 @@
         {
             "name": "First-Aid Kit",
             "subtype": "Tool",
-            "desc": "Contains sterile dressings, bandages, iodine, pain-killers, surgical spirit etc. It’s been opened."
+            "desc": "Contains sterile dressings, bandages, iodine, pain-killers, surgical spirit etc. It's been opened."
         },
         {
             "name": "Wrench",
             "subtype": "Tool",
-            "desc": "24″ of rugged forged steel with chrome plate finish."
+            "desc": "24\" of rugged forged steel with chrome plate finish."
         },
         {
             "name": "Fingerprint",
             "subtype": "Evidence",
-            "desc": "A fingerprint on an incriminating surface. Something’s been disturbed."
+            "desc": "A fingerprint on an incriminating surface. Something's been disturbed."
         },
         {
             "name": "Broken Window",
@@ -235,7 +195,7 @@
         {
             "name": "Pile of Ash",
             "subtype": "Evidence",
-            "desc": "This might have once been a document or other evidence… or maybe just a fine cigar."
+            "desc": "This might have once been a document or other evidence... or maybe just a fine cigar."
         },
         {
             "name": "Liquid Puddle",
@@ -260,7 +220,7 @@
         {
             "name": "Poison",
             "subtype": "Weapon",
-            "desc": "~ XXXX ~\n Rat Poison\nKeep out of children’s reach."
+            "desc": "~ XXXX ~  Rat Poison Keep out of children's reach."
         },
         {
             "name": "Revolver",
@@ -342,7 +302,7 @@
         {
             "name": "Parent & Child",
             "subtype": "Family",
-            "desc": "A bond stronger than any other. What wouldn’t a parent do for their progeny?"
+            "desc": "A bond stronger than any other. What wouldn't a parent do for their progeny?"
         },
         {
             "name": "Siblings",
@@ -352,7 +312,7 @@
         {
             "name": "Drinking Buddies",
             "subtype": "Friends",
-            "desc": "“Always do sober what you said you’d do drunk. That will teach you to keep your mouth shut.”\n— Ernest Hemingway"
+            "desc": "Always do sober what you said you'd do drunk. That will teach you to keep your mouth shut. ~ Ernest Hemingway"
         },
         {
             "name": "Fraternity Members",
@@ -372,7 +332,7 @@
         {
             "name": "Newly Made",
             "subtype": "Friends",
-            "desc": "You enjoy stamp collecting too? I’ve got to tell you how I found my Penny Black…"
+            "desc": "You enjoy stamp collecting too? I've got to tell you how I found my Penny Black..."
         },
         {
             "name": "Coincidence",
@@ -407,7 +367,7 @@
         {
             "name": "Dom & Sub",
             "subtype": "Unequal",
-            "desc": "One of you decides what to do and the other ones does it. What’s the safe word?"
+            "desc": "One of you decides what to do and the other ones does it. What's the safe word?"
         },
         {
             "name": "Elected Official & Civil Servant",
@@ -422,7 +382,7 @@
         {
             "name": "Unrequited Love",
             "subtype": "Unequal",
-            "desc": "You say that it isn’t real, but I know how I feel!"
+            "desc": "You say that it isn't real, but I know how I feel!"
         }
     ],
     "wildcards": [
@@ -432,9 +392,9 @@
             "desc": "The story flashes back to a well attended funeral. Today is both an ending and a new beginning."
         },
         {
-            "name": "A Lawyer’s Office",
+            "name": "A Lawyer's Office",
             "subtype": "Flashback",
-            "desc": "The story flashes back to a swanky lawyer’s office."
+            "desc": "The story flashes back to a swanky lawyer's office."
         },
         {
             "name": "At Sea",
@@ -454,7 +414,7 @@
         {
             "name": "A Secret Hallway",
             "subtype": "Location",
-            "desc": "A secret hallway connects two rooms…"
+            "desc": "A secret hallway connects two rooms..."
         },
         {
             "name": "A Forgotten Room",
@@ -464,7 +424,7 @@
         {
             "name": "The Maze",
             "subtype": "Location",
-            "desc": "A secret flower garden lies in the centre of the hedge maze, known to only a few."
+            "desc": "A secret flower garden lies in the center of the hedge maze, known to only a few."
         },
         {
             "name": "Surveillance Room",
@@ -484,7 +444,7 @@
         {
             "name": "Red Herring",
             "subtype": "Deduction",
-            "desc": "Suddenly, a clue that will crack the case wide open! Oh wait… nevermind."
+            "desc": "Suddenly, a clue that will crack the case wide open! Oh wait... nevermind."
         },
         {
             "name": "Mistake",
@@ -504,7 +464,7 @@
         {
             "name": "Cruel Architecture",
             "subtype": "Obstruction",
-            "desc": "Traps! Built into the very building itself."
+            "desc": "Traps! Built into the very mansion itself."
         },
         {
             "name": "Fire! Fire!",
@@ -514,12 +474,12 @@
         {
             "name": "Extreme Weather",
             "subtype": "Obstruction",
-            "desc": "A violent storm or huge snowfall. The weather is so severe that it’s disrupting the investigation."
+            "desc": "A violent storm or huge snowfall. The weather is so severe that it's disrupting the investigation."
         },
         {
             "name": "Power Cut",
             "subtype": "Obstruction",
-            "desc": "The power’s been cut! Who did it and how?"
+            "desc": "The power's been cut! Who did it and how?"
         },
         {
             "name": "Locked-In",
@@ -542,9 +502,9 @@
             "desc": "A locked room, box, or safe is discovered that may hold a vital clue, if only you could get the door open."
         },
         {
-            "name": "This Isn’t What It Looks Like",
+            "name": "This Isn't What It Looks Like",
             "subtype": "Privacy",
-            "desc": "A character gets caught doing something highly suspicious, but it’s actually quite innocent."
+            "desc": "A character gets caught doing something highly suspicious, but it's actually quite innocent."
         },
         {
             "name": "Guilty Conscience",
@@ -564,7 +524,7 @@
         {
             "name": "An Unexpected Visitor",
             "subtype": "Distraction",
-            "desc": "Somebody arrives at the door. They must be sent on their way before they discover the nature of this meeting…"
+            "desc": "Somebody arrives at the door. They must be sent on their way before they discover the nature of this meeting..."
         },
         {
             "name": "An Accident",
@@ -591,7 +551,7 @@
         {
             "name": "Nobody Can",
             "subtype": "Jealousy",
-            "desc": "If I can’t have them, then nobody can."
+            "desc": "If I can't have them, then nobody can."
         },
         {
             "name": "Professional Envy",
@@ -621,7 +581,7 @@
         {
             "name": "Paranoia",
             "subtype": "Madness",
-            "desc": "It’s not paranoia if they really are plotting against you."
+            "desc": "It's not paranoia if they really are plotting against you."
         },
         {
             "name": "The Devil In Your Ear",
@@ -631,7 +591,7 @@
         {
             "name": "Addicted To Luxury",
             "subtype": "Money",
-            "desc": "You need money to maintain the lifestyle you’re accustomed to."
+            "desc": "You need money to maintain the lifestyle you're accustomed to."
         },
         {
             "name": "Loan Shark",
@@ -641,7 +601,7 @@
         {
             "name": "Pure Greed",
             "subtype": "Money",
-            "desc": "You don’t need the money, it’s just pure greed."
+            "desc": "You don't need the money, it's just pure greed."
         },
         {
             "name": "Investment Money",
@@ -651,12 +611,12 @@
         {
             "name": "That You Earned",
             "subtype": "Money",
-            "desc": "You did the work and deserve the money. They shouldn’t try to take what’s yours."
+            "desc": "You did the work and deserve the money. They shouldn't try to take what's yours."
         },
         {
             "name": "Cold Blooded",
             "subtype": "Revenge",
-            "desc": "Revenge is a dish best served cold…"
+            "desc": "Revenge is a dish best served cold..."
         },
         {
             "name": "Humiliation",
@@ -666,7 +626,7 @@
         {
             "name": "Jilted Lover",
             "subtype": "Revenge",
-            "desc": "After everything I did, you don’t get to just walk away from this."
+            "desc": "After everything I did, you don't get to just walk away from this."
         },
         {
             "name": "Tit For Tat",
@@ -686,12 +646,12 @@
         {
             "name": "Family Skeletons",
             "subtype": "Secrets",
-            "desc": "Something’s amiss in the family tree."
+            "desc": "Something's amiss in the family tree."
         },
         {
             "name": "Fatal Knowledge",
             "subtype": "Secrets",
-            "desc": "They knew it wasn’t an accident… now nobody knows."
+            "desc": "They knew it wasn't an accident... now nobody knows."
         },
         {
             "name": "Protect A Legacy",
@@ -709,7 +669,7 @@
             "desc": "This death was nothing but a very small part of a much, much larger scheme."
         },
         {
-            "name": "It’s What You Wanted",
+            "name": "It's What You Wanted",
             "subtype": "Rationalised",
             "desc": "You killed them because you thought that somebody else wanted you to."
         },
@@ -733,7 +693,7 @@
         {
             "name": "Public Murder",
             "subtype": "The Discovery",
-            "desc": "The victim’s death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights."
+            "desc": "The victim's death is public, all or most of the group witness it. It should be unclear who did the deed. Perhaps the poison was placed in advance, or a power-cut takes out the lights."
         },
         {
             "name": "Group Finds Body",
@@ -753,24 +713,24 @@
         {
             "name": "On The Edge Of Death",
             "subtype": "The Discovery",
-            "desc": "The victim is found on the edge of death. If only they had the time and strength to implicate their killer…"
+            "desc": "The victim is found on the edge of death. If only they had the time and strength to implicate their killer..."
         },
         {
             "name": "Preordained Murder",
             "subtype": "The Discovery",
-            "desc": "The murder is telegraphed in advance of the act. Perhaps the victim says that someone is after them, or a note is found reading: One will die…"
+            "desc": "The murder is telegraphed in advance of the act. Perhaps the victim says that someone is after them, or a note is found reading: One will die..."
         },
         {
             "name": "Somebody Is Missing",
             "subtype": "The Discovery",
-            "desc": "The victim dies between scenes and the body is found by the group, bar one (decide who at random). Who’s not there? Where did they go? How will they explain their absence?"
+            "desc": "The victim dies between scenes and the body is found by the group, bar one (decide who at random). Who's not there? Where did they go? How will they explain their absence?"
         }
     ],
     "murder_cause": [
         {
             "name": "Apparent Suicide",
             "subtype": "The Cause of Death",
-            "desc": "The victim appears to have taken their own life. At least that’s what it looks like… but does it add up?"
+            "desc": "The victim appears to have taken their own life. At least that's what it looks like... but does it add up?"
         },
         {
             "name": "Blunt Force Trauma",
@@ -790,7 +750,7 @@
         {
             "name": "Nothing Obvious",
             "subtype": "The Cause of Death",
-            "desc": "This might be mistaken for a natural death. While some of you think it’s murder, others are going to take some persuading."
+            "desc": "This might be mistaken for a natural death. While some of you think it's murder, others are going to take some persuading."
         },
         {
             "name": "Dismemberment",
@@ -805,7 +765,7 @@
         {
             "name": "Asphyxiation",
             "subtype": "The Cause of Death",
-            "desc": "Strangled with bare hands, garrotted, or drowned. A man can drown in 2″ of water."
+            "desc": "Strangled with bare hands, garrotted, or drowned. A man can drown in 2\" of water."
         },
         {
             "name": "Assassinated",
