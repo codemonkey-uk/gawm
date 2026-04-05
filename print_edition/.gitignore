@@ -19,12 +19,8 @@ cards_generated.tex
 *.png
 *.tif
 
-# PDF outputs (keep intermediate and final PDFs out of git as they are generated)
-cards_eu.pdf
-cards_us.pdf
-deck-print-eu-PDFX1a-cmyk.pdf
-deck-print-us-PDFX1a-cmyk.pdf
-background_titlecard.pdf
+# PDF outputs (keeps intermediate and final PDFs out of git as they are generated)
+*.pdf
 
 # OS / editor cruft
 .DS_Store
